@@ -1,0 +1,17 @@
+spring:
+
+  resources:
+    chain:
+      strategy:
+        content:
+          enabled: true
+          paths: /**
+
+  servlet:
+    multipart:
+      max-file-size: 10240MB
+      max-request-size: 10240MB
+
+server:
+  port: 8080
+  max-http-header-size: 1048576
