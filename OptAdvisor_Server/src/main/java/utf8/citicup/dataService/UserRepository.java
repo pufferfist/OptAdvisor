@@ -1,20 +1,19 @@
-package utf8.citicup.dao;
+package utf8.citicup.dataService;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Component;
 import utf8.citicup.domain.entity.User;
 
+import javax.transaction.Transactional;
 import java.util.List;
 @Component
 public interface UserRepository extends JpaRepository<User,String> {
-    List<User> findByPassword(String password);
-
-    List<User> findByUsername(String username);
+/*    @Override
+    @Modifying
+    void delete(User user);*/
 
     @Override
-    @Modifying
-    void delete(User user);
-
-
+    <S extends User> S save(S s);
 }

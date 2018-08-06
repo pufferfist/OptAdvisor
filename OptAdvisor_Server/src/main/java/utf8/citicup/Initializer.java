@@ -7,7 +7,9 @@ import org.apache.shiro.util.Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import utf8.citicup.dao.UserRepository;
+import utf8.citicup.dataService.UserRepository;
+import utf8.citicup.domain.entity.Option;
+import utf8.citicup.domain.entity.User;
 
 @Component
 public class Initializer implements CommandLineRunner {
@@ -18,6 +20,7 @@ public class Initializer implements CommandLineRunner {
         System.out.println(System.getProperty("user.dir"));
         System.out.println("initializing...");
         System.out.println("===============");
+        test();
         initShiro();
     }
 
@@ -26,6 +29,24 @@ public class Initializer implements CommandLineRunner {
         Factory<SecurityManager> factory=new IniSecurityManagerFactory("classpath:shiro.ini");
         SecurityUtils.setSecurityManager(factory.getInstance());
         System.out.println("done");
+    }
+
+
+    public void test(){
+        //Option option1=new Option("id1","name1",0,0,"time",0,0,0,0,0,0,0,0,0);
+        //Option option2=new Option("id1","name1",0,0,"time",0,0,0,0,0,0,0,0,0);
+        User user=new User();
+        user.setUsername("wyb");
+        user.setPassword("wyb");
+        user.setW1(1);
+        user.setW2(2);
+        userRepository.save(user);
+        User user1=new User();
+        user.setUsername("wyb");
+        user.setPassword("wrh");
+        user.setW1(1);
+        user.setW2(2);
+        userRepository.save(user);
     }
 
 }

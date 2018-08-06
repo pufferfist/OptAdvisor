@@ -1,10 +1,21 @@
 package utf8.citicup.domain.entity;
 
-import utf8.citicup.domain.jsonObject.Option;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Transient;
+
+@Entity
 public class Portfolio {
+    @Id
+    @GeneratedValue
+    private Long id;
+
     private String userName;
 
+    @Transient
     private Option[] options;
 
     private Enum type; //type指1：资产配置组合 2：套期保值组合 3：DIY组合
@@ -42,4 +53,6 @@ public class Portfolio {
     public void setTrackingStatus(boolean trackingStatus) {
         this.trackingStatus = trackingStatus;
     }
+
+    public Long getId() { return id; }
 }
