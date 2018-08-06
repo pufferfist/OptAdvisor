@@ -1,12 +1,14 @@
 <template>
   <div id="login">
-    <img src="@/assets/loginBack.jpg" class="blur"/>
+    <login-form></login-form>
   </div>
 </template>
 
 <script>
+    import LoginForm from "../components/login/loginForm";
     export default {
-        name: "Login"
+        name: "Login",
+      components: {LoginForm}
     }
 </script>
 
@@ -17,6 +19,10 @@
     -moz-filter:blur(50px);
     -ms-filter:blur(50px);
     -o-filter:blur(50px);
+  }
+
+  #login{
+    background-image: url("../assets/loginBack.jpg");
   }
 
 </style>
