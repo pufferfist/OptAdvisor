@@ -31,6 +31,8 @@ public class Option {
     private double rho;
     private double beta;
 
+    public Option(){}
+
     public Option(Long parentId,String id,String name,int type,int property,String expireTime,double executionPrice,
                   double transactionPrice,int quantity,double delta,double gamma,double vega,double theta,double rho,double beta){
         this.parentId=parentId;
@@ -48,6 +50,11 @@ public class Option {
         this.theta=theta;
         this.rho=rho;
         this.beta=beta;
+    }
+
+    @Override
+    public String toString() {
+        return "{"+name+","+id+"}";
     }
 
     public String getId() { return id; }

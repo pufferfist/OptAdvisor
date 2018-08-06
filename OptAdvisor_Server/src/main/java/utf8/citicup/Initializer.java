@@ -7,14 +7,28 @@ import org.apache.shiro.util.Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import utf8.citicup.dataService.UserRepository;
+import utf8.citicup.dao.UserRepository;
+import utf8.citicup.dataService.MessageDataService;
+import utf8.citicup.dataService.OptionDataService;
+import utf8.citicup.dataService.PortfolioDataService;
+import utf8.citicup.dataService.UserDataService;
+import utf8.citicup.dataServiceImpl.UserDataServiceImpl;
+import utf8.citicup.domain.common.Type;
+import utf8.citicup.domain.entity.Message;
 import utf8.citicup.domain.entity.Option;
+import utf8.citicup.domain.entity.Portfolio;
 import utf8.citicup.domain.entity.User;
+
+import java.util.List;
 
 @Component
 public class Initializer implements CommandLineRunner {
     @Autowired
-    UserRepository userRepository;
+    MessageDataService messageDataService;
+    @Autowired
+    OptionDataService optionDataService;
+    @Autowired
+    PortfolioDataService portfolioDataService;
     @Override
     public void run(String... args) throws Exception {
         System.out.println(System.getProperty("user.dir"));
@@ -33,20 +47,12 @@ public class Initializer implements CommandLineRunner {
 
 
     public void test(){
-        //Option option1=new Option("id1","name1",0,0,"time",0,0,0,0,0,0,0,0,0);
-        //Option option2=new Option("id1","name1",0,0,"time",0,0,0,0,0,0,0,0,0);
-        User user=new User();
-        user.setUsername("wyb");
-        user.setPassword("wyb");
-        user.setW1(1);
-        user.setW2(2);
-        userRepository.save(user);
-        User user1=new User();
-        user.setUsername("wyb");
-        user.setPassword("wrh");
-        user.setW1(1);
-        user.setW2(2);
-        userRepository.save(user);
+        List<Portfolio> portfolioList=portfolioDataService.findByUsername("wyb");
+        for(Portfolio each:portfolioList){
+            for(Option option:each.getOptions()){
+                System.out.println(option.toString());
+            }
+        }
     }
 
 }
