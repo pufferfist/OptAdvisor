@@ -24,6 +24,8 @@ import java.util.List;
 @Component
 public class Initializer implements CommandLineRunner {
     @Autowired
+    UserDataService userDataService;
+    @Autowired
     MessageDataService messageDataService;
     @Autowired
     OptionDataService optionDataService;
@@ -47,12 +49,13 @@ public class Initializer implements CommandLineRunner {
 
 
     public void test(){
-        List<Portfolio> portfolioList=portfolioDataService.findByUsername("wyb");
-        for(Portfolio each:portfolioList){
-            for(Option option:each.getOptions()){
-                System.out.println(option.toString());
-            }
-        }
+        User user=new User();
+        user.setUsername("wyb");
+        user.setPassword("wrh");
+        user.setW2(1);
+        user.setW1(3);
+        System.out.println(userDataService.addUser(user));
+        System.out.println(userDataService.updateUser(user));
     }
 
 }
