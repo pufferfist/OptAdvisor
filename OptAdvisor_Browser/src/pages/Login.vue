@@ -1,6 +1,6 @@
 <template>
   <div id="login">
-    <img src=""/>
+    <img src="@/assets/loginBack.jpg" class="blur"/>
   </div>
 </template>
 
@@ -18,9 +18,5 @@
     -ms-filter:blur(50px);
     -o-filter:blur(50px);
   }
-  
-  img{
-    position:absolute;
-    z-index:-1;
-  }
+
 </style>
