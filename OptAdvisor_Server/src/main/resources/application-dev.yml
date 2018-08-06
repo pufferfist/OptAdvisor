@@ -12,6 +12,23 @@ spring:
       max-file-size: 10240MB
       max-request-size: 10240MB
 
+  datasource:
+    url: jdbc:mysql://localhost:3306/utf8db?characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.jdbc.Driver
+
+  jpa:
+    database: MYSQL
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+      naming:
+        implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
 server:
-  port: 8080
+  port: 8088
   max-http-header-size: 1048576
