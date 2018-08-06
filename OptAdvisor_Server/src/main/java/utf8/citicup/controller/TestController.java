@@ -20,4 +20,9 @@ public class TestController {
                 "            'get':'test'\n" +
                 "        }";
     }
+
+    @GetMapping("/")
+    public String testEnter(){
+        return "hello UTF-8!";
+    }
 }

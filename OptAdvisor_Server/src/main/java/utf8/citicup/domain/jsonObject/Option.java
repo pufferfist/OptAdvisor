@@ -1,4 +1,4 @@
-package utf8.citicup.entity;
+package utf8.citicup.domain.jsonObject;
 
 /**
  * 期权实体
