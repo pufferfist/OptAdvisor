@@ -19,6 +19,14 @@ public class Message {
 
     private String message;
 
+    public Message(String userName,String message){
+        readStatus=false;
+        this.userName=userName;
+        this.message=message;
+    }
+
+    public Message(){}
+
     public Long getId() { return id; }
 
     public String getUserName() { return userName; }
