@@ -3,7 +3,7 @@
     <Row class="middle">
       <i-col span="8" offset="8">
         <div id="form" class="login-form animated  tc">
-          <Logo></Logo>
+          <Logo class="pb3"></Logo>
           <login-form class="pt3-l pl4 pr4"></login-form>
         </div>
       </i-col>
@@ -56,10 +56,4 @@
     height: 50%;
     margin: auto;
   }
-
-  img {
-    max-width: 100%;
-    max-height: 100%;
-  }
-
 </style>
