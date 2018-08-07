@@ -3,7 +3,6 @@ package utf8.citicup.service;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 
-
 public interface UserService {
     ResponseMsg login(String username, String password);
 
@@ -23,7 +22,5 @@ public interface UserService {
     User getInfo(String username);
 
     String getRole(String username);
-
-    String getPassword(String username);
 
 }

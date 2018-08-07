@@ -30,14 +30,20 @@ public class ShiroConfig {
         //TODO
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        logger.info("Shiro Configuration filter initial");
+        logger.info("Shiro Configuration filter initializing");
         return shiroFilterFactoryBean;
+    }
+
+    @Bean
+    public CustomRealm customRealm() {
+        return new CustomRealm();
     }
 
     @Bean
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(new CustomRealm());
+        securityManager.setRealm(customRealm());
+        logger.info("Shiro security managing");
         return securityManager;
     }
 

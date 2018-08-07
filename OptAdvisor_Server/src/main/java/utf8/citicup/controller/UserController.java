@@ -2,6 +2,7 @@ package utf8.citicup.controller;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,15 +10,16 @@ import org.springframework.web.bind.annotation.RestController;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
-import utf8.citicup.serviceImpl.UserServiceImpl;
 
 import java.util.Map;
 
 @RestController
 public class UserController {
 
-    private final UserService userService = new UserServiceImpl();
+    @Autowired
+    private UserService userService;
     private Logger logger = LoggerFactory.getLogger(UserController.class);
+
 
     @PostMapping("login")
     public ResponseMsg login(@RequestBody Map<String, Object> params) {

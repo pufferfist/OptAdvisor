@@ -11,19 +11,21 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
 import utf8.citicup.service.util.AliyunSms;
 
-
+@Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserDataService userDataService;
     private AliyunSms aliyunSms = new AliyunSms();
     private Logger logger = LoggerFactory.getLogger(UserService.class);
-
 
     @Override
     public ResponseMsg login(String username, String password) {
@@ -70,12 +72,12 @@ public class UserServiceImpl implements UserService {
         String randomNumber = Integer.toString((int) (Math.random() * 9999));
         session.setAttribute("verifyCode", randomNumber);
         try {
-             SendSmsResponse sendSmsResponse = aliyunSms.sendSms(phoneNumber, randomNumber);
-             if (sendSmsResponse.getCode().equals("OK")) {
-                 return new ResponseMsg(0, "Send verify code success");
-             } else {
-                 return new ResponseMsg(1013, sendSmsResponse.getMessage());
-             }
+            SendSmsResponse sendSmsResponse = aliyunSms.sendSms(phoneNumber, randomNumber);
+            if (sendSmsResponse.getCode().equals("OK")) {
+                return new ResponseMsg(0, "Send verify code success");
+            } else {
+                return new ResponseMsg(1013, sendSmsResponse.getMessage());
+            }
         } catch (ClientException e) {
             e.printStackTrace();
             return new ResponseMsg(1013, "Aliyun sms client error");
@@ -114,20 +116,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public String getRole(String username) {
-        // TODO TEMP METHOD
         if (null == getInfo(username))
             return "anon";
         else
             return "user";
     }
 
-    @Override
-    public String getPassword(String username) {
-        // TODO TEMP METHOD
-        if (username.equals("suun")) {
-            return "8423d35db5786e8d6cb8e66d1a2ef5aef71e9b8751a952c56f0325a3a8b6030b";
-        } else {
-            return null;
-        }
-    }
 }
