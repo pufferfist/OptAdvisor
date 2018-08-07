@@ -12,7 +12,9 @@ public interface UserService {
     ResponseMsg signUp(String username, String password, String name, String birthday, String telephone,
                        String email, String gender, String avatar, int w1, int w2);
 
-    ResponseMsg forgetPassword(String username, String verifyCode, String newPassword);
+    ResponseMsg sendVerifyCode(String phoneNumber);
+
+    ResponseMsg checkVerifyCode(String verifyCode);
 
     ResponseMsg resetPassword(String username , String oldUsername, String newPassword);
 

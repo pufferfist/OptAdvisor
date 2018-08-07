@@ -1,9 +1,11 @@
 package utf8.citicup.controller;
 
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
@@ -34,9 +36,17 @@ public class UserController {
                 user.getW2());
     }
 
-    @PostMapping("user/forgetPassword")
-    public ResponseMsg forgetPassword(String username, String verifyCode, String newPassword) {
-        return userService.forgetPassword(username, verifyCode, newPassword);
+    @PostMapping("sendVerifyCode")
+    public ResponseMsg sendVerifyCode(@RequestBody Map<String, Object> params) {
+//        String phoneNumber = userService.getInfo(params.get("username").toString()).getTelephone();
+        String phoneNumber = params.get("username").toString();
+        return userService.sendVerifyCode(phoneNumber);
+    }
+
+    @PostMapping("checkVerifyCode")
+    public ResponseMsg checkVerifyCode(@RequestBody Map<String, Object> params) {
+        String verifyCode = params.get("verifyCode").toString();
+        return userService.checkVerifyCode(verifyCode);
     }
 
     @PostMapping("user/resetPassword")

@@ -6,6 +6,8 @@ import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utf8.citicup.service.UserService;
 import utf8.citicup.serviceImpl.UserServiceImpl;
 
@@ -15,10 +17,11 @@ import java.util.Set;
 public class CustomRealm extends AuthorizingRealm {
 
     private UserService userService = new UserServiceImpl();
+    private Logger logger = LoggerFactory.getLogger(CustomRealm.class);
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
-        System.out.println("-----Authorization-----");
+        logger.info("-----Authorization-----");
         String username = (String) SecurityUtils.getSubject().getPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
@@ -31,7 +34,6 @@ public class CustomRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        System.out.println("-----Authentication-----");
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
         String password = userService.getPassword(token.getUsername());
         if(null == password) {

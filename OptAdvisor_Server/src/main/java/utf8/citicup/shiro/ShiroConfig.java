@@ -3,6 +3,8 @@ package utf8.citicup.shiro;
 import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -11,6 +13,9 @@ import java.util.Map;
 
 @Configuration
 public class ShiroConfig {
+
+    private Logger logger = LoggerFactory.getLogger(ShiroConfig.class);
+
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
@@ -25,7 +30,7 @@ public class ShiroConfig {
         //TODO
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        System.out.println("Shiro filter initial");
+        logger.info("Shiro Configuration filter initial");
         return shiroFilterFactoryBean;
     }
 
