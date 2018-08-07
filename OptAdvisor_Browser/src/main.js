@@ -3,13 +3,15 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router/index'
-// import './css/bootstrap.css'
 import iView from 'iview';
 import 'iview/dist/styles/iview.css';
+import './assets/css/main.css';
+import './assets/css/animate.css';
+import './assets/css/tachyons.css';
 
 Vue.use(iView);
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 /* eslint-disable no-new */
 new Vue({
