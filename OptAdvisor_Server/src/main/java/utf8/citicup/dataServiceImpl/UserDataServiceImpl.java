@@ -15,6 +15,25 @@ public class UserDataServiceImpl implements UserDataService{
     @Autowired
     UserRepository userRepository;
 
+
+    @Override
+    public boolean addUser(User user) {
+        if(findById(user.getUsername())==null){
+            save(user);
+            return true;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean updateUser(User user) {
+        if(findById(user.getUsername())!=null){
+            save(user);
+            return true;
+        }
+        return false;
+    }
+
     @Override
     @CachePut(value = "user",key = "#user.username")
     public User save(User user) {
