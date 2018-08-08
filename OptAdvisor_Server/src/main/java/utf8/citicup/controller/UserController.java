@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
+import utf8.citicup.service.statusMsg.UserStatusMsg;
 
 import java.util.Map;
 
@@ -24,8 +25,8 @@ public class UserController {
     }
 
     @PostMapping("user/logout")
-    public ResponseMsg logout(@RequestBody Map<String, Object> params) {
-        return userService.logout(params.get("username").toString());
+    public ResponseMsg logout() {
+        return userService.logout();
     }
 
     @PostMapping("signUp")
@@ -35,19 +36,17 @@ public class UserController {
 
     @PostMapping("sendVerifyCode")
     public ResponseMsg sendVerifyCode(@RequestBody Map<String, Object> params) {
-        String phoneNumber = userService.getInfo(params.get("username").toString()).getTelephone();
-        return userService.sendVerifyCode(phoneNumber);
+        return userService.sendVerifyCode(params.get("username").toString());
     }
 
     @PostMapping("checkVerifyCode")
     public ResponseMsg checkVerifyCode(@RequestBody Map<String, Object> params) {
-        String verifyCode = params.get("verifyCode").toString();
-        return userService.checkVerifyCode(verifyCode);
+        return userService.checkVerifyCode(params.get("verifyCode").toString(), params.get("newPassword").toString());
     }
 
     @PostMapping("user/resetPassword")
-    public ResponseMsg resetPassword(String username, String oldPassword, String newPassword) {
-        return userService.resetPassword(username, oldPassword, newPassword);
+    public ResponseMsg resetPassword(@RequestBody Map<String, Object> params) {
+        return userService.resetPassword(params.get("oldPassword").toString(), params.get("newPassword").toString());
     }
 
     @PostMapping("user/modifyInfo")
@@ -56,12 +55,12 @@ public class UserController {
     }
 
     @PostMapping("user/getInfo")
-    public User getInfo(String username) {
-        return userService.getInfo(username);
+    public ResponseMsg getInfo() {
+        return userService.getInfo();
     }
 
     @RequestMapping("auth")
     public ResponseMsg auth() {
-        return new ResponseMsg(1010, "need to login");
+        return UserStatusMsg.needToLogin;
     }
 }

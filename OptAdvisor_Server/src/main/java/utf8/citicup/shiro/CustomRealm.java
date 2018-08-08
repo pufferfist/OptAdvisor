@@ -37,7 +37,7 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        User user = userService.getInfo(token.getUsername());
+        User user = userService.getUser(token.getUsername());
         if (null == user) {
             throw new UnknownAccountException("Unknown account.");
         } else if (null == user.getPassword() || !user.getPassword().equals(new String((char[]) token.getCredentials()))) {

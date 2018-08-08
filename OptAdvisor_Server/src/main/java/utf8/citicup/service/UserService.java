@@ -6,19 +6,21 @@ import utf8.citicup.domain.entity.User;
 public interface UserService {
     ResponseMsg login(String username, String password);
 
-    ResponseMsg logout(String username);
+    ResponseMsg logout();
 
     ResponseMsg signUp(User user);
 
     ResponseMsg sendVerifyCode(String phoneNumber);
 
-    ResponseMsg checkVerifyCode(String verifyCode);
+    ResponseMsg checkVerifyCode(String verifyCode, String newPassword);
 
-    ResponseMsg resetPassword(String username , String oldUsername, String newPassword);
+    ResponseMsg resetPassword(String oldUsername, String newPassword);
 
     ResponseMsg modifyInfo(User user);
 
-    User getInfo(String username);
+    ResponseMsg getInfo();
+
+    User getUser(String username);
 
     String getRole(String username);
 

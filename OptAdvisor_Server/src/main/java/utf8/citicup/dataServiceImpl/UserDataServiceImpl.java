@@ -26,6 +26,7 @@ public class UserDataServiceImpl implements UserDataService{
     }
 
     @Override
+    @CacheEvict(value = "user", key = "#user.username")
     public boolean updateUser(User user) {
         if(findById(user.getUsername())!=null){
             save(user);
@@ -55,6 +56,7 @@ public class UserDataServiceImpl implements UserDataService{
     }
 
     @Override
+    @CacheEvict(value = "user", key = "#username")
     public boolean updatePassword(String username, String password) {
         if(userRepository.findByUsername(username)==null)return false;
         userRepository.updatePassword(username,password);
