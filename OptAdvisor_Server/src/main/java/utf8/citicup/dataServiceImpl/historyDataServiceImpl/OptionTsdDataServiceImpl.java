@@ -1,6 +1,7 @@
 package utf8.citicup.dataServiceImpl.historyDataServiceImpl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import utf8.citicup.dao.historyDao.OptionTsdRepository;
 import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
@@ -12,6 +13,7 @@ public class OptionTsdDataServiceImpl implements OptionTsdDataService{
     OptionTsdRepository optionTsdRepository;
 
     @Override
+    @Cacheable(value="optionTsdData")
     public OptionTsd findByCodeNameAndLatestDate(String codeName, String latestDate) {
         return optionTsdRepository.findByCodeNameAndLatestDate(codeName,latestDate);
     }
