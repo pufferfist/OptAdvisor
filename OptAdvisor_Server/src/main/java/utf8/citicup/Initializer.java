@@ -57,14 +57,12 @@ public class Initializer implements CommandLineRunner {
 
 
     public void test(){
-/*        for(int i=0;i<10;i++){
+        for(int i=0;i<10;i++){
             System.out.println("The "+(i+1)+" time select");
             System.out.println(timeSeriesDataSerice.findByLastTradeDate("2015/2/2").getVolume());
             System.out.println(optionBasicInfoDataService.findByCodeName("10000012.SH").getAbbr());
             System.out.println(optionTsdDataService.findByCodeNameAndLatestDate("10000012.SH","2015/2/9"));
-        }*//*
-        userDataService.updatePassword("王一博","new Password");
-        userDataService.delete("王瑞华");*/
+        }
     }
 
 }

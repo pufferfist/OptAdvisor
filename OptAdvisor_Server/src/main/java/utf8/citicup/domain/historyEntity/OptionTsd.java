@@ -17,155 +17,93 @@ public class OptionTsd {
 
     private String latestDate;//(市场)最近交易日期
     private String codeName;//证券代码
-    @Column(nullable = false,columnDefinition = "double default -1")
-    private double closePrice;//收盘价
-    @Column(nullable = false,columnDefinition = "double default -1")
-    private double avgPrice;//均价
-    @Column(nullable = false,columnDefinition = "double default -1")
-    private double preClosePrice;//前收盘价
+    @Column(nullable = true)
+    private Double closePrice;//收盘价
+    @Column(nullable = true)
+    private Double avgPrice;//均价
+    @Column(nullable = true)
+    private Double preClosePrice;//前收盘价
     private double preEndPrice;//前结算价
     private double endPrice;//结算价
     @Column(nullable = true)
-    private double theoryPrice;//理论价格
+    private Double theoryPrice;//理论价格
     @Column(nullable = true)
-    private double delta;
+    private Double delta;
     @Column(nullable = true)
-    private double gamma;
+    private Double gamma;
     @Column(nullable = true)
-    private double vega;
+    private Double vega;
     @Column(nullable = true)
-    private double theta;
+    private Double theta;
     @Column(nullable = true)
-    private double rho;
+    private Double rho;
     private double historyVolatility;//历史波动率
     @Column(nullable = true)
-    private double impliedVolatility;//隐含波动率
+    private Double impliedVolatility;//隐含波动率
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public void setId(Long id) { this.id = id; }
 
-    public String getCodeName() {
-        return codeName;
-    }
+    public String getLatestDate() { return latestDate; }
 
-    public void setCodeName(String codeName) {
-        this.codeName = codeName;
-    }
+    public void setLatestDate(String latestDate) { this.latestDate = latestDate; }
 
-    public double getClosePrice() {
-        return closePrice;
-    }
+    public String getCodeName() { return codeName; }
 
-    public void setClosePrice(double closePrice) {
-        this.closePrice = closePrice;
-    }
+    public void setCodeName(String codeName) { this.codeName = codeName; }
 
-    public double getAvgPrice() {
-        return avgPrice;
-    }
+    public Double getClosePrice() { return closePrice; }
 
-    public void setAvgPrice(double avgPrice) {
-        this.avgPrice = avgPrice;
-    }
+    public void setClosePrice(Double closePrice) { this.closePrice = closePrice; }
 
-    public double getPreClosePrice() {
-        return preClosePrice;
-    }
+    public Double getAvgPrice() { return avgPrice; }
 
-    public void setPreClosePrice(double preClosePrice) {
-        this.preClosePrice = preClosePrice;
-    }
+    public void setAvgPrice(Double avgPrice) { this.avgPrice = avgPrice; }
 
-    public double getPreEndPrice() {
-        return preEndPrice;
-    }
+    public Double getPreClosePrice() { return preClosePrice; }
 
-    public void setPreEndPrice(double preEndPrice) {
-        this.preEndPrice = preEndPrice;
-    }
+    public void setPreClosePrice(Double preClosePrice) { this.preClosePrice = preClosePrice; }
 
-    public double getEndPrice() {
-        return endPrice;
-    }
+    public double getPreEndPrice() { return preEndPrice; }
+
+    public void setPreEndPrice(double preEndPrice) { this.preEndPrice = preEndPrice; }
+
+    public double getEndPrice() { return endPrice; }
 
     public void setEndPrice(double endPrice) {
         this.endPrice = endPrice;
     }
 
-    public double getTheoryPrice() {
-        return theoryPrice;
-    }
+    public Double getTheoryPrice() { return theoryPrice; }
 
-    public void setTheoryPrice(double theoryPrice) {
-        this.theoryPrice = theoryPrice;
-    }
+    public void setTheoryPrice(Double theoryPrice) { this.theoryPrice = theoryPrice; }
 
-    public double getDelta() {
-        return delta;
-    }
+    public Double getDelta() { return delta; }
 
-    public void setDelta(double delta) {
-        this.delta = delta;
-    }
+    public void setDelta(Double delta) { this.delta = delta; }
 
-    public double getVega() {
-        return vega;
-    }
+    public Double getGamma() { return gamma; }
 
-    public void setVega(double vega) {
-        this.vega = vega;
-    }
+    public void setGamma(Double gamma) { this.gamma = gamma; }
 
-    public double getRho() {
-        return rho;
-    }
+    public Double getVega() { return vega; }
 
-    public void setRho(double rho) {
-        this.rho = rho;
-    }
+    public void setVega(Double vega) { this.vega = vega; }
 
-    public double getHistoryVolatility() {
-        return historyVolatility;
-    }
+    public Double getTheta() { return theta; }
 
-    public void setHistoryVolatility(double historyVolatility) {
-        this.historyVolatility = historyVolatility;
-    }
+    public void setTheta(Double theta) { this.theta = theta; }
 
-    public double getImpliedVolatility() {
-        return impliedVolatility;
-    }
+    public Double getRho() { return rho; }
 
-    public void setImpliedVolatility(double impliedVolatility) {
-        this.impliedVolatility = impliedVolatility;
-    }
+    public void setRho(Double rho) { this.rho = rho; }
 
-    public String getLatestDate() {
-        return latestDate;
-    }
+    public double getHistoryVolatility() { return historyVolatility; }
 
-    public void setLatestDate(String latestDate) {
-        this.latestDate = latestDate;
-    }
+    public void setHistoryVolatility(double historyVolatility) { this.historyVolatility = historyVolatility; }
 
-    public double getGamma() {
-        return gamma;
-    }
+    public Double getImpliedVolatility() { return impliedVolatility; }
 
-    public void setGamma(double gamma) {
-        this.gamma = gamma;
-    }
-
-    public double getTheta() {
-        return theta;
-    }
-
-    public void setTheta(double theta) {
-        this.theta = theta;
-    }
+    public void setImpliedVolatility(Double impliedVolatility) { this.impliedVolatility = impliedVolatility; }
 }
