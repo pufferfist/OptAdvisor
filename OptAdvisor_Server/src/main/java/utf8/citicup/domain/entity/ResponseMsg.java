@@ -40,13 +40,4 @@ public class ResponseMsg {
     public void setData(Object data) {
         this.data = data;
     }
-
-/*    @Override
-    public String toString() {
-        return "{" +
-                "\"code\": \"" + code + "\"," +
-                "\"msg\": \"" + msg + "\"" +
-                "}";
-    }*/
-
 }

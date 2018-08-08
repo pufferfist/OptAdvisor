@@ -1,11 +1,13 @@
 package utf8.citicup.serviceImpl;
 
+import org.springframework.stereotype.Service;
 import utf8.citicup.domain.entity.*;
 import utf8.citicup.service.RecommendService;
 import utf8.citicup.service.util.GetData;
 
 import java.io.IOException;
 
+@Service
 public class RecommendServiceImpl implements RecommendService {
     /*用户输入数据*/
     private double M0;//托管资金总额

@@ -7,37 +7,28 @@ import org.apache.shiro.util.Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import utf8.citicup.dao.UserRepository;
-import utf8.citicup.dataService.MessageDataService;
-import utf8.citicup.dataService.OptionDataService;
-import utf8.citicup.dataService.PortfolioDataService;
 import utf8.citicup.dataService.UserDataService;
-import utf8.citicup.dataServiceImpl.UserDataServiceImpl;
-import utf8.citicup.domain.common.Type;
-import utf8.citicup.domain.entity.Message;
-import utf8.citicup.domain.entity.Option;
-import utf8.citicup.domain.entity.Portfolio;
-import utf8.citicup.domain.entity.User;
-
-import java.util.List;
+import utf8.citicup.dataService.historyDataService.OptionBasicInfoDataService;
+import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
+import utf8.citicup.dataService.historyDataService.TimeSeriesDataSerice;
 
 @Component
 public class Initializer implements CommandLineRunner {
     @Autowired
-    UserDataService userDataService;
+    private TimeSeriesDataSerice timeSeriesDataSerice;
     @Autowired
-    MessageDataService messageDataService;
+    private OptionTsdDataService optionTsdDataService;
     @Autowired
-    OptionDataService optionDataService;
+    private OptionBasicInfoDataService optionBasicInfoDataService;
     @Autowired
-    PortfolioDataService portfolioDataService;
+    private UserDataService userDataService;
     @Override
     public void run(String... args) throws Exception {
         System.out.println(System.getProperty("user.dir"));
         System.out.println("initializing...");
         System.out.println("===============");
         test();
-        initShiro();
+//        initShiro();
     }
 
     private void initShiro(){
@@ -49,13 +40,14 @@ public class Initializer implements CommandLineRunner {
 
 
     public void test(){
-        User user=new User();
-        user.setUsername("wyb");
-        user.setPassword("wrh");
-        user.setW2(1);
-        user.setW1(3);
-        System.out.println(userDataService.addUser(user));
-        System.out.println(userDataService.updateUser(user));
+/*        for(int i=0;i<10;i++){
+            System.out.println("The "+(i+1)+" time select");
+            System.out.println(timeSeriesDataSerice.findByLastTradeDate("2015/2/2").getVolume());
+            System.out.println(optionBasicInfoDataService.findByCodeName("10000012.SH").getAbbr());
+            System.out.println(optionTsdDataService.findByCodeNameAndLatestDate("10000012.SH","2015/2/9"));
+        }*//*
+        userDataService.updatePassword("王一博","new Password");
+        userDataService.delete("王瑞华");*/
     }
 
 }

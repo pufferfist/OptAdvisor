@@ -1,7 +1,5 @@
 package utf8.citicup.serviceImpl;
 
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
-import com.aliyuncs.exceptions.ClientException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -11,22 +9,28 @@ import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
-import utf8.citicup.service.util.AliyunSms;
+import utf8.citicup.service.statusMsg.UserStatusMsg;
+import utf8.citicup.service.util.PolySms;
 
+import java.io.IOException;
+import java.util.Map;
 
+@Service
 public class UserServiceImpl implements UserService {
 
+    @Autowired
     private UserDataService userDataService;
-    private AliyunSms aliyunSms = new AliyunSms();
     private Logger logger = LoggerFactory.getLogger(UserService.class);
-
 
     @Override
     public ResponseMsg login(String username, String password) {
+        logger.info(username + ": " + password);
         password = new Sha256Hash(password).toString();
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         token.setRememberMe(true);
@@ -34,100 +38,123 @@ public class UserServiceImpl implements UserService {
         try {
             subject.login(token);
         } catch (UnknownAccountException uae) {
-            return new ResponseMsg(1001, "Unknown account");
+            return UserStatusMsg.unknownUsername;
         } catch (IncorrectCredentialsException ice) {
-            return new ResponseMsg(1002, "Incorrect password");
+            return UserStatusMsg.incorrectPassword;
         }
         if (!subject.isAuthenticated()) {
             token.clear();
-            return new ResponseMsg(1003, "Subject not authenticated");
+            return UserStatusMsg.notAuthenticated;
         }
-        return new ResponseMsg(0, "login success.");
+        return UserStatusMsg.loginSuccess;
     }
 
     @Override
-    public ResponseMsg logout(String username) {
+    public ResponseMsg logout() {
         SecurityUtils.getSubject().logout();
-        return new ResponseMsg(0, "logout success.");
+        return UserStatusMsg.logoutSuccess;
     }
 
     @Override
-    public ResponseMsg signUp(String username, String password, String name, String birthday, String telephone,
-                              String email, String gender, String avatar, int w1, int w2) {
-        User user = new User(username, new Sha256Hash(password).toString(), name, birthday, telephone,
-                email, gender, avatar, w1, w2);
-        try {
-            userDataService.save(user);
-            return new ResponseMsg(0, "Sign up success");
-        } catch (Exception ex) {
-            return new ResponseMsg(1004, "Sign up fail");
+    public ResponseMsg signUp(User user) {
+        user.setPassword(new Sha256Hash(user.getPassword()).toString());
+        if (userDataService.addUser(user)) {
+            return UserStatusMsg.signUpSuccess;
+        } else {
+            return UserStatusMsg.usernameExists;
         }
     }
 
     @Override
-    public ResponseMsg sendVerifyCode(String phoneNumber) {
+    public ResponseMsg sendVerifyCode(String username) {
+        User user = getUser(username);
         Session session = SecurityUtils.getSubject().getSession();
         String randomNumber = Integer.toString((int) (Math.random() * 9999));
-        session.setAttribute("verifyCode", randomNumber);
-        try {
-             SendSmsResponse sendSmsResponse = aliyunSms.sendSms(phoneNumber, randomNumber);
-             if (sendSmsResponse.getCode().equals("OK")) {
-                 return new ResponseMsg(0, "Send verify code success");
-             } else {
-                 return new ResponseMsg(1013, sendSmsResponse.getMessage());
-             }
-        } catch (ClientException e) {
-            e.printStackTrace();
-            return new ResponseMsg(1013, "Aliyun sms client error");
+        if (null == user) {
+            return UserStatusMsg.unknownUsername;
+        } else {
+            try {
+                Map<String, Object> result = PolySms.sendSms(user.getTelephone(), randomNumber);
+                if (result.get("error_code").toString().equals("0")) {
+                    session.setAttribute("verifyCode", randomNumber);
+                    session.setAttribute("username", username);
+                    return UserStatusMsg.sendVerifyCodeSuccess;
+                } else {
+                    return UserStatusMsg.sendVerifyCodeFail;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+                return UserStatusMsg.sendVerifyCodeException;
+            }
         }
     }
 
     @Override
-    public ResponseMsg checkVerifyCode(String verifyCode) {
+    public ResponseMsg checkVerifyCode(String verifyCode, String newPassword) {
         Session session = SecurityUtils.getSubject().getSession();
         Object srcVerifyCode = session.getAttribute("verifyCode");
+        Object username = session.getAttribute("username");
         if (null == srcVerifyCode) {
-            return new ResponseMsg(1011, "Never send verify code");
+            return UserStatusMsg.neverSendCode;
         } else if (srcVerifyCode.equals(verifyCode)) {
             session.removeAttribute("verifyCode");
-            return new ResponseMsg(0, "Check verify code success");
+            session.removeAttribute("username");
+            if (userDataService.updatePassword(username.toString(), newPassword))
+                return UserStatusMsg.checkCodeAndSetPasswordSuccess;
+            else
+                return UserStatusMsg.unknownUsername;
         } else {
-            return new ResponseMsg(1012, "Wrong verify code");
+            return UserStatusMsg.checkVerifyCodeFail;
         }
     }
 
-    @Override
-    public ResponseMsg resetPassword(String username, String oldUsername, String newPassword) {
-        return null;
+    public ResponseMsg resetPassword(String oldPassword, String newPassword) {
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        oldPassword = new Sha256Hash(oldPassword).toString();
+        newPassword = new Sha256Hash(newPassword).toString();
+        User user = userDataService.findById(username);
+        if (null == user) {
+            return UserStatusMsg.unknownUsername;
+        } else if (!user.getPassword().equals(oldPassword)) {
+            return UserStatusMsg.incorrectPassword;
+        } else if (userDataService.updatePassword(username, newPassword)) {
+            return UserStatusMsg.updatePasswordSuccess;
+        } else {
+            return UserStatusMsg.unknownUsername;
+        }
     }
 
     @Override
     public ResponseMsg modifyInfo(User user) {
-
-        return null;
+        user.setPassword(new Sha256Hash(user.getPassword()).toString());
+        String currentUsername = SecurityUtils.getSubject().getPrincipal().toString();
+        if (!currentUsername.equals(user.getUsername()))
+            return UserStatusMsg.usernameNotMatchSession;
+        else if (userDataService.updateUser(user))
+            return UserStatusMsg.modifyInfoSuccess;
+        else
+            return UserStatusMsg.unknownUsername;
     }
 
     @Override
-    public User getInfo(String username) {
+    public ResponseMsg getInfo() {
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return new ResponseMsg(0, "Get user info success", getUser(username));
+    }
+
+    // method below is not created for controller
+
+    @Override
+    public User getUser(String username) {
         return userDataService.findById(username);
     }
 
     @Override
     public String getRole(String username) {
-        // TODO TEMP METHOD
-        if (null == getInfo(username))
+        if (null == getUser(username))
             return "anon";
         else
             return "user";
     }
 
-    @Override
-    public String getPassword(String username) {
-        // TODO TEMP METHOD
-        if (username.equals("suun")) {
-            return "8423d35db5786e8d6cb8e66d1a2ef5aef71e9b8751a952c56f0325a3a8b6030b";
-        } else {
-            return null;
-        }
-    }
 }

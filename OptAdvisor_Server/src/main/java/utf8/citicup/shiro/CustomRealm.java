@@ -8,15 +8,17 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
-import utf8.citicup.serviceImpl.UserServiceImpl;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class CustomRealm extends AuthorizingRealm {
 
-    private UserService userService = new UserServiceImpl();
+    @Autowired
+    private UserService userService;
     private Logger logger = LoggerFactory.getLogger(CustomRealm.class);
 
     @Override
@@ -35,12 +37,12 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        String password = userService.getPassword(token.getUsername());
-        if(null == password) {
+        User user = userService.getUser(token.getUsername());
+        if (null == user) {
             throw new UnknownAccountException("Unknown account.");
-        } else if(!password.equals(new String((char[])token.getCredentials()))) {
+        } else if (null == user.getPassword() || !user.getPassword().equals(new String((char[]) token.getCredentials()))) {
             throw new IncorrectCredentialsException("Incorrect password.");
         }
-        return new SimpleAuthenticationInfo(token.getPrincipal(), password, getName());
+        return new SimpleAuthenticationInfo(token.getPrincipal(), user.getPassword(), getName());
     }
 }

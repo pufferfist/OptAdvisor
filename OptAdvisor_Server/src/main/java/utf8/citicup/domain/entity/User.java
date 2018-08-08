@@ -30,22 +30,6 @@ public class User implements Serializable{
 
     private int w2;
 
-    public User() {}
-
-    public User(String username, String password, String name, String birthday, String telephone, String email,
-                String gender, String avatarPath, int w1, int w2) {
-        this.username = username;
-        this.password = password;
-        this.name = name;
-        this.birthday = birthday;
-        this.telephone = telephone;
-        this.email = email;
-        this.gender = gender;
-        this.avatarPath = avatarPath;
-        this.w1 = w1;
-        this.w2 = w2;
-    }
-
     public String getUsername() {
         return username;
     }

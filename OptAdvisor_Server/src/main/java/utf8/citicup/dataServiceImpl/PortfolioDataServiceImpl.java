@@ -30,7 +30,9 @@ public class PortfolioDataServiceImpl implements PortfolioDataService{
     @Override
     @CacheEvict(value = "portfolio")
     public void delete(long id) {
-        portfolioRepository.deleteById(id);
+        if(portfolioRepository.findById(id).isPresent()) {
+            portfolioRepository.deleteById(id);
+        }
     }
 
     @Override

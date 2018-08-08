@@ -19,7 +19,7 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(securityManager); //
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl("/auth");  //若用户无权限,将跳转到该路径
         shiroFilterFactoryBean.setUnauthorizedUrl("/login");
 
@@ -30,14 +30,20 @@ public class ShiroConfig {
         //TODO
 
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
-        logger.info("Shiro Configuration filter initial");
+        logger.info("Shiro Configuration filter initializing");
         return shiroFilterFactoryBean;
+    }
+
+    @Bean
+    public CustomRealm customRealm() {
+        return new CustomRealm();
     }
 
     @Bean
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(new CustomRealm());
+        securityManager.setRealm(customRealm());
+        logger.info("Shiro security managing");
         return securityManager;
     }
 

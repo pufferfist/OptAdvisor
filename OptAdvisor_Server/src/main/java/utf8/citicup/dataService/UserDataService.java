@@ -9,4 +9,5 @@ public interface UserDataService {
     public User save(User user);
     public void delete(String username);
     public User findById(String username);
+    public boolean updatePassword(String username,String password);
 }

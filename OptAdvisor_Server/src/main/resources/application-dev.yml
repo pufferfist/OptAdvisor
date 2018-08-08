@@ -22,13 +22,15 @@ spring:
     database: MYSQL
     show-sql: true
     hibernate:
+      dialect: utf8.citicup.dao.mysqlDialect.MySQL5DialectUTF8
       ddl-auto: update
       naming:
         implicit-strategy: org.hibernate.boot.model.naming.ImplicitNamingStrategyJpaCompliantImpl
 
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5Dialect
+        dialect: utf8.citicup.dao.mysqlDialect.MySQL5DialectUTF8
+
 server:
   port: 8088
   max-http-header-size: 1048576
