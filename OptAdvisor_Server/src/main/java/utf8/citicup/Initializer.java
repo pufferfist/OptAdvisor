@@ -13,6 +13,7 @@ import utf8.citicup.dataService.MessageDataService;
 import utf8.citicup.dataService.OptionDataService;
 import utf8.citicup.dataService.PortfolioDataService;
 import utf8.citicup.dataService.UserDataService;
+import utf8.citicup.dataService.historyDataService.OptionBasicInfoDataService;
 import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
 import utf8.citicup.dataService.historyDataService.TimeSeriesDataSerice;
 import utf8.citicup.dataServiceImpl.UserDataServiceImpl;
@@ -21,6 +22,7 @@ import utf8.citicup.domain.entity.Message;
 import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.Portfolio;
 import utf8.citicup.domain.entity.User;
+import utf8.citicup.domain.historyEntity.OptionBasicInfo;
 import utf8.citicup.domain.historyEntity.OptionTsd;
 
 import javax.annotation.Resource;
@@ -33,13 +35,16 @@ public class Initializer implements CommandLineRunner {
     private TimeSeriesDataSerice timeSeriesDataSerice;
     @Autowired
     private OptionTsdDataService optionTsdDataService;
+    @Autowired
+    private OptionBasicInfoDataService optionBasicInfoDataService;
+    @Autowired
+    private UserDataService userDataService;
     @Override
     public void run(String... args) throws Exception {
         System.out.println(System.getProperty("user.dir"));
         System.out.println("initializing...");
         System.out.println("===============");
-       // test();
-       // initData();
+        test();
         initShiro();
     }
 
@@ -52,36 +57,14 @@ public class Initializer implements CommandLineRunner {
 
 
     public void test(){
-        for(int i=0;i<10;i++){
+/*        for(int i=0;i<10;i++){
             System.out.println("The "+(i+1)+" time select");
             System.out.println(timeSeriesDataSerice.findByLastTradeDate("2015/2/2").getVolume());
-        }
+            System.out.println(optionBasicInfoDataService.findByCodeName("10000012.SH").getAbbr());
+            System.out.println(optionTsdDataService.findByCodeNameAndLatestDate("10000012.SH","2015/2/9"));
+        }*//*
+        userDataService.updatePassword("王一博","new Password");
+        userDataService.delete("王瑞华");*/
     }
-
-/*    private void initData(){
-        String res="";
-        String content="";
-        try {
-            File file= org.springframework.util.ResourceUtils.getFile("classpath:test.txt");
-
-            BufferedReader br=new BufferedReader(new FileReader(file));
-            while((content=br.readLine())!=null){
-              OptionTsd optionTsd=new OptionTsd(content);
-              optionTsdDataService.save(optionTsd);
-              Thread.sleep(2000);
-            }
-            br.close();
-        } catch (FileNotFoundException e) {
-            System.out.println("File path Error");
-            res="FileNotFound";
-            e.printStackTrace();
-        } catch (IOException e) {
-            res="FileNotFound";
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }*/
-
 
 }

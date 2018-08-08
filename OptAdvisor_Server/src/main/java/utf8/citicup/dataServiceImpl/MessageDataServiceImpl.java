@@ -23,7 +23,9 @@ public class MessageDataServiceImpl implements MessageDataService{
     @Override
     @CacheEvict(value = "message")
     public void delete(long id) {
-        messageRepository.deleteById(id);
+        if(messageRepository.findById(id).isPresent()) {
+            messageRepository.deleteById(id);
+        }
     }
 
     @Override

@@ -10,8 +10,9 @@ import utf8.citicup.domain.historyEntity.OptionTsd;
 public class OptionTsdDataServiceImpl implements OptionTsdDataService{
     @Autowired
     OptionTsdRepository optionTsdRepository;
+
     @Override
-    public OptionTsd save(OptionTsd optionTsd) {
-        return optionTsdRepository.save(optionTsd);
+    public OptionTsd findByCodeNameAndLatestDate(String codeName, String latestDate) {
+        return optionTsdRepository.findByCodeNameAndLatestDate(codeName,latestDate);
     }
 }

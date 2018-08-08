@@ -1,6 +1,7 @@
 package utf8.citicup.domain.historyEntity;
 
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.annotations.ColumnDefault;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,11 +17,11 @@ public class OptionTsd {
 
     private String latestDate;//(市场)最近交易日期
     private String codeName;//证券代码
-    @Column(nullable = true)
+    @Column(nullable = false,columnDefinition = "double default -1")
     private double closePrice;//收盘价
-    @Column(nullable = true)
+    @Column(nullable = false,columnDefinition = "double default -1")
     private double avgPrice;//均价
-    @Column(nullable = true)
+    @Column(nullable = false,columnDefinition = "double default -1")
     private double preClosePrice;//前收盘价
     private double preEndPrice;//前结算价
     private double endPrice;//结算价
@@ -39,51 +40,6 @@ public class OptionTsd {
     private double historyVolatility;//历史波动率
     @Column(nullable = true)
     private double impliedVolatility;//隐含波动率
-
-    public OptionTsd() { }
-
-    /**
-     * 读取文本文件，构造对象
-     */
-    public OptionTsd(String value){
-        String[] values=value.split(",");
-        setId(Long.valueOf(values[0]));
-        setLatestDate(values[1]);
-        setCodeName(values[2]);
-        setClosePrice(Double.parseDouble(values[3]));
-        setPreEndPrice(Double.parseDouble(values[6]));
-        setEndPrice(Double.parseDouble(values[7]));
-        setHistoryVolatility(Double.parseDouble(values[15]));
-
-        if(!StringUtils.isEmpty(values[4])) {
-            setAvgPrice(Double.parseDouble(values[4]));
-        }
-
-        if(!StringUtils.isEmpty(values[5])) {
-            setPreClosePrice(Double.parseDouble(values[5]));
-        }
-        if(!StringUtils.isEmpty(values[8])) {
-            setTheoryPrice(Double.parseDouble(values[8]));
-        }
-        if(!StringUtils.isEmpty(values[9])) {
-            setDelta(Double.parseDouble(values[9]));
-        }
-        if(!StringUtils.isEmpty(values[10])) {
-            setGamma(Double.parseDouble(values[10]));
-        }
-        if(!StringUtils.isEmpty(values[11])) {
-            setVega(Double.parseDouble(values[11]));
-        }
-        if(!StringUtils.isEmpty(values[12])) {
-            setTheta(Double.parseDouble(values[12]));
-        }
-        if(!StringUtils.isEmpty(values[13])) {
-            setRho(Double.parseDouble(values[13]));
-        }
-        if(!StringUtils.isEmpty(values[14])) {
-            setImpliedVolatility(Double.parseDouble(values[14]));
-        }
-    }
 
     public Long getId() {
         return id;
