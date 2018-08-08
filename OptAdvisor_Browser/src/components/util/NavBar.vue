@@ -1,5 +1,5 @@
 <template>
-      <Menu mode="horizontal" :theme="theme" active-name="1">
+      <Menu mode="horizontal" :theme="theme" active-name="1" class="nav">
         <div class="fl dib h-100 logo pa1 mr4">
           <router-link to="/home" class="h-100 dib">
             <Logo class="h-100"></Logo>
@@ -9,13 +9,17 @@
           <p>个性化投顾</p>
         </div>
         <div class="fr dib">
-          <MenuItem name="1">
-            <Icon type="ios-paper" />
-            内容管理
-          </MenuItem>
+          <Submenu name="1">
+            <template slot="title">
+              <Icon type="md-analytics" />
+              市场行情
+            </template>
+              <MenuItem name="1-1">50ETF</MenuItem>
+              <MenuItem name="1-2">50ETF期权</MenuItem>
+          </Submenu>
           <MenuItem name="2">
             <Icon type="ios-people" />
-            用户管理
+            构建组合
           </MenuItem>
           <Submenu name="3">
             <template slot="title">

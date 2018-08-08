@@ -5,6 +5,8 @@ import SignUp from '../pages/SignUp'
 import ForgetPassword from '../pages/ForgetPassword'
 import FatherPage from '../pages/FatherPage'
 import Home from '../pages/Home'
+import Display50ETF from '../pages/Display50ETF'
+import Display50ETFOption from '../pages/Display50ETFOption'
 
 
 Vue.use(Router)
@@ -13,7 +15,7 @@ Vue.use(Router)
   / 留作统一nav页面的嵌套路由的父路由
  展示页(主页) /home
  登录 /login
- (行情展示) /display
+ (行情展示) /{50ETF,50ETFOption}
  个人信息 /:id
  资产配置 /allocation
  套期保值 /hedging
@@ -52,6 +54,14 @@ export default new Router({
           path: 'home',
           component: Home
         },
+        {
+          path:'50ETF',
+          component:Display50ETF
+        },
+        {
+          path:'50ETFOption',
+          component:Display50ETFOption
+        }
       ]
     }
   ]
