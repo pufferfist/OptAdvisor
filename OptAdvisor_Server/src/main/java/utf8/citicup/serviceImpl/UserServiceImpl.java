@@ -1,7 +1,5 @@
 package utf8.citicup.serviceImpl;
 
-import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
-import com.aliyuncs.exceptions.ClientException;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -9,23 +7,24 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
-import utf8.citicup.service.util.AliyunSms;
+import utf8.citicup.service.util.PolySms;
+
+import java.io.IOException;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDataService userDataService;
-    private AliyunSms aliyunSms = new AliyunSms();
-    private Logger logger = LoggerFactory.getLogger(UserService.class);
+//    private AliyunSms aliyunSms = new AliyunSms();
+//    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public ResponseMsg login(String username, String password) {
@@ -54,15 +53,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseMsg signUp(String username, String password, String name, String birthday, String telephone,
-                              String email, String gender, String avatar, int w1, int w2) {
-        User user = new User(username, new Sha256Hash(password).toString(), name, birthday, telephone,
-                email, gender, avatar, w1, w2);
-        try {
-            userDataService.save(user);
+    public ResponseMsg signUp(User user) {
+        user.setPassword(new Sha256Hash(user.getPassword()).toString());
+        if (userDataService.addUser(user)) {
             return new ResponseMsg(0, "Sign up success");
-        } catch (Exception ex) {
-            return new ResponseMsg(1004, "Sign up fail");
+        } else {
+            return new ResponseMsg(1004, "Username exists");
         }
     }
 
@@ -71,16 +67,30 @@ public class UserServiceImpl implements UserService {
         Session session = SecurityUtils.getSubject().getSession();
         String randomNumber = Integer.toString((int) (Math.random() * 9999));
         session.setAttribute("verifyCode", randomNumber);
+        /*
         try {
-            SendSmsResponse sendSmsResponse = aliyunSms.sendSms(phoneNumber, randomNumber);
-            if (sendSmsResponse.getCode().equals("OK")) {
+        SendSmsResponse sendSmsResponse = aliyunSms.sendSms(phoneNumber, randomNumber);
+        if (sendSmsResponse.getCode().equals("OK")) {
+        return new ResponseMsg(0, "Send verify code success");
+        } else {
+        return new ResponseMsg(1013, sendSmsResponse.getMessage());
+        }
+        } catch (ClientException e) {
+        e.printStackTrace();
+        return new ResponseMsg(1013, "Aliyun sms client error");
+        }
+        */
+        try {
+            Map<String, Object> result = PolySms.sendSms(phoneNumber, randomNumber);
+            System.out.println(result);
+            if (result.get("error_code").toString().equals("0")) {
                 return new ResponseMsg(0, "Send verify code success");
             } else {
-                return new ResponseMsg(1013, sendSmsResponse.getMessage());
+                return new ResponseMsg(1003, result.get("reason").toString());
             }
-        } catch (ClientException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-            return new ResponseMsg(1013, "Aliyun sms client error");
+            return new ResponseMsg(1004, "Send verify code occurs IOException");
         }
     }
 
@@ -99,14 +109,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseMsg resetPassword(String username, String oldUsername, String newPassword) {
-        return null;
+    public ResponseMsg resetPassword(String username, String oldPassword, String newPassword) {
+        User user = userDataService.findById(username);
+        if (null == user) {
+            return new ResponseMsg(1005, "User does not exists");
+        } else if (!user.getPassword().equals(oldPassword)) {
+            return new ResponseMsg(1002, "Incorrect password");
+        } else if (userDataService.updatePassword(username, newPassword)) {
+            return new ResponseMsg(0, "Update new password success");
+        } else {
+            return new ResponseMsg(1005, "User does not exists");
+        }
     }
 
     @Override
     public ResponseMsg modifyInfo(User user) {
-
-        return null;
+        if (userDataService.updateUser(user))
+            return new ResponseMsg(0, "Modify info success");
+        else
+            return new ResponseMsg(1005, "User does not exists");
     }
 
     @Override

@@ -40,7 +40,7 @@ public class CustomRealm extends AuthorizingRealm {
         User user = userService.getInfo(token.getUsername());
         if (null == user) {
             throw new UnknownAccountException("Unknown account.");
-        } else if (!user.getPassword().equals(new String((char[]) token.getCredentials()))) {
+        } else if (null == user.getPassword() || !user.getPassword().equals(new String((char[]) token.getCredentials()))) {
             throw new IncorrectCredentialsException("Incorrect password.");
         }
         return new SimpleAuthenticationInfo(token.getPrincipal(), user.getPassword(), getName());

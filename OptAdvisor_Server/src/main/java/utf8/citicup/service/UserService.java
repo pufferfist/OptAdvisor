@@ -8,8 +8,7 @@ public interface UserService {
 
     ResponseMsg logout(String username);
 
-    ResponseMsg signUp(String username, String password, String name, String birthday, String telephone,
-                       String email, String gender, String avatar, int w1, int w2);
+    ResponseMsg signUp(User user);
 
     ResponseMsg sendVerifyCode(String phoneNumber);
 

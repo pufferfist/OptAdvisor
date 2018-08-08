@@ -19,7 +19,7 @@ public class ShiroConfig {
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
         ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
-        shiroFilterFactoryBean.setSecurityManager(securityManager); //
+        shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl("/auth");  //若用户无权限,将跳转到该路径
         shiroFilterFactoryBean.setUnauthorizedUrl("/login");
 

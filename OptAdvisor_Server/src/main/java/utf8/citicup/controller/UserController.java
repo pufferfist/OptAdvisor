@@ -1,7 +1,5 @@
 package utf8.citicup.controller;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +16,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    private Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
     @PostMapping("login")
@@ -33,15 +30,12 @@ public class UserController {
 
     @PostMapping("signUp")
     public ResponseMsg signUp(@RequestBody User user) {
-        return userService.signUp(user.getUsername(), user.getPassword(), user.getName(), user.getBirthday(),
-                user.getTelephone(), user.getEmail(), user.getGender(), user.getAvatarPath(), user.getW1(),
-                user.getW2());
+        return userService.signUp(user);
     }
 
     @PostMapping("sendVerifyCode")
     public ResponseMsg sendVerifyCode(@RequestBody Map<String, Object> params) {
-//        String phoneNumber = userService.getInfo(params.get("username").toString()).getTelephone();
-        String phoneNumber = params.get("username").toString();
+        String phoneNumber = userService.getInfo(params.get("username").toString()).getTelephone();
         return userService.sendVerifyCode(phoneNumber);
     }
 
@@ -57,7 +51,7 @@ public class UserController {
     }
 
     @PostMapping("user/modifyInfo")
-    public ResponseMsg modifyInfo(User user) {
+    public ResponseMsg modifyInfo(@RequestBody User user) {
         return userService.modifyInfo(user);
     }
 
