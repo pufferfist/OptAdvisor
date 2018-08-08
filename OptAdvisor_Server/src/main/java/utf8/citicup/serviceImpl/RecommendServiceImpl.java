@@ -33,7 +33,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     public RecommendServiceImpl() throws IOException {
         dataSource = new GetData();
-//        r = dataSource.get_r();
+        r = dataSource.get_r();
         S0 = dataSource.get_S0();
         sigma = dataSource.getSigma();
         dv = 0;

@@ -23,7 +23,6 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDataService userDataService;
-//    private AliyunSms aliyunSms = new AliyunSms();
 //    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
@@ -67,19 +66,6 @@ public class UserServiceImpl implements UserService {
         Session session = SecurityUtils.getSubject().getSession();
         String randomNumber = Integer.toString((int) (Math.random() * 9999));
         session.setAttribute("verifyCode", randomNumber);
-        /*
-        try {
-        SendSmsResponse sendSmsResponse = aliyunSms.sendSms(phoneNumber, randomNumber);
-        if (sendSmsResponse.getCode().equals("OK")) {
-        return new ResponseMsg(0, "Send verify code success");
-        } else {
-        return new ResponseMsg(1013, sendSmsResponse.getMessage());
-        }
-        } catch (ClientException e) {
-        e.printStackTrace();
-        return new ResponseMsg(1013, "Aliyun sms client error");
-        }
-        */
         try {
             Map<String, Object> result = PolySms.sendSms(phoneNumber, randomNumber);
             System.out.println(result);
