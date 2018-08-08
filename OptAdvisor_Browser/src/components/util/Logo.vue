@@ -1,5 +1,5 @@
 <template>
-  <img src="../../../static/graph/logo.png" class="pb3"/>
+  <img src="../../../static/graph/logo.png"/>
 </template>
 
 <script>
