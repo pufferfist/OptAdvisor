@@ -25,7 +25,9 @@ public class OptionDataServiceImpl implements OptionDataService{
     @Override
     @CacheEvict(value = "option")
     public void delete(long id) {
-        optionRepository.deleteById(id);
+        if(optionRepository.findById(id).isPresent()) {
+            optionRepository.deleteById(id);
+        }
     }
 
     @Override
