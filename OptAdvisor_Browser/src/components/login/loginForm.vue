@@ -1,5 +1,5 @@
 <template>
-  <Form ref="formInline" :model="formInline" :rules="ruleInline" >
+  <Form ref="formInline" :model="formInline" :rules="ruleInline" v-on:keyup.enter="handleSubmit('formInline')">
     <FormItem prop="user">
       <i-input type="text" v-model="formInline.user" placeholder="用户名" class="mb1">
       <Icon type="ios-person-outline" slot="prepend"></Icon>
@@ -35,7 +35,7 @@
           password: [
             { required: true, message: '密码不得为空', trigger: 'blur' }
           ]
-        }
+        },
       }
     },
     methods: { //待修改
@@ -46,7 +46,17 @@
           } else {
             this.$Message.error('Fail!');
           }
-        })
+        });
+
+
+        this.$cookie.set("userName",this.formInline.user);
+        // this.axios.get('/sinaTime/StockOptionService.getStockName')
+        //   .then( (response)=> {
+        //     this.test=response
+        // })
+        //   .catch(function (error) {
+        //     console.log(error);
+        //   });
       }
     }
   }

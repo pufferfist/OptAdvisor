@@ -8,8 +8,14 @@ import 'iview/dist/styles/iview.css';
 import './assets/css/main.css';
 import './assets/css/animate.css';
 import './assets/css/tachyons.css';
+import Cookies from 'vue-cookie'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+
 
 Vue.use(iView);
+Vue.use(Cookies);
+Vue.use(VueAxios,axios);
 
 Vue.config.productionTip = false;
 
@@ -19,4 +25,4 @@ new Vue({
   router,
   components: { App },
   template: '<App/>'
-})
+});

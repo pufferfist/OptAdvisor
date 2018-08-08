@@ -11,35 +11,41 @@
         <div class="fr dib">
           <Submenu name="1">
             <template slot="title">
-              <Icon type="md-analytics" />
+              <Icon type="md-analytics" size="16"/>
               市场行情
             </template>
-              <MenuItem name="1-1">50ETF</MenuItem>
-              <MenuItem name="1-2">50ETF期权</MenuItem>
+              <MenuItem name="1-1" to="/50ETF">50ETF</MenuItem>
+              <MenuItem name="1-2" to="/50ETFOption">50ETF期权</MenuItem>
           </Submenu>
-          <MenuItem name="2">
-            <Icon type="ios-people" />
-            构建组合
-          </MenuItem>
-          <Submenu name="3">
+          <Submenu name="2">
             <template slot="title">
-              <Icon type="ios-stats" />
-              统计分析
+              <Icon type="ios-construct" size="16"/>
+              构建组合
             </template>
-            <MenuGroup title="使用">
-              <MenuItem name="3-1">新增和启动</MenuItem>
-              <MenuItem name="3-2">活跃分析</MenuItem>
-              <MenuItem name="3-3">时段分析</MenuItem>
-            </MenuGroup>
-            <MenuGroup title="留存">
-              <MenuItem name="3-4">用户留存</MenuItem>
-              <MenuItem name="3-5">流失用户</MenuItem>
-            </MenuGroup>
+            <MenuItem name="2-1" to="/allocation">资产配置</MenuItem>
+            <MenuItem name="2-2" to="/hedging">套期保值</MenuItem>
+            <MenuItem name="2-3" to="/diy">DIY</MenuItem>
           </Submenu>
-          <MenuItem name="4" class="tr">
-            <Icon type="ios-construct" />
-            综合设置
+          <MenuItem name="3" to="/myPortfolio">
+            <Icon type="md-filing" size="16"/>
+            我的组合
           </MenuItem>
+
+          <div class="dib ph3">
+            <router-link to="/prompt">
+              <Badge :count="1" class="di">
+                <Icon type="md-notifications-outline" size="30"/>
+              </Badge>
+            </router-link>
+          </div>
+
+          <div class="dib ph3">
+            <router-link :to="'/profile/'+userName">
+              <Avatar style="background-color: #87d068" icon="ios-person" />
+            </router-link>
+          </div>
+
+
         </div>
       </Menu>
 </template>
@@ -51,11 +57,15 @@
       components: {Logo},
       data () {
         return {
-          theme: 'light'
+          theme: 'light',
+          userName: 'noLogin'
         }
+      },
+      created:function () {
+        this.userName=this.$cookie.get("userName")
       }
-
     }
+
 </script>
 
 <style scoped>
