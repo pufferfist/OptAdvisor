@@ -1,13 +1,20 @@
 <template>
-  <div>暂时啥都没有</div>
+  <div id="register">
+    <p>XXXXXXxxx</p>
+  </div>
 </template>
 
 <script>
+  import Logo from "../components/util/Logo";
     export default {
-        name: "SignUp"
+        name: "SignUp",
+      comments:{Logo}
     }
 </script>
 
 <style scoped>
+  #register{
+    background-image: url("../../static/graph/back1.jpg");
 
+  }
 </style>
