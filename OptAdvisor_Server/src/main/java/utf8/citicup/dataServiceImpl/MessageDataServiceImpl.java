@@ -38,13 +38,21 @@ public class MessageDataServiceImpl implements MessageDataService{
     }
 
     @Override
-    public List<Message> findByUserName(String username) {
-        return messageRepository.findByUserName(username);
+    public List<Message> findByUsername(String username) {
+        return messageRepository.findByUsername(username);
     }
 
     @Override
-    public List<Message> findByUserNameAnReadStatus(String username, boolean readStatus) {
-        return messageRepository.findByUserNameAndReadStatus(username,readStatus);
+    public List<Message> findByUsernameAnReadStatus(String username, boolean readStatus) {
+        return messageRepository.findByUsernameAndReadStatus(username,readStatus);
+    }
+
+    @Override
+    @CacheEvict(value="message")
+    public boolean updateReadStatus(Long id, String username, boolean readStatus) {
+        if(messageRepository.findByIdAndUsername(id,username)==null)return false;
+        messageRepository.updateReadStatus(id,username,readStatus);
+        return true;
     }
 
 
