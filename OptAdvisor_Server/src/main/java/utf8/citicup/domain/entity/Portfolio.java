@@ -9,11 +9,19 @@ import javax.persistence.Transient;
 
 @Entity
 public class Portfolio {
+
+    public Portfolio(String userName, Option[] options, Enum type, boolean trackingStatus){
+        this.userName = userName;
+        this.options = options;
+        this.type = type;
+        this.trackingStatus = trackingStatus;
+    }
+
     @Id
     @GeneratedValue
     private Long id;
 
-    private String username;
+    private String userName;
 
     @Transient
     private Option[] options;
@@ -22,12 +30,12 @@ public class Portfolio {
 
     private boolean trackingStatus;
 
-    public String getUsername() {
-        return username;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public Option[] getOptions() {

@@ -1,6 +1,6 @@
 1. http://stock.finance.sina.com.cn/futures/api/openapi.php/StockOptionService.getStockName 
 
-获得期权都有什么月份的合约 
+获得期权都有什么月份的合约   **{T(后四个日期)}**
 
 ```
 返回值：{"result":{"status":{"code":0},"data":{"cateList":["50ETF","50ETF"],"contractMonth":["2018-08","2018-08","2018-09","2018-12","2019-03"],"stockId":"510050","cateId":"510050C1809"}}}
@@ -10,7 +10,7 @@ contractMonth是今天买的期权的到期时间，为当月、下月及随后�
 
 
 
-2. http://stock.finance.sina.com.cn/futures/api/openapi.php/StockOptionService.getRemainderDay?date=201808
+2. http://stock.finance.sina.com.cn/futures/api/openapi.php/StockOptionService.getRemainderDay?date=201808  ·**{到期日，剩余天数}**
 
 获得合约的到期日和剩余天数 ,参数为上个接口的时间
 
@@ -32,19 +32,29 @@ contractMonth是今天买的期权的到期时间，为当月、下月及随后�
 
 4. http://hq.sinajs.cn/list=s_sh510050,sh510050
 
-   这两个是50ETF相关信息
+   这两个是50ETF相关信息**{最新价}**
 
    ```
    参数为s_sh510050,返回值var hq_str_s_sh510050="50ETF,2.455,-0.002,-0.08,6107523,150570";
-   
+
    ```
 
 
    第一项是名字,第二项是当前价格,其他暂时未知
 
+
+
+
+
+​	http://hq.sinajs.cn/list=f_510050,**{S0}**
+
+
+
+
+
 5. http://hq.sinajs.cn/list=CON_OP_10001407
 
-   OP代表行情
+   OP代表行情**{Option}**
 
    参数为合约代码，及接口3返回的结果
 
@@ -54,7 +64,6 @@ contractMonth是今天买的期权的到期时间，为当月、下月及随后�
 
    各个字段的含义：var hq_str_CON_OP_代码=“买量(0)，买价，最新价，卖价，卖量，持仓量，涨幅，行权价，昨收价，开盘价，涨停价，跌停价(11), 申卖 价五，申卖量五，申卖价四，申卖量四，申卖价三，申卖量三，申卖价二，申卖量二，申卖价一，申卖量一，申买价一，申买量一 ，申买价二，申买量二，申买价三，申买量三，申买价四，申买量四，申买价五，申买量五，行情时间，主力合约标识，状态码， 标的证券类型，标的股票，期权合约简称，振幅(38)，最高价，最低价，成交量，成交额
 
-   
 
 6. http://hq.sinajs.cn/list=CON_SO_10001407
 
@@ -68,7 +77,6 @@ contractMonth是今天买的期权的到期时间，为当月、下月及随后�
 
    各个字段的含义：var hq_str_CON_SO_代码=“期权合约简称,,,,成交量,Delta,Gamma,Theta,Vega,隐含波动率,最高价,最低价,交易代码,行权价,最新价,理论价值”
 
-   
 
 7. http://hq.sinajs.cn/list=CON_ZL_10001392
 
@@ -90,7 +98,7 @@ contractMonth是今天买的期权的到期时间，为当月、下月及随后�
    //新浪财经源码
    var up_down=change;
    var price_mark=(A_price-arr[13]).toFixed(4);//A_price为50ETF价格,见接口4;arr为合约分析数组,arr[13]即行权价,见接口6
-   
+
    switch(up_down)
    {
      case 'up':
