@@ -23,6 +23,8 @@ public class RecommendServiceImpl implements RecommendService {
     private double p2;
     private double sigma1;
     private double sigma2;
+    private double w1;
+    private double w2;
 
     /*网络获取数据*/
     private GetData dataSource;
@@ -56,14 +58,17 @@ public class RecommendServiceImpl implements RecommendService {
 
     /*新用到的结构类型*/
     class structD{
-        public Option[] optionCombination;
-        public double p0;
-        public double pb;
-        public double z_delta;
-        public double z_gamma;
-        public double z_vega;
-        public double z_theta;
-        public double z_rho;
+        Option[] optionCombination;
+        double p0;
+        double pb;
+        double z_delta;
+        double z_gamma;
+        double z_vega;
+        double z_theta;
+        double z_rho;
+        int num;//购买的份数
+        double E;//
+        double beta;//组合风险值
     }
 
 
@@ -74,6 +79,7 @@ public class RecommendServiceImpl implements RecommendService {
     /*从网络获取所需的数据*/
     public void upDataFromNet() throws IOException {
         r = dataSource.get_r();
+        t = Integer.parseInt(dataSource.get_expireAndremainder(T)[0]);
         S0 = dataSource.get_S0();//实时标的价格
         sigma = dataSource.getSigma();//实时波动率
         lastestOptionPrice = dataSource.get_LatestPrice();
@@ -83,6 +89,9 @@ public class RecommendServiceImpl implements RecommendService {
 //        String[] cOptionsName = Optionss[0];
 //        String[] pOptionsName = Optionss[1];
 //        System.out.println(d[0].p0);
+//        structD D = new structD();
+//        D.p0 = 10;
+//        System.out.println(D.p0);
     }
 
     /*标准正态分布函数*/
@@ -98,9 +107,8 @@ public class RecommendServiceImpl implements RecommendService {
     private double p(double num) {return 0;}
 
     private double Options(int cp, double S0, double k, int t, double r, double sigma, double dv) {
-        this.t = t;
-        this.d_1 = Math.log(S0 / k) + (r - dv + 0.5 * Math.pow(sigma, 2) * t) / sigma / Math.pow(t, 0.5);
-        this.d_2 = d_1 - (sigma * (Math.pow(t, 0.5)));
+        d_1 = Math.log(S0 / k) + (r - dv + 0.5 * Math.pow(sigma, 2) * t) / sigma / Math.pow(t, 0.5);
+        d_2 = d_1 - (sigma * (Math.pow(t, 0.5)));
         return cp * S0 * Math.exp(-1 * dv * t) * normcdf(cp * d_1) -
                 cp * k * Math.exp(-1 * r * t) * normcdf(cp * d_2);
     }
@@ -118,7 +126,6 @@ public class RecommendServiceImpl implements RecommendService {
     }
 */
     private double[] Interest(int cp, double[] S, double k, int t, double r, double sigma, double dv, double price) {
-        this.t = t;
         int n = S.length;
         double[] C = new double[n];
         if (t != 0) {
@@ -139,7 +146,6 @@ public class RecommendServiceImpl implements RecommendService {
         return C;
     }
 
-    /*此算法有问题*/
     private double Expected(double[] C_new, double[] S, double p1, double p2, double sigma1, double sigma2){
         int n = S.length;
         double[] X = new double[n];
@@ -160,6 +166,10 @@ public class RecommendServiceImpl implements RecommendService {
         return E;
     }
 
+    private double goalValue(int num, double E, double M, double beta){
+//        return w1 * ((num * E) / M - Math.min())
+    }
+
     @Override
     public ResponseMsg recommendPortfolio(double M0, double k, double a, String T, char combination, double p1, double p2, double sigma1, double sigma2) {
         //参数都是由用户输入的
@@ -172,6 +182,8 @@ public class RecommendServiceImpl implements RecommendService {
         this.p2 = p2;
         this.sigma1 = sigma1;
         this.sigma2 = sigma2;
+        this.w1 = w1 / 100.0;
+        this.w2 = w2 / 100.0;
 
         /*实时数据的获取*/
         try {
@@ -247,6 +259,20 @@ public class RecommendServiceImpl implements RecommendService {
                     D.add(d);
                 }
             }
+        }
+
+        /*第二步*/
+        for (structD z : D) {
+            z.num = (int) (M / z.p0);
+            double[] C_j = Interest(1, S, z.optionCombination[1].getK(), t, r, sigma, dv, z.optionCombination[1].getPrice1());
+            double[] C_i = Interest(1, S, z.optionCombination[0].getK(), t, r, sigma, dv, z.optionCombination[0].getPrice2());
+            double[] C_new = new double[C_i.length];
+            for(int i = 0; i < C_i.length; i++){
+                C_new[i] = 2 *  C_j[i] - C_i[i];
+            }
+            z.E = Expected(C_new, S, p1, p2, sigma1, sigma2);
+//            z.beta = 2*beta（j_delta,j_price1)-beta(i_delta,i_price2)
+
         }
         return new ResponseMsg(0, "combination A return", new RecommendOption1());
     }

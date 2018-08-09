@@ -11,6 +11,9 @@ import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.dataService.historyDataService.OptionBasicInfoDataService;
 import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
 import utf8.citicup.dataService.historyDataService.TimeSeriesDataSerice;
+import utf8.citicup.serviceImpl.RecommendServiceImpl;
+
+import java.io.IOException;
 
 @Component
 public class Initializer implements CommandLineRunner {
@@ -48,6 +51,14 @@ public class Initializer implements CommandLineRunner {
         }*//*
         userDataService.updatePassword("王一博","new Password");
         userDataService.delete("王瑞华");*/
+
+        RecommendServiceImpl test = new RecommendServiceImpl();
+        try {
+            test.upDataFromNet();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
