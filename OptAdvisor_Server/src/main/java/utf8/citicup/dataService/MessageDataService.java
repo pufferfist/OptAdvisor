@@ -13,7 +13,9 @@ public interface MessageDataService {
 
     public Message findById(long id);
     //额外操作
-    public List<Message> findByUserName(String username);
+    public List<Message> findByUsername(String username);
 
-    public List<Message> findByUserNameAnReadStatus(String username,boolean readStatus);
+    public List<Message> findByUsernameAnReadStatus(String username,boolean readStatus);
+
+    public boolean updateReadStatus(Long id,String username,boolean readStatus);
 }
