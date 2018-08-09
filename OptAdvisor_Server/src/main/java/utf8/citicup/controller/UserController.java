@@ -1,5 +1,9 @@
 package utf8.citicup.controller;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -8,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
+import utf8.citicup.service.statusMsg.UserStatusMsg;
 
 import java.util.Map;
 
@@ -17,6 +22,8 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
+
 
     @PostMapping("login")
     public ResponseMsg login(@RequestBody Map<String, Object> params) {
@@ -24,8 +31,8 @@ public class UserController {
     }
 
     @PostMapping("user/logout")
-    public ResponseMsg logout(@RequestBody Map<String, Object> params) {
-        return userService.logout(params.get("username").toString());
+    public ResponseMsg logout() {
+        return userService.logout();
     }
 
     @PostMapping("signUp")
@@ -35,33 +42,49 @@ public class UserController {
 
     @PostMapping("sendVerifyCode")
     public ResponseMsg sendVerifyCode(@RequestBody Map<String, Object> params) {
-        String phoneNumber = userService.getInfo(params.get("username").toString()).getTelephone();
-        return userService.sendVerifyCode(phoneNumber);
+        String username = params.get("username").toString();
+        String verifyCode = Integer.toString((int) (Math.random() * 9999));
+        ResponseMsg ret = userService.sendVerifyCode(username, verifyCode);
+        if (UserStatusMsg.sendVerifyCodeSuccess == ret){
+            Session session = SecurityUtils.getSubject().getSession();
+            session.setAttribute("username", username);
+            session.setAttribute("verifyCode", verifyCode);
+        }
+        return ret;
     }
 
     @PostMapping("checkVerifyCode")
     public ResponseMsg checkVerifyCode(@RequestBody Map<String, Object> params) {
-        String verifyCode = params.get("verifyCode").toString();
-        return userService.checkVerifyCode(verifyCode);
+        Session session = SecurityUtils.getSubject().getSession();
+        ResponseMsg ret = userService.checkVerifyCode(session.getAttribute("username"), session.getAttribute("verifyCode"),
+                params.get("verifyCode").toString(), params.get("newPassword").toString());
+        if (UserStatusMsg.checkCodeAndSetPasswordSuccess == ret || UserStatusMsg.unknownUsername == ret) {
+            session.removeAttribute("username");
+            session.removeAttribute("verifyCode");
+        }
+        return ret;
     }
 
     @PostMapping("user/resetPassword")
-    public ResponseMsg resetPassword(String username, String oldPassword, String newPassword) {
-        return userService.resetPassword(username, oldPassword, newPassword);
+    public ResponseMsg resetPassword(@RequestBody Map<String, Object> params) {
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return userService.resetPassword(username, params.get("oldPassword").toString(), params.get("newPassword").toString());
     }
 
     @PostMapping("user/modifyInfo")
     public ResponseMsg modifyInfo(@RequestBody User user) {
-        return userService.modifyInfo(user);
+        String currentUsername = SecurityUtils.getSubject().getPrincipal().toString();
+        return userService.modifyInfo(currentUsername, user);
     }
 
     @PostMapping("user/getInfo")
-    public User getInfo(String username) {
+    public ResponseMsg getInfo() {
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
         return userService.getInfo(username);
     }
 
     @RequestMapping("auth")
     public ResponseMsg auth() {
-        return new ResponseMsg(1010, "need to login");
+        return UserStatusMsg.needToLogin;
     }
 }

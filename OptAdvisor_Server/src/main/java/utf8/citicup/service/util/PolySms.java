@@ -28,8 +28,11 @@ public class PolySms {
         params.put("tpl_value", "#code#=" + verifyCode + "&#m#=5");//变量名和变量值对。如果你的变量名或者变量值中带有#&=中的任意一个特殊符号，请先分别进行urlencode编码后再传递，<a href="http://www.juhe.cn/news/index/id/50" target="_blank">详细说明></a>
         params.put("key", APP_KEY);//应用App (应用详细页查询)
         params.put("dtype", "");//返回数据的格式,xml或json，默认json
-
         result = net(url, params);
+
+//        Gson gson = new Gson();
+//        Map<String, Object> map = new HashMap<>();
+//        return (Map<String, Object>) gson.fromJson(result, map.getClass());
         return new JSONObject(result).toMap();
     }
 

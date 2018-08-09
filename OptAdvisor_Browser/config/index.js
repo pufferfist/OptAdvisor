@@ -10,7 +10,22 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/sinaOption': {
+        target: 'http://hq.sinajs.cn', //设置调用接口域名和端口号别忘了加http
+        changeOrigin: true,
+        pathRewrite: {
+          '^/sinaOption': ''
+        }
+      },
+      '/sinaTime': {
+        target: 'http://stock.finance.sina.com.cn/futures/api/openapi.php', //设置调用接口域名和端口号别忘了加http
+        changeOrigin: true,
+        pathRewrite: {
+          '^/sinaTime': ''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
@@ -20,7 +35,7 @@ module.exports = {
     notifyOnErrors: true,
     poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
 
-    
+
     /**
      * Source Maps
      */

@@ -1,7 +1,5 @@
 package utf8.citicup.domain.entity;
 
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -9,6 +7,14 @@ import javax.persistence.Transient;
 
 @Entity
 public class Portfolio {
+
+    public Portfolio(String username, Option[] options, Enum type, boolean trackingStatus){
+        this.username = username;
+        this.options = options;
+        this.type = type;
+        this.trackingStatus = trackingStatus;
+    }
+
     @Id
     @GeneratedValue
     private Long id;

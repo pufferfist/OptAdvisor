@@ -7,6 +7,7 @@ import org.apache.shiro.util.Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import utf8.citicup.dataService.MessageDataService;
 import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.dataService.historyDataService.OptionBasicInfoDataService;
 import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
@@ -25,6 +26,8 @@ public class Initializer implements CommandLineRunner {
     private OptionBasicInfoDataService optionBasicInfoDataService;
     @Autowired
     private UserDataService userDataService;
+    @Autowired
+    private MessageDataService messageDataService;
     @Override
     public void run(String... args) throws Exception {
         System.out.println(System.getProperty("user.dir"));

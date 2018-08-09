@@ -5,14 +5,16 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
+import utf8.citicup.service.statusMsg.UserStatusMsg;
 import utf8.citicup.service.util.PolySms;
 
 import java.io.IOException;
@@ -23,10 +25,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDataService userDataService;
-//    private Logger logger = LoggerFactory.getLogger(UserService.class);
+    private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
     public ResponseMsg login(String username, String password) {
+        logger.info(username + ": " + password);
         password = new Sha256Hash(password).toString();
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
         token.setRememberMe(true);
@@ -34,96 +37,123 @@ public class UserServiceImpl implements UserService {
         try {
             subject.login(token);
         } catch (UnknownAccountException uae) {
-            return new ResponseMsg(1001, "Unknown account");
+            return UserStatusMsg.unknownUsername;
         } catch (IncorrectCredentialsException ice) {
-            return new ResponseMsg(1002, "Incorrect password");
+            return UserStatusMsg.incorrectPassword;
         }
         if (!subject.isAuthenticated()) {
             token.clear();
-            return new ResponseMsg(1003, "Subject not authenticated");
+            return UserStatusMsg.notAuthenticated;
         }
-        return new ResponseMsg(0, "login success.");
+        return UserStatusMsg.loginSuccess;
     }
 
     @Override
-    public ResponseMsg logout(String username) {
+    public ResponseMsg logout() {
         SecurityUtils.getSubject().logout();
-        return new ResponseMsg(0, "logout success.");
+        return UserStatusMsg.logoutSuccess;
     }
 
     @Override
     public ResponseMsg signUp(User user) {
         user.setPassword(new Sha256Hash(user.getPassword()).toString());
         if (userDataService.addUser(user)) {
-            return new ResponseMsg(0, "Sign up success");
+            return UserStatusMsg.signUpSuccess;
         } else {
-            return new ResponseMsg(1004, "Username exists");
+            return UserStatusMsg.usernameExists;
         }
     }
 
     @Override
-    public ResponseMsg sendVerifyCode(String phoneNumber) {
-        Session session = SecurityUtils.getSubject().getSession();
-        String randomNumber = Integer.toString((int) (Math.random() * 9999));
-        session.setAttribute("verifyCode", randomNumber);
-        try {
-            Map<String, Object> result = PolySms.sendSms(phoneNumber, randomNumber);
-            System.out.println(result);
-            if (result.get("error_code").toString().equals("0")) {
-                return new ResponseMsg(0, "Send verify code success");
-            } else {
-                return new ResponseMsg(1003, result.get("reason").toString());
+    public ResponseMsg sendVerifyCode(String username, String verifyCode) {
+        User user = getUser(username);
+        if (null == user) {
+            return UserStatusMsg.unknownUsername;
+        } else {
+            try {
+                Map<String, Object> map = PolySms.sendSms(user.getTelephone(), verifyCode);
+                if (map.get("error_code").toString().equals("0"))
+                    return UserStatusMsg.sendVerifyCodeSuccess;
+                else
+                    return UserStatusMsg.sendVerifyCodeFail;
+            } catch (IOException e) {
+                logger.warn("Send verify code occurs IOException");
+                return UserStatusMsg.sendVerifyCodeException;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new ResponseMsg(1004, "Send verify code occurs IOException");
         }
     }
 
     @Override
-    public ResponseMsg checkVerifyCode(String verifyCode) {
-        Session session = SecurityUtils.getSubject().getSession();
-        Object srcVerifyCode = session.getAttribute("verifyCode");
+    public ResponseMsg checkVerifyCode(Object username, Object srcVerifyCode, String verifyCode, String newPassword) {
+        newPassword = new Sha256Hash(newPassword).toString();
         if (null == srcVerifyCode) {
-            return new ResponseMsg(1011, "Never send verify code");
+            return null;
         } else if (srcVerifyCode.equals(verifyCode)) {
-            session.removeAttribute("verifyCode");
-            return new ResponseMsg(0, "Check verify code success");
+            if (userDataService.updatePassword(username.toString(), newPassword))
+                return UserStatusMsg.checkCodeAndSetPasswordSuccess;
+            else
+                return UserStatusMsg.unknownUsername;
         } else {
-            return new ResponseMsg(1012, "Wrong verify code");
+            return UserStatusMsg.checkVerifyCodeFail;
         }
+//        Session session = SecurityUtils.getSubject().getSession();
+//        Object srcVerifyCode = session.getAttribute("verifyCode");
+//        Object username = session.getAttribute("username");
+//        if (null == srcVerifyCode) {
+//            return UserStatusMsg.neverSendCode;
+//        } else if (srcVerifyCode.equals(verifyCode)) {
+//            session.removeAttribute("verifyCode");
+//            session.removeAttribute("username");
+//            if (userDataService.updatePassword(username.toString(), newPassword))
+//                return UserStatusMsg.checkCodeAndSetPasswordSuccess;
+//            else
+//                return UserStatusMsg.unknownUsername;
+//        } else {
+//            return UserStatusMsg.checkVerifyCodeFail;
+//        }
     }
 
-    @Override
     public ResponseMsg resetPassword(String username, String oldPassword, String newPassword) {
+        oldPassword = new Sha256Hash(oldPassword).toString();
+        newPassword = new Sha256Hash(newPassword).toString();
         User user = userDataService.findById(username);
         if (null == user) {
-            return new ResponseMsg(1005, "User does not exists");
+            return UserStatusMsg.unknownUsername;
         } else if (!user.getPassword().equals(oldPassword)) {
-            return new ResponseMsg(1002, "Incorrect password");
+            return UserStatusMsg.incorrectPassword;
         } else if (userDataService.updatePassword(username, newPassword)) {
-            return new ResponseMsg(0, "Update new password success");
+            return UserStatusMsg.updatePasswordSuccess;
         } else {
-            return new ResponseMsg(1005, "User does not exists");
+            return UserStatusMsg.unknownUsername;
         }
     }
 
     @Override
-    public ResponseMsg modifyInfo(User user) {
-        if (userDataService.updateUser(user))
-            return new ResponseMsg(0, "Modify info success");
+    public ResponseMsg modifyInfo(String currentUsername, User user) {
+        user.setPassword(new Sha256Hash(user.getPassword()).toString());
+        if (!currentUsername.equals(user.getUsername()))
+            return UserStatusMsg.usernameNotMatchSession;
+        else if (userDataService.updateUser(user))
+            return UserStatusMsg.modifyInfoSuccess;
         else
-            return new ResponseMsg(1005, "User does not exists");
+            return UserStatusMsg.unknownUsername;
     }
 
     @Override
-    public User getInfo(String username) {
+    public ResponseMsg getInfo(String username) {
+        return new ResponseMsg(0, "Get user info success", getUser(username));
+    }
+
+    // method below is not created for controller
+
+    @Override
+    public User getUser(String username) {
         return userDataService.findById(username);
     }
 
     @Override
     public String getRole(String username) {
-        if (null == getInfo(username))
+        if (null == getUser(username))
             return "anon";
         else
             return "user";
