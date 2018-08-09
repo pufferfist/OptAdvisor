@@ -1,5 +1,9 @@
 package utf8.citicup.controller;
 
+import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.session.Session;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +21,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    private Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
     @PostMapping("login")
@@ -36,27 +42,45 @@ public class UserController {
 
     @PostMapping("sendVerifyCode")
     public ResponseMsg sendVerifyCode(@RequestBody Map<String, Object> params) {
-        return userService.sendVerifyCode(params.get("username").toString());
+        String username = params.get("username").toString();
+        String verifyCode = Integer.toString((int) (Math.random() * 9999));
+        ResponseMsg ret = userService.sendVerifyCode(username, verifyCode);
+        if (UserStatusMsg.sendVerifyCodeSuccess == ret){
+            Session session = SecurityUtils.getSubject().getSession();
+            session.setAttribute("username", username);
+            session.setAttribute("verifyCode", verifyCode);
+        }
+        return ret;
     }
 
     @PostMapping("checkVerifyCode")
     public ResponseMsg checkVerifyCode(@RequestBody Map<String, Object> params) {
-        return userService.checkVerifyCode(params.get("verifyCode").toString(), params.get("newPassword").toString());
+        Session session = SecurityUtils.getSubject().getSession();
+        ResponseMsg ret = userService.checkVerifyCode(session.getAttribute("username"), session.getAttribute("verifyCode"),
+                params.get("verifyCode").toString(), params.get("newPassword").toString());
+        if (UserStatusMsg.checkCodeAndSetPasswordSuccess == ret || UserStatusMsg.unknownUsername == ret) {
+            session.removeAttribute("username");
+            session.removeAttribute("verifyCode");
+        }
+        return ret;
     }
 
     @PostMapping("user/resetPassword")
     public ResponseMsg resetPassword(@RequestBody Map<String, Object> params) {
-        return userService.resetPassword(params.get("oldPassword").toString(), params.get("newPassword").toString());
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return userService.resetPassword(username, params.get("oldPassword").toString(), params.get("newPassword").toString());
     }
 
     @PostMapping("user/modifyInfo")
     public ResponseMsg modifyInfo(@RequestBody User user) {
-        return userService.modifyInfo(user);
+        String currentUsername = SecurityUtils.getSubject().getPrincipal().toString();
+        return userService.modifyInfo(currentUsername, user);
     }
 
     @PostMapping("user/getInfo")
     public ResponseMsg getInfo() {
-        return userService.getInfo();
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return userService.getInfo(username);
     }
 
     @RequestMapping("auth")

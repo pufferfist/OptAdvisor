@@ -5,7 +5,6 @@ import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,39 +65,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseMsg sendVerifyCode(String username) {
+    public ResponseMsg sendVerifyCode(String username, String verifyCode) {
         User user = getUser(username);
-        Session session = SecurityUtils.getSubject().getSession();
-        String randomNumber = Integer.toString((int) (Math.random() * 9999));
         if (null == user) {
             return UserStatusMsg.unknownUsername;
         } else {
             try {
-                Map<String, Object> result = PolySms.sendSms(user.getTelephone(), randomNumber);
-                if (result.get("error_code").toString().equals("0")) {
-                    session.setAttribute("verifyCode", randomNumber);
-                    session.setAttribute("username", username);
+                Map<String, Object> map = PolySms.sendSms(user.getTelephone(), verifyCode);
+                if (map.get("error_code").toString().equals("0"))
                     return UserStatusMsg.sendVerifyCodeSuccess;
-                } else {
+                else
                     return UserStatusMsg.sendVerifyCodeFail;
-                }
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.warn("Send verify code occurs IOException");
                 return UserStatusMsg.sendVerifyCodeException;
             }
         }
     }
 
     @Override
-    public ResponseMsg checkVerifyCode(String verifyCode, String newPassword) {
-        Session session = SecurityUtils.getSubject().getSession();
-        Object srcVerifyCode = session.getAttribute("verifyCode");
-        Object username = session.getAttribute("username");
+    public ResponseMsg checkVerifyCode(Object username, Object srcVerifyCode, String verifyCode, String newPassword) {
+        newPassword = new Sha256Hash(newPassword).toString();
         if (null == srcVerifyCode) {
-            return UserStatusMsg.neverSendCode;
+            return null;
         } else if (srcVerifyCode.equals(verifyCode)) {
-            session.removeAttribute("verifyCode");
-            session.removeAttribute("username");
             if (userDataService.updatePassword(username.toString(), newPassword))
                 return UserStatusMsg.checkCodeAndSetPasswordSuccess;
             else
@@ -106,10 +96,24 @@ public class UserServiceImpl implements UserService {
         } else {
             return UserStatusMsg.checkVerifyCodeFail;
         }
+//        Session session = SecurityUtils.getSubject().getSession();
+//        Object srcVerifyCode = session.getAttribute("verifyCode");
+//        Object username = session.getAttribute("username");
+//        if (null == srcVerifyCode) {
+//            return UserStatusMsg.neverSendCode;
+//        } else if (srcVerifyCode.equals(verifyCode)) {
+//            session.removeAttribute("verifyCode");
+//            session.removeAttribute("username");
+//            if (userDataService.updatePassword(username.toString(), newPassword))
+//                return UserStatusMsg.checkCodeAndSetPasswordSuccess;
+//            else
+//                return UserStatusMsg.unknownUsername;
+//        } else {
+//            return UserStatusMsg.checkVerifyCodeFail;
+//        }
     }
 
-    public ResponseMsg resetPassword(String oldPassword, String newPassword) {
-        String username = SecurityUtils.getSubject().getPrincipal().toString();
+    public ResponseMsg resetPassword(String username, String oldPassword, String newPassword) {
         oldPassword = new Sha256Hash(oldPassword).toString();
         newPassword = new Sha256Hash(newPassword).toString();
         User user = userDataService.findById(username);
@@ -125,9 +129,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseMsg modifyInfo(User user) {
+    public ResponseMsg modifyInfo(String currentUsername, User user) {
         user.setPassword(new Sha256Hash(user.getPassword()).toString());
-        String currentUsername = SecurityUtils.getSubject().getPrincipal().toString();
         if (!currentUsername.equals(user.getUsername()))
             return UserStatusMsg.usernameNotMatchSession;
         else if (userDataService.updateUser(user))
@@ -137,8 +140,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseMsg getInfo() {
-        String username = SecurityUtils.getSubject().getPrincipal().toString();
+    public ResponseMsg getInfo(String username) {
         return new ResponseMsg(0, "Get user info success", getUser(username));
     }
 

@@ -1,15 +1,17 @@
 package utf8.citicup.serviceImpl;
 
 
+import org.springframework.stereotype.Service;
 import utf8.citicup.domain.common.Type;
 import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.Portfolio;
 import utf8.citicup.service.PortfolioService;
 
+@Service
 public class PortfolioServiceImpl implements PortfolioService {
 
     @Override
-    public Long addPortfllio(String username, Option[] list, Type type) {
+    public Long addPortfolio(String username, Option[] list, Type type) {
         Portfolio p = new Portfolio(username, list, type, false);
 //        Long id = getId(p);   //将对象加入数据库，并调用数据库方法， 获取新增组合后的id
         return null;
@@ -27,7 +29,6 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public Portfolio[] getPortfolio(String username) {
         Portfolio[] p;
-//        p = getPortfolioByusername(username);
 
 //        return p;
         return new Portfolio[0];
