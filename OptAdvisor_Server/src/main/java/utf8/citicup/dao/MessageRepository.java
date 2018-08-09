@@ -17,6 +17,6 @@ public interface MessageRepository extends JpaRepository<Message,Long>{
 
     @Modifying
     @Transactional(rollbackOn = Exception.class)
-    @Query("update Message i set i.read_status = ?3 where i.id =?1 and i.username=?2")
+    @Query("update Message i set i.readStatus = ?3 where i.id =?1 and i.username=?2")
     public void updateReadStatus(Long id,String username,boolean readStatus);
 }
