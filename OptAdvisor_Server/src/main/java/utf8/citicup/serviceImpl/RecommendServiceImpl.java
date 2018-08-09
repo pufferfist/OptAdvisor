@@ -6,6 +6,7 @@ import utf8.citicup.service.RecommendService;
 import utf8.citicup.service.util.GetData;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
@@ -84,6 +85,62 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     public ResponseMsg heging(int N0, double a, double s_exp, int T) {
+        try {
+            upDataFromNet();
+            Option[] plow_T = new Option[plow.get(T).size()];
+            this.plow.get(T).toArray(plow_T);
+            ArrayList<Option> D = new ArrayList<Option>();
+            int N = (int) (N0*a);
+            double p_asset = lastestOptionPrice;
+
+
+            //第一步
+            for (Option i : plow_T) {
+                double i_k = i.getK();
+                if (i_k > s_exp) {
+                    double i_delta = i.getDelta();
+                    double i_price1 = i.getPrice1();
+
+
+                    int i_num = (int)(N /(10000*Math.abs(i_delta)))+1;
+                    if(N*(p_asset-s_exp)>(N*p_asset-(i_num*10000-N)*(i_k-s_exp)-N*i_k+i_num*10000*i_price1)){
+                        D.add(i);
+                    }
+                }
+            }
+
+
+            //第二步
+            Option[] List_D = (Option[])D.toArray();
+            double cost;
+            double max_loss;
+            for(Option i:List_D){
+                double i_k = i.getK();
+                double i_delta = i.getDelta();
+                double i_price1 = i.getPrice1();
+                int i_num = (int)(N /(10000*Math.abs(i_delta)))+1;
+                cost = i_num*10000*i_price1;
+                max_loss = N*p_asset-(i_num*10000-N)*(i_k-s_exp)-N*i_k+cost;
+            }
+
+            
+
+
+            //第三步
+            for(int m:month){
+                for(Option bt_i:bt_plow){
+                    double bt_i_k = bt_i.getK();
+                    if((i_k))
+                }
+            }
+
+
+
+        }catch (IOException e){
+            return new ResponseMsg(2001, "msg error");
+        }
+
+
         return null;
     }
 

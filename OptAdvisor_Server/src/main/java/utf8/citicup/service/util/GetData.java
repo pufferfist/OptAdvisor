@@ -234,4 +234,22 @@ public class GetData {
         String[] expireTimeArray = {};//网上获取
     }
 
+    public double[] get_Attributes(String contract) throws IOException {
+        String url = "http://hq.sinajs.cn/list="+contract;
+        String result = getDataFromURL(url);
+        String pattern = "=\"(.*?)\"";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(result);
+        String atb=null;
+        if(m.find()) atb = m.group(1);
+        String[] output = atb.split(",");
+
+        double ExercisePrice = Double.valueOf(output[7]);
+        double Price1 = Double.valueOf(output[1]);
+        double Price2 = Double.valueOf(output[3]);
+        double y_close = Double.valueOf(output[8]);
+
+        return new double[]{ExercisePrice, Price1, Price2, y_close};
+    }
+
 }
