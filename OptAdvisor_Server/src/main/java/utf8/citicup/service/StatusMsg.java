@@ -26,4 +26,11 @@ public class UserStatusMsg {
     public static ResponseMsg usernameNotMatchSession = new ResponseMsg(1007, "Username does not match current session");
 
     public static ResponseMsg needToLogin = new ResponseMsg(1008, "Need to login first");
+
+
+    public static ResponseMsg setMessageReadSuccess = new ResponseMsg(0, "Set message read success");
+    public static ResponseMsg MessageNotMatchUser = new ResponseMsg(4001, "Message does not match the user");
+
+    public static ResponseMsg putMessageSuccess = new ResponseMsg(0, "Put message success");
+
 }
