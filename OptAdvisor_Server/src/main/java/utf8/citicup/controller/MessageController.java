@@ -2,12 +2,11 @@ package utf8.citicup.controller;
 
 import org.apache.shiro.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.MessageService;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping(value = "message", method = RequestMethod.POST)
@@ -15,6 +14,17 @@ public class MessageController {
 
     @Autowired
     public MessageService messageService;
+
+    @PostMapping("setMessageRead")
+    public ResponseMsg setMessageRead(@RequestBody Map<String, Object> params) {
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return messageService.setMessageRead(username, Long.parseLong(params.get("id").toString()));
+    }
+
+    @PostMapping("private/putMessage")
+    public ResponseMsg putMessage(@RequestBody Map<String, Object> params) {
+        return messageService.putMessage(params.get("username").toString(), params.get("message").toString());
+    }
 
     @PostMapping("getMessage")
     public ResponseMsg getMessage() {

@@ -9,16 +9,18 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.User;
-import utf8.citicup.service.UserService;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@Component
 public class CustomRealm extends AuthorizingRealm {
 
     @Autowired
-    private UserService userService;
+    private UserDataService userDataService;
     private Logger logger = LoggerFactory.getLogger(CustomRealm.class);
 
     @Override
@@ -27,7 +29,7 @@ public class CustomRealm extends AuthorizingRealm {
         String username = (String) SecurityUtils.getSubject().getPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
 
-        String role = userService.getRole(username);
+        String role = (null == userDataService.findById(username)) ? "anon" : "user";
         Set<String> set = new HashSet<>();
         set.add(role);
         info.setRoles(set);
@@ -36,8 +38,9 @@ public class CustomRealm extends AuthorizingRealm {
 
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
+        logger.info("Doing authentication info");
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        User user = userService.getUser(token.getUsername());
+        User user = userDataService.findById(token.getUsername());
         if (null == user) {
             throw new UnknownAccountException("Unknown account.");
         } else if (null == user.getPassword() || !user.getPassword().equals(new String((char[]) token.getCredentials()))) {
@@ -45,4 +48,5 @@ public class CustomRealm extends AuthorizingRealm {
         }
         return new SimpleAuthenticationInfo(token.getPrincipal(), user.getPassword(), getName());
     }
+
 }

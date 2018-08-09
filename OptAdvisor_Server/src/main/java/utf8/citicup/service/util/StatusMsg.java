@@ -1,8 +1,8 @@
-package utf8.citicup.service.statusMsg;
+package utf8.citicup.service.util;
 
 import utf8.citicup.domain.entity.ResponseMsg;
 
-public class UserStatusMsg {
+public class StatusMsg {
     public static ResponseMsg loginSuccess = new ResponseMsg(0, "Login success");
     public static ResponseMsg unknownUsername = new ResponseMsg(1001, "Unknown username");
     public static ResponseMsg incorrectPassword = new ResponseMsg(1002, "Incorrect password");

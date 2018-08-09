@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
+import utf8.citicup.service.util.StatusMsg;
 import utf8.citicup.service.UserService;
-import utf8.citicup.service.statusMsg.UserStatusMsg;
 
 import java.util.Map;
 
@@ -45,7 +45,7 @@ public class UserController {
         String username = params.get("username").toString();
         String verifyCode = Integer.toString((int) (Math.random() * 9999));
         ResponseMsg ret = userService.sendVerifyCode(username, verifyCode);
-        if (UserStatusMsg.sendVerifyCodeSuccess == ret){
+        if (StatusMsg.sendVerifyCodeSuccess == ret){
             Session session = SecurityUtils.getSubject().getSession();
             session.setAttribute("username", username);
             session.setAttribute("verifyCode", verifyCode);
@@ -58,7 +58,7 @@ public class UserController {
         Session session = SecurityUtils.getSubject().getSession();
         ResponseMsg ret = userService.checkVerifyCode(session.getAttribute("username"), session.getAttribute("verifyCode"),
                 params.get("verifyCode").toString(), params.get("newPassword").toString());
-        if (UserStatusMsg.checkCodeAndSetPasswordSuccess == ret || UserStatusMsg.unknownUsername == ret) {
+        if (StatusMsg.checkCodeAndSetPasswordSuccess == ret || StatusMsg.unknownUsername == ret) {
             session.removeAttribute("username");
             session.removeAttribute("verifyCode");
         }
@@ -85,6 +85,6 @@ public class UserController {
 
     @RequestMapping("auth")
     public ResponseMsg auth() {
-        return UserStatusMsg.needToLogin;
+        return StatusMsg.needToLogin;
     }
 }

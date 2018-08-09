@@ -14,7 +14,7 @@ import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
-import utf8.citicup.service.statusMsg.UserStatusMsg;
+import utf8.citicup.service.util.StatusMsg;
 import utf8.citicup.service.util.PolySms;
 
 import java.io.IOException;
@@ -37,30 +37,32 @@ public class UserServiceImpl implements UserService {
         try {
             subject.login(token);
         } catch (UnknownAccountException uae) {
-            return UserStatusMsg.unknownUsername;
+            return StatusMsg.unknownUsername;
         } catch (IncorrectCredentialsException ice) {
-            return UserStatusMsg.incorrectPassword;
+            return StatusMsg.incorrectPassword;
         }
         if (!subject.isAuthenticated()) {
             token.clear();
-            return UserStatusMsg.notAuthenticated;
+            return StatusMsg.notAuthenticated;
         }
-        return UserStatusMsg.loginSuccess;
+        return StatusMsg.loginSuccess;
     }
 
     @Override
     public ResponseMsg logout() {
         SecurityUtils.getSubject().logout();
-        return UserStatusMsg.logoutSuccess;
+        return StatusMsg.logoutSuccess;
     }
 
     @Override
     public ResponseMsg signUp(User user) {
         user.setPassword(new Sha256Hash(user.getPassword()).toString());
-        if (userDataService.addUser(user)) {
-            return UserStatusMsg.signUpSuccess;
+        User resultOfFind = userDataService.findById(user.getUsername());
+        if (null == resultOfFind) {
+            userDataService.save(user);
+            return StatusMsg.signUpSuccess;
         } else {
-            return UserStatusMsg.usernameExists;
+            return StatusMsg.usernameExists;
         }
     }
 
@@ -68,17 +70,17 @@ public class UserServiceImpl implements UserService {
     public ResponseMsg sendVerifyCode(String username, String verifyCode) {
         User user = getUser(username);
         if (null == user) {
-            return UserStatusMsg.unknownUsername;
+            return StatusMsg.unknownUsername;
         } else {
             try {
                 Map<String, Object> map = PolySms.sendSms(user.getTelephone(), verifyCode);
                 if (map.get("error_code").toString().equals("0"))
-                    return UserStatusMsg.sendVerifyCodeSuccess;
+                    return StatusMsg.sendVerifyCodeSuccess;
                 else
-                    return UserStatusMsg.sendVerifyCodeFail;
+                    return StatusMsg.sendVerifyCodeFail;
             } catch (IOException e) {
                 logger.warn("Send verify code occurs IOException");
-                return UserStatusMsg.sendVerifyCodeException;
+                return StatusMsg.sendVerifyCodeException;
             }
         }
     }
@@ -87,29 +89,29 @@ public class UserServiceImpl implements UserService {
     public ResponseMsg checkVerifyCode(Object username, Object srcVerifyCode, String verifyCode, String newPassword) {
         newPassword = new Sha256Hash(newPassword).toString();
         if (null == srcVerifyCode) {
-            return null;
+            return StatusMsg.neverSendCode;
         } else if (srcVerifyCode.equals(verifyCode)) {
             if (userDataService.updatePassword(username.toString(), newPassword))
-                return UserStatusMsg.checkCodeAndSetPasswordSuccess;
+                return StatusMsg.checkCodeAndSetPasswordSuccess;
             else
-                return UserStatusMsg.unknownUsername;
+                return StatusMsg.unknownUsername;
         } else {
-            return UserStatusMsg.checkVerifyCodeFail;
+            return StatusMsg.checkVerifyCodeFail;
         }
 //        Session session = SecurityUtils.getSubject().getSession();
 //        Object srcVerifyCode = session.getAttribute("verifyCode");
 //        Object username = session.getAttribute("username");
 //        if (null == srcVerifyCode) {
-//            return UserStatusMsg.neverSendCode;
+//            return StatusMsg.neverSendCode;
 //        } else if (srcVerifyCode.equals(verifyCode)) {
 //            session.removeAttribute("verifyCode");
 //            session.removeAttribute("username");
 //            if (userDataService.updatePassword(username.toString(), newPassword))
-//                return UserStatusMsg.checkCodeAndSetPasswordSuccess;
+//                return StatusMsg.checkCodeAndSetPasswordSuccess;
 //            else
-//                return UserStatusMsg.unknownUsername;
+//                return StatusMsg.unknownUsername;
 //        } else {
-//            return UserStatusMsg.checkVerifyCodeFail;
+//            return StatusMsg.checkVerifyCodeFail;
 //        }
     }
 
@@ -118,13 +120,13 @@ public class UserServiceImpl implements UserService {
         newPassword = new Sha256Hash(newPassword).toString();
         User user = userDataService.findById(username);
         if (null == user) {
-            return UserStatusMsg.unknownUsername;
+            return StatusMsg.unknownUsername;
         } else if (!user.getPassword().equals(oldPassword)) {
-            return UserStatusMsg.incorrectPassword;
+            return StatusMsg.incorrectPassword;
         } else if (userDataService.updatePassword(username, newPassword)) {
-            return UserStatusMsg.updatePasswordSuccess;
+            return StatusMsg.updatePasswordSuccess;
         } else {
-            return UserStatusMsg.unknownUsername;
+            return StatusMsg.unknownUsername;
         }
     }
 
@@ -132,11 +134,11 @@ public class UserServiceImpl implements UserService {
     public ResponseMsg modifyInfo(String currentUsername, User user) {
         user.setPassword(new Sha256Hash(user.getPassword()).toString());
         if (!currentUsername.equals(user.getUsername()))
-            return UserStatusMsg.usernameNotMatchSession;
+            return StatusMsg.usernameNotMatchSession;
         else if (userDataService.updateUser(user))
-            return UserStatusMsg.modifyInfoSuccess;
+            return StatusMsg.modifyInfoSuccess;
         else
-            return UserStatusMsg.unknownUsername;
+            return StatusMsg.unknownUsername;
     }
 
     @Override
@@ -149,14 +151,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User getUser(String username) {
         return userDataService.findById(username);
-    }
-
-    @Override
-    public String getRole(String username) {
-        if (null == getUser(username))
-            return "anon";
-        else
-            return "user";
     }
 
 }

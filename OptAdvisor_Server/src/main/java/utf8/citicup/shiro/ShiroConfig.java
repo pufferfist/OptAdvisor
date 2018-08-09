@@ -28,6 +28,8 @@ public class ShiroConfig {
         filterChainDefinitionMap.put("/user/**", "user");
         filterChainDefinitionMap.put("/recommend/**", "user");
         filterChainDefinitionMap.put("/portfolio/**", "user");
+        filterChainDefinitionMap.put("/message/private/**", "anon");
+        filterChainDefinitionMap.put("/message/**", "user");
         filterChainDefinitionMap.put("/", "anon");
         //TODO
 

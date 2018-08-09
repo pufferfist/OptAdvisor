@@ -1,12 +1,17 @@
 package utf8.citicup.serviceImpl;
 
 import org.springframework.stereotype.Service;
-import utf8.citicup.domain.entity.*;
+import utf8.citicup.domain.entity.Option;
+import utf8.citicup.domain.entity.RecommendOption1;
+import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.RecommendService;
 import utf8.citicup.service.util.GetData;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
@@ -208,7 +213,7 @@ public class RecommendServiceImpl implements RecommendService {
         clow.get(T).toArray(clow_T);
         Option[] chigh_T = new Option[chigh.get(T).size()];
         chigh.get(T).toArray(chigh_T);
-        List <structD> D = new ArrayList<structD>();
+        List<structD> D = new ArrayList<structD>();
 
         /*第一步*/
         for (Option aClow_T : clow_T) {
@@ -277,7 +282,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Override
-    public ResponseMsg heging(int N0, double a, double s_exp, int T) {
+    public ResponseMsg hedging(int N0, double a, double s_exp, String T) {
         try {
             upDataFromNet();
             Option[] plow_T = new Option[plow.get(T).size()];
@@ -320,12 +325,12 @@ public class RecommendServiceImpl implements RecommendService {
 
 
             //第三步
-            for(int m:month){
-                for(Option bt_i:bt_plow){
-                    double bt_i_k = bt_i.getK();
-                    if((i_k))
-                }
-            }
+//            for(int m:month){
+//                for(Option bt_i:bt_plow){
+//                    double bt_i_k = bt_i.getK();
+//                    if((i_k))
+//                }
+//            }
 
 
 
