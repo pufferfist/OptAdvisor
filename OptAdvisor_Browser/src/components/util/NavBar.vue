@@ -6,7 +6,7 @@
           </router-link>
         </div>
         <div class="fl dib">
-          <p>个性化投顾</p>
+          <p class="light-blue" style="font-family: 方正清刻本悦宋简体;font-size: 1.2rem">个性化投顾</p>
         </div>
         <div class="fr dib">
           <Submenu name="1">
@@ -32,7 +32,7 @@
           </MenuItem>
 
           <div class="dib ph3">
-            <router-link to="/prompt">
+            <router-link to="/prompt" class="black">
               <Badge :count="1" class="di">
                 <Icon type="md-notifications-outline" size="30"/>
               </Badge>
@@ -82,5 +82,14 @@
     position: absolute;
     top: 20px;
     left: 273px;
+  }
+
+  @font-face {
+    font-family: '方正清刻本悦宋简体';
+    src: url("../../assets/fonts/navbar/sfont.svg"),
+          url("../../assets/fonts/navbar/sfont.eot"),
+          url("../../assets/fonts/navbar/sfont.ttf"),
+          url("../../assets/fonts/navbar/sfont.woff"),
+          url("../../assets/fonts/navbar/sfont.woff2");
   }
 </style>
