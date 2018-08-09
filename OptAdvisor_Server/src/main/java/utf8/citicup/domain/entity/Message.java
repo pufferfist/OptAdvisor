@@ -15,7 +15,7 @@ public class Message {
 
     private String username;
 
-    private boolean readStatus;
+    private Boolean readStatus;
 
     private String message;
 
@@ -33,7 +33,7 @@ public class Message {
 
     public void setUsername(String username) { this.username = username; }
 
-    public boolean isReadStatus() { return readStatus; }
+    public boolean getReadStatus() { return readStatus; }
 
     public void setReadStatus(boolean readStatus) { this.readStatus = readStatus; }
 

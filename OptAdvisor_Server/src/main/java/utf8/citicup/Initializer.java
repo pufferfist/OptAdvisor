@@ -46,14 +46,7 @@ public class Initializer implements CommandLineRunner {
 
 
     public void test(){
-/*        List<Message> list1=messageDataService.findByUsername("male");
-        List<Message> list2=messageDataService.findByUsernameAnReadStatus("male",false);
-        for(Message message:list1){
-            System.out.println("list1:"+message.getMessage());
-        }
-        for(Message message:list2){
-            System.out.println("list2:"+message.getMessage());
-        }*/
+        messageDataService.updateReadStatus((long) 1,"male",false);
     }
 
 }
