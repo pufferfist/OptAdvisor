@@ -7,10 +7,14 @@ import org.apache.shiro.util.Factory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import utf8.citicup.dataService.MessageDataService;
 import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.dataService.historyDataService.OptionBasicInfoDataService;
 import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
 import utf8.citicup.dataService.historyDataService.TimeSeriesDataSerice;
+import utf8.citicup.domain.entity.Message;
+
+import java.util.List;
 
 @Component
 public class Initializer implements CommandLineRunner {
@@ -22,6 +26,8 @@ public class Initializer implements CommandLineRunner {
     private OptionBasicInfoDataService optionBasicInfoDataService;
     @Autowired
     private UserDataService userDataService;
+    @Autowired
+    private MessageDataService messageDataService;
     @Override
     public void run(String... args) throws Exception {
         System.out.println(System.getProperty("user.dir"));
@@ -40,14 +46,14 @@ public class Initializer implements CommandLineRunner {
 
 
     public void test(){
-/*        for(int i=0;i<10;i++){
-            System.out.println("The "+(i+1)+" time select");
-            System.out.println(timeSeriesDataSerice.findByLastTradeDate("2015/2/2").getVolume());
-            System.out.println(optionBasicInfoDataService.findByCodeName("10000012.SH").getAbbr());
-            System.out.println(optionTsdDataService.findByCodeNameAndLatestDate("10000012.SH","2015/2/9"));
-        }*//*
-        userDataService.updatePassword("王一博","new Password");
-        userDataService.delete("王瑞华");*/
+/*        List<Message> list1=messageDataService.findByUserName("male");
+        List<Message> list2=messageDataService.findByUserNameAnReadStatus("male",false);
+        for(Message message:list1){
+            System.out.println("list1:"+message.getMessage());
+        }
+        for(Message message:list2){
+            System.out.println("list2:"+message.getMessage());
+        }*/
     }
 
 }
