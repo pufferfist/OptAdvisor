@@ -1,5 +1,7 @@
 package utf8.citicup.service.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utf8.citicup.domain.entity.Option;
 
 import java.util.*;
@@ -12,8 +14,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GetData {
-    private final String USER_AGENT = "Mozilla/5.0";
 
+    public final String USER_AGENT = "Mozilla/5.0";
+    private Logger logger = LoggerFactory.getLogger(GetData.class);
     /*
     public static void main(String[] args) throws IOException {
         GetData http = new GetData();
