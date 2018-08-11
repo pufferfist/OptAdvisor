@@ -37,4 +37,10 @@ public class MessageServiceImpl implements MessageService {
         return new ResponseMsg(0, "Get number of unread message success",
                 messageDataService.findByUsernameAnReadStatus(username, false).size());
     }
+
+    @Override
+    public ResponseMsg deleteMessage(Long id) {
+        messageDataService.delete(id);
+        return StatusMsg.deleteMessageSuccess;
+    }
 }

@@ -21,10 +21,13 @@ public class StatusMsg {
     public static ResponseMsg checkCodeAndSetPasswordSuccess = new ResponseMsg(0, "Check verify code and set new password success");
     public static ResponseMsg checkVerifyCodeFail = new ResponseMsg(1014, "Wrong verify code");
 
-    public static ResponseMsg updatePasswordSuccess = new ResponseMsg(1005, "Update new password success");
-    public static ResponseMsg modifyInfoSuccess = new ResponseMsg(1006, "Modify info success");
+    public static ResponseMsg deleteUserSuccess = new ResponseMsg(0, "Delete user success");
+
+    public static ResponseMsg updatePasswordSuccess = new ResponseMsg(0, "Update new password success");
+    public static ResponseMsg modifyInfoSuccess = new ResponseMsg(0, "Modify info success");
     public static ResponseMsg usernameNotMatchSession = new ResponseMsg(1007, "Username does not match current session");
 
+    public static ResponseMsg isLoggedIn = new ResponseMsg(0, "You are now logged in");
     public static ResponseMsg needToLogin = new ResponseMsg(1008, "Need to login first");
 
 
@@ -32,5 +35,6 @@ public class StatusMsg {
     public static ResponseMsg MessageNotMatchUser = new ResponseMsg(4001, "Message does not match the user");
 
     public static ResponseMsg putMessageSuccess = new ResponseMsg(0, "Put message success");
+    public static ResponseMsg deleteMessageSuccess = new ResponseMsg(0, "Delete message success");
 
 }

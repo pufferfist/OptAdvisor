@@ -26,6 +26,11 @@ public class MessageController {
         return messageService.putMessage(params.get("username").toString(), params.get("message").toString());
     }
 
+    @PostMapping("private/deleteMessage")
+    public ResponseMsg deleteMessage(@RequestBody Map<String, Object> params) {
+        return messageService.deleteMessage(Long.parseLong(params.get("id").toString()));
+    }
+
     @PostMapping("getMessage")
     public ResponseMsg getMessage() {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
