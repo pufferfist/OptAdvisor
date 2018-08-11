@@ -1,8 +1,5 @@
 package utf8.citicup.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
@@ -21,13 +18,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import utf8.citicup.CiticupApplication;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static utf8.citicup.utils.JsonParse.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("dev")
@@ -50,32 +47,6 @@ public class UserControllerTest {
 
     private Logger logger = LoggerFactory.getLogger(UserControllerTest.class);
 
-    private String mapToJsonString(Map<String, Object> map) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.writeValueAsString(map);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-            return "";
-        }
-    }
-
-    private Map<String, Object> jsonStringToMap(String json) {
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            return mapper.readValue(json, new TypeReference<Map<String, Object>>() {
-            });
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new HashMap<>();
-        }
-    }
-
-    private Map objectToMap(Object object) {
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.convertValue(object, Map.class);
-    }
-
     @Test
     public void test01SignUp() throws Exception {
         Map<String, Object> map = new HashMap<>();
@@ -89,7 +60,7 @@ public class UserControllerTest {
         map.put("w2", 30);
 
         MvcResult mvcResult = this.mockMvc.perform(post("/signUp")
-                .contentType(MediaType.APPLICATION_JSON).content(mapToJsonString(map)))
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
@@ -103,7 +74,7 @@ public class UserControllerTest {
         map.put("password", password);
 
         MvcResult mvcResult = this.mockMvc.perform(post("/login")
-                .contentType(MediaType.APPLICATION_JSON).content(mapToJsonString(map)))
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0)).andReturn();
         JSessionId = (MockHttpSession) mvcResult.getRequest().getSession();
@@ -129,7 +100,7 @@ public class UserControllerTest {
         map.put("w2", 30);
 
         this.mockMvc.perform(post("/user/modifyInfo").session(JSessionId)
-                .contentType(MediaType.APPLICATION_JSON).content(mapToJsonString(map)))
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
     }
@@ -151,7 +122,7 @@ public class UserControllerTest {
 //        map.put("oldPassword", password);
 //        map.put("newPassword", newPassword);
 //        this.mockMvc.perform(post("user/resetPassword").session(JSessionId)
-//                .contentType(MediaType.APPLICATION_JSON).content(mapToJsonString(map)))
+//                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
 //                .andExpect(status().isOk())
 //                .andExpect(jsonPath("$.code").value(0));
 //    }
@@ -163,7 +134,7 @@ public class UserControllerTest {
         map.put("newPassword", newPassword);
 
         this.mockMvc.perform(post("/user/resetPassword").session(JSessionId)
-                .contentType(MediaType.APPLICATION_JSON).content(mapToJsonString(map)))
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
     }
@@ -184,7 +155,7 @@ public class UserControllerTest {
         map.put("username", username);
         map.put("password", newPassword);
         MvcResult mvcResult = this.mockMvc.perform(post("/login").session(JSessionId)
-                .contentType(MediaType.APPLICATION_JSON).content(mapToJsonString(map)))
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0)).andReturn();
         JSessionId = (MockHttpSession) mvcResult.getRequest().getSession();
@@ -208,7 +179,7 @@ public class UserControllerTest {
         map.put("username", username);
         this.mockMvc.perform(
                 post("/user/private/deleteUser").session(JSessionId)
-                        .contentType(MediaType.APPLICATION_JSON).content(mapToJsonString(map)))
+                        .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
     }
