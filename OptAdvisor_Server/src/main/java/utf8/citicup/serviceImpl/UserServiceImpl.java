@@ -146,6 +146,12 @@ public class UserServiceImpl implements UserService {
         return new ResponseMsg(0, "Get user info success", getUser(username));
     }
 
+    @Override
+    public ResponseMsg deleteUser(String username) {
+        userDataService.delete(username);
+        return StatusMsg.deleteUserSuccess;
+    }
+
     // method below is not created for controller
 
     @Override

@@ -25,11 +25,14 @@ public class ShiroConfig {
 
         //拦截器设置
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+        filterChainDefinitionMap.put("/user/private/**", "anon");
+        filterChainDefinitionMap.put("/message/private/**", "anon");
+
         filterChainDefinitionMap.put("/user/**", "user");
         filterChainDefinitionMap.put("/recommend/**", "user");
         filterChainDefinitionMap.put("/portfolio/**", "user");
-        filterChainDefinitionMap.put("/message/private/**", "anon");
         filterChainDefinitionMap.put("/message/**", "user");
+
         filterChainDefinitionMap.put("/", "anon");
         //TODO
 

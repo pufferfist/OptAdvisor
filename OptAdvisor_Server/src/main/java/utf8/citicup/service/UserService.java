@@ -20,6 +20,8 @@ public interface UserService {
 
     ResponseMsg getInfo(String username);
 
+    ResponseMsg deleteUser(String username);
+
     User getUser(String username);
 
 }
