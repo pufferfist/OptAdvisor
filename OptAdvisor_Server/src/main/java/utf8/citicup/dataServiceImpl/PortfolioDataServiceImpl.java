@@ -46,6 +46,11 @@ public class PortfolioDataServiceImpl implements PortfolioDataService{
     }
 
     @Override
+    public List<Portfolio> findAll() {
+        return portfolioRepository.findAll();
+    }
+
+    @Override
     public List<Portfolio> findByUsername(String username) {
         List<Portfolio> portfolioList= portfolioRepository.findByUsername(username);
         for(Portfolio each:portfolioList){
