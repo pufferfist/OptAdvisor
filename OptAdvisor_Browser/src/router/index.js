@@ -96,7 +96,7 @@ export default new Router({
         {
           path: 'prompt',
           component: Prompt
-        },
+        }
       ]
     }
   ]
