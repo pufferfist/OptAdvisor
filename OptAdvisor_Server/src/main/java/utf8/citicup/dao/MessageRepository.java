@@ -8,6 +8,6 @@ import java.util.List;
 
 @Component
 public interface MessageRepository extends JpaRepository<Message,Long>{
-    List<Message> findByUserName(String username);
-    List<Message> findByUserNameAndReadStatus(String username,boolean readStatus);
+    List<Message> findByUsername(String username);
+    List<Message> findByUsernameAndReadStatus(String username,boolean readStatus);
 }

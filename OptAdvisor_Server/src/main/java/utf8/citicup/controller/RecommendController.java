@@ -25,7 +25,7 @@ public class RecommendController {
     public ResponseMsg recommendPortfolio(@RequestBody Map<String, Object> params) {
         User user = userService.getUser(SecurityUtils.getSubject().getPrincipal().toString());
         return recommendService.recommendPortfolio((Double) params.get("M0"), (Double) params.get("k"),
-                (Double) params.get("a"), params.get("T").toString(), (char) params.get("combination"),
+                params.get("T").toString(), (char) params.get("combination"),
                 (Double) params.get("p1"), (Double) params.get("p2"), (Double) params.get("sigma1"),
                 (Double) params.get("sigma2"), user.getW1(), user.getW2());
     }
