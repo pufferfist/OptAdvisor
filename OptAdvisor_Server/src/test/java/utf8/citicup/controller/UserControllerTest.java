@@ -17,6 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import utf8.citicup.CiticupApplication;
+import utf8.citicup.utils.AuthenticationProcess;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ public class UserControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    private static MockHttpSession JSessionId;
+    private static MockHttpSession httpSession;
     private static final String username = "mock";
     private static final String password = "mockPassword";
     private static final String newPassword = "mockNewPassword";
@@ -69,25 +70,17 @@ public class UserControllerTest {
 
     @Test
     public void test02Login() throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", username);
-        map.put("password", password);
-
-        MvcResult mvcResult = this.mockMvc.perform(post("/login")
-                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0)).andReturn();
-        JSessionId = (MockHttpSession) mvcResult.getRequest().getSession();
+        httpSession = AuthenticationProcess.login(mockMvc, username, password);
     }
 
     @Test
     public void test03GetInfo() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(post("/user/getInfo").session(JSessionId))
+        MvcResult mvcResult = this.mockMvc.perform(post("/user/getInfo").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0)).andReturn();
         Map<String, Object> map = jsonStringToMap(mvcResult.getResponse().getContentAsString());
         Assert.assertEquals(objectToMap(map.get("data")).get("name").toString(), oldName);
-        JSessionId = (MockHttpSession) mvcResult.getRequest().getSession();
+        httpSession = (MockHttpSession) mvcResult.getRequest().getSession();
     }
 
     @Test
@@ -99,7 +92,7 @@ public class UserControllerTest {
         map.put("w1", 70);
         map.put("w2", 30);
 
-        this.mockMvc.perform(post("/user/modifyInfo").session(JSessionId)
+        this.mockMvc.perform(post("/user/modifyInfo").session(httpSession)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -107,13 +100,13 @@ public class UserControllerTest {
 
     @Test
     public void test05GetInfo() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(post("/user/getInfo").session(JSessionId))
+        MvcResult mvcResult = this.mockMvc.perform(post("/user/getInfo").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
         Map<String, Object> map = jsonStringToMap(mvcResult.getResponse().getContentAsString());
         Assert.assertEquals(objectToMap(map.get("data")).get("name"), newName);
-        JSessionId = (MockHttpSession) mvcResult.getRequest().getSession();
+        httpSession = (MockHttpSession) mvcResult.getRequest().getSession();
     }
 
 //    @Test
@@ -121,7 +114,7 @@ public class UserControllerTest {
 //        Map<String, Object> map = new HashMap<>();
 //        map.put("oldPassword", password);
 //        map.put("newPassword", newPassword);
-//        this.mockMvc.perform(post("user/resetPassword").session(JSessionId)
+//        this.mockMvc.perform(post("user/resetPassword").session(httpSession)
 //                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
 //                .andExpect(status().isOk())
 //                .andExpect(jsonPath("$.code").value(0));
@@ -133,7 +126,7 @@ public class UserControllerTest {
         map.put("oldPassword", password);
         map.put("newPassword", newPassword);
 
-        this.mockMvc.perform(post("/user/resetPassword").session(JSessionId)
+        this.mockMvc.perform(post("/user/resetPassword").session(httpSession)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -141,31 +134,20 @@ public class UserControllerTest {
 
     @Test
     public void test07LogoutAndTestAuth() throws Exception {
-        this.mockMvc.perform(post("/user/logout").session(JSessionId))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0));
+        AuthenticationProcess.logout(mockMvc, httpSession);
 
-        this.mockMvc.perform(post("user/getInfo").session(JSessionId))
+        this.mockMvc.perform(post("user/getInfo").session(httpSession))
                 .andExpect(status().is3xxRedirection());
     }
 
     @Test
     public void test08LoginWithNewPassword() throws Exception {
-        Map<String, Object> map = new HashMap<>();
-        map.put("username", username);
-        map.put("password", newPassword);
-        MvcResult mvcResult = this.mockMvc.perform(post("/login").session(JSessionId)
-                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0)).andReturn();
-        JSessionId = (MockHttpSession) mvcResult.getRequest().getSession();
-//        Map<String, Object> resultMap = jsonStringToMap(mvcResult.getResponse().getContentAsString());
-//        Assert.assertEquals(objectToMap(resultMap.get("data")).get("name").toString(), newName);
+        httpSession = AuthenticationProcess.login(mockMvc, username, newPassword);
     }
 
     @Test
     public void test09GetInfo() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(post("/user/getInfo").session(JSessionId))
+        MvcResult mvcResult = this.mockMvc.perform(post("/user/getInfo").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0)).andReturn();
 
@@ -174,11 +156,16 @@ public class UserControllerTest {
     }
 
     @Test
+    public void test98Logout() throws Exception {
+        AuthenticationProcess.logout(mockMvc, httpSession);
+    }
+
+    @Test
     public void test99DeleteUser() throws Exception {
         Map<String, Object> map = new HashMap<>();
         map.put("username", username);
         this.mockMvc.perform(
-                post("/user/private/deleteUser").session(JSessionId)
+                post("/user/private/deleteUser").session(httpSession)
                         .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
