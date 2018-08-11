@@ -9,6 +9,10 @@
           <p class="light-blue" style="font-family: 方正清刻本悦宋简体;font-size: 1.2rem">个性化投顾</p>
         </div>
         <div class="fr dib">
+          <MenuItem name="0" to="/home" style="padding: 0 2.5rem">
+            <Icon type="ios-bonfire" size="20"/>
+            首页
+          </MenuItem>
           <Submenu name="1">
             <template slot="title">
               <Icon type="md-analytics" size="16"/>
@@ -31,7 +35,7 @@
             我的组合
           </MenuItem>
 
-          <div class="dib ph3">
+          <div class="dib pr3 pl6">
             <router-link to="/prompt" class="black">
               <Badge :count="1" class="di">
                 <Icon type="md-notifications-outline" size="30"/>
@@ -39,7 +43,7 @@
             </router-link>
           </div>
 
-          <div class="dib ph3">
+          <div class="dib pl3 pr4">
             <router-link :to="'/profile/'+userName">
               <Avatar style="background-color: #87d068" icon="ios-person" />
             </router-link>

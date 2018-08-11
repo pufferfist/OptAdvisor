@@ -43,7 +43,7 @@
   }
 
   .content{
-    padding: 0 50px;
+    padding: 0 400px;
     background-color: #ffffff;
   }
 </style>
