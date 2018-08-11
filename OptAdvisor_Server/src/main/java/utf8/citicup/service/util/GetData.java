@@ -1,5 +1,7 @@
 package utf8.citicup.service.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utf8.citicup.domain.entity.Option;
 
 import java.util.*;
@@ -13,6 +15,8 @@ import java.util.regex.Pattern;
 
 public class GetData {
     public final String USER_AGENT = "Mozilla/5.0";
+
+    private Logger logger = LoggerFactory.getLogger(GetData.class);
     /*
     public static void main(String[] args) throws IOException {
         GetData http = new GetData();
@@ -49,7 +53,8 @@ public class GetData {
 
         int responseCode = con.getResponseCode();
 
-        System.out.println("Response Code : " + responseCode);
+        logger.info("Response Code: " + responseCode);
+//        System.out.println("Response Code : " + responseCode);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
@@ -250,6 +255,16 @@ public class GetData {
         double y_close = Double.valueOf(output[8]);
 
         return new double[]{ExercisePrice, Price1, Price2, y_close};
+    }
+
+    public double get_Sigma() throws IOException {
+        String url = "http://www.optbbs.com/d/csv/d/data.csv?v=";
+        Date d = new Date();
+        long time = d.getTime();
+        url = url + time;
+        String result = getDataFromURL(url);
+        String[] output = result.split(",");
+        return Double.valueOf(output[output.length-1]);
     }
 
 }
