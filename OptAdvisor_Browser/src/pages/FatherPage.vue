@@ -1,6 +1,6 @@
 <template>
     <div class="layout h-100 tc">
-      <Layout class="h-100">
+      <Layout class="h-100 bg-white">
         <Header ref="header" class="header dib">
           <NavBar class="nav"></NavBar>
         </Header>
