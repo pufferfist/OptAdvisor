@@ -75,11 +75,7 @@
 
         this.axios.post("/backend/auth")
           .then((res)=>{
-            let code = res.data.code;
-            if (code===0)
-              this.isLogin=true;
-            else
-              this.isLogin=false;
+            this.isLogin = (res.data.code === 0);
           })
       }
     }

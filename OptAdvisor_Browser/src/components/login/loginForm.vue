@@ -38,29 +38,40 @@
         },
       }
     },
-    methods: { //待修改
+    created:function(){
+      this.formInline.user=this.$cookie.get("userName");
+    },
+    methods: {
       handleSubmit() {
-        this.$cookie.set("userName",this.formInline.user);
-        this.axios.post('/backend/login',{
-          username:this.formInline.user,
-          password:this.formInline.password
-        })
-          .then((response)=> {
-            if(response.data.code===0){
-              this.$Message.success({
-                content:"登录成功",
-                duration:0.5
-              });
-              this.$router.push("/home")
-            }else if(response.data.code===1001){
-              this.$Message.warning("用户名不存在")
-            }else if(response.data.code===1002){
-              this.$Message.error("密码错误")
-            }
-        })
-          .catch(function (error) {
-            console.log(error);
-          });
+        var validation;
+        this.$refs['formInline'].validate((valid) => {
+          validation=valid
+        });
+
+        this.$cookie.set("userName",this.formInline.user,"1d");
+
+        if (validation) {
+          this.axios.post('/backend/login', {
+            username: this.formInline.user,
+            password: this.formInline.password
+          })
+            .then((response) => {
+              if (response.data.code === 0) {
+                this.$Message.success({
+                  content: "登录成功",
+                  duration: 0.5
+                });
+                this.$router.push("/home")
+              } else if (response.data.code === 1001) {
+                this.$Message.warning("用户名不存在")
+              } else if (response.data.code === 1002) {
+                this.$Message.error("密码错误")
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
       }
     }
   }
