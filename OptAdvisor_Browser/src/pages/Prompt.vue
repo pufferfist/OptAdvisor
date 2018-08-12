@@ -1,5 +1,5 @@
 <template>
-  <Row class="h-100 pb3" style="background-color: #f0f0f0">
+  <Row class="pb3 row">
     <Col span="8" class="h-100">
       <div class="message-mainlist-con mw-100 h-100">
         <div>
@@ -19,19 +19,10 @@
             <span class="mes-type-btn-text">已读消息</span>
           </Button>
         </div>
-        <!--<div>-->
-          <!--<Button @click="setCurrentMesType('recyclebin')" size="large" long type="text">-->
-            <!--<transition name="mes-current-type-btn">-->
-              <!--<Icon v-show="currentMessageType === 'recyclebin'" type="checkmark"></Icon>-->
-            <!--</transition>-->
-            <!--<span class="mes-type-btn-text">回收站</span>-->
-            <!--<Badge class="message-count-badge-outer" class-name="message-count-badge" :count="recyclebinCount"></Badge>-->
-          <!--</Button>-->
-        <!--</div>-->
       </div>
     </Col>
-    <Col span="16" class="h-100">
-      <div class="message-content-con mh3 h-100">
+    <Col span="16" class="h-100  ">
+      <div class="message-content-con mh3 h-100 min-h">
         <transition name="view-message">
           <div v-if="showMesTitleList" class="message-title-list-con">
             <Table ref="messageList" :columns="mesTitleColumns" :data="currentMesList" :no-data-text="noDataText"></Table>
@@ -250,7 +241,7 @@
       /**
        * 请求消息列表
        */
-      this.axios.post("/backend/getMessage")
+      this.axios.post("/backend/message/getMessage")
         .then((res)=>{
           this.currentMesList = this.unreadMesList = res.data.data.unread;
           this.hasreadMesList = res.data.data.read;
@@ -273,6 +264,12 @@
 </script>
 
 <style scoped>
+  .row{
+    background-color: #f0f0f0;
+  }
+  .min-h{
+    min-height: 600px;
+  }
   .message-mainlist-con {
     bottom: 0;
     padding: 10px 0;

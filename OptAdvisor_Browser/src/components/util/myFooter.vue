@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="pt4 bt b--black-30">
     <Row class="pb3 tc">
       <Col span="8">
         <h3>站内链接</h3>
@@ -14,7 +14,7 @@
         <LinkGroup :items="items3"></LinkGroup>
       </Col>
     </Row>
-    <Row class="tc">
+    <Row class="tc pt3">
       <div>OptAdvisor loves you</div>
     </Row>
   </div>
