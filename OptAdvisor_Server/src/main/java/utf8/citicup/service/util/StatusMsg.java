@@ -32,7 +32,8 @@ public class StatusMsg {
 
 
     public static ResponseMsg setMessageReadSuccess = new ResponseMsg(0, "Set message read success");
-    public static ResponseMsg MessageNotMatchUser = new ResponseMsg(4001, "Message does not match the user");
+    public static ResponseMsg messageNotMatchUser = new ResponseMsg(4001, "Message does not match the user");
+    public static ResponseMsg messageNotExists = new ResponseMsg(4002, "Message does not exists");
 
     public static ResponseMsg putMessageSuccess = new ResponseMsg(0, "Put message success");
     public static ResponseMsg deleteMessageSuccess = new ResponseMsg(0, "Delete message success");

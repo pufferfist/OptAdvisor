@@ -1,5 +1,5 @@
 <template>
-  <Form ref="formInline" :model="formInline" :rules="ruleInline" v-on:keyup.enter="handleSubmit('formInline')">
+  <Form ref="formInline" :model="formInline" :rules="ruleInline" v-on:keyup.enter="handleSubmit()">
     <FormItem prop="user">
       <i-input type="text" v-model="formInline.user" placeholder="用户名" class="mb1">
       <Icon type="ios-person-outline" slot="prepend"></Icon>
@@ -14,7 +14,7 @@
       <p>没有注册? <a href="/signUp">注册</a> | <a href="/forgetPassword">忘记密码?</a></p>
     </FormItem>
     <FormItem class="tc">
-      <Button id="loginButton" type="primary" @click="handleSubmit('formInline')" class="Button">登录</Button>
+      <Button id="loginButton" type="primary" @click="handleSubmit()" class="Button">登录</Button>
     </FormItem>
   </Form>
 </template>
@@ -38,29 +38,40 @@
         },
       }
     },
-    methods: { //待修改
-      handleSubmit(name) {
-        this.$refs[name].validate((valid) => {
-          if (valid) {
-            this.$Message.success('Success!');
-          } else {
-            this.$Message.error('Fail!');
-          }
+    created:function(){
+      this.formInline.user=this.$cookie.get("userName");
+    },
+    methods: {
+      handleSubmit() {
+        var validation;
+        this.$refs['formInline'].validate((valid) => {
+          validation=valid
         });
 
+        this.$cookie.set("userName",this.formInline.user,"1d");
 
-        this.$cookie.set("userName",this.formInline.user);
-        this.axios.post('/backend/login',{
-          username:this.formInline.user,
-          password:this.formInline.password
-        })
-          .then( (response)=> {
-            console.log(response.data.code);
-            console.log(response.data.msg);
-        })
-          .catch(function (error) {
-            console.log(error);
-          });
+        if (validation) {
+          this.axios.post('/backend/login', {
+            username: this.formInline.user,
+            password: this.formInline.password
+          })
+            .then((response) => {
+              if (response.data.code === 0) {
+                this.$Message.success({
+                  content: "登录成功",
+                  duration: 0.5
+                });
+                this.$router.push("/home")
+              } else if (response.data.code === 1001) {
+                this.$Message.warning("用户名不存在")
+              } else if (response.data.code === 1002) {
+                this.$Message.error("密码错误")
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+            });
+        }
       }
     }
   }

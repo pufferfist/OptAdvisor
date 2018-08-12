@@ -30,9 +30,10 @@ public class MessageController {
         return messageService.putMessage(message);
     }
 
-    @PostMapping("private/deleteMessage")
+    @PostMapping("deleteMessage")
     public ResponseMsg deleteMessage(@RequestBody Map<String, Object> params) {
-        return messageService.deleteMessage(Long.parseLong(params.get("id").toString()));
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return messageService.deleteMessage(username, Long.parseLong(params.get("id").toString()));
     }
 
     @PostMapping("getMessage")
@@ -41,9 +42,9 @@ public class MessageController {
         return messageService.getMessage(username);
     }
 
-    @PostMapping("getUnreadMessage")
-    public ResponseMsg getUnreadMessage() {
+    @PostMapping("getNumberUnreadMessage")
+    public ResponseMsg getNumberOfUnreadMessage() {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
-        return messageService.getUnreadMessage(username);
+        return messageService.getNumberOfUnreadMessage(username);
     }
 }

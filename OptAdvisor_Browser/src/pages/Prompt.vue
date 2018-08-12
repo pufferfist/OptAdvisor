@@ -1,5 +1,5 @@
 <template>
-  <Row class="h-100 pb3" style="background-color: #f0f0f0">
+  <Row class="pb3 row">
     <Col span="8" class="h-100">
       <div class="message-mainlist-con mw-100 h-100">
         <div>
@@ -19,19 +19,10 @@
             <span class="mes-type-btn-text">已读消息</span>
           </Button>
         </div>
-        <!--<div>-->
-          <!--<Button @click="setCurrentMesType('recyclebin')" size="large" long type="text">-->
-            <!--<transition name="mes-current-type-btn">-->
-              <!--<Icon v-show="currentMessageType === 'recyclebin'" type="checkmark"></Icon>-->
-            <!--</transition>-->
-            <!--<span class="mes-type-btn-text">回收站</span>-->
-            <!--<Badge class="message-count-badge-outer" class-name="message-count-badge" :count="recyclebinCount"></Badge>-->
-          <!--</Button>-->
-        <!--</div>-->
       </div>
     </Col>
-    <Col span="16" class="h-100">
-      <div class="message-content-con mh3 h-100">
+    <Col span="16" class="h-100  ">
+      <div class="message-content-con mh3 h-100 min-h">
         <transition name="view-message">
           <div v-if="showMesTitleList" class="message-title-list-con">
             <Table ref="messageList" :columns="mesTitleColumns" :data="currentMesList" :no-data-text="noDataText"></Table>
@@ -91,18 +82,6 @@
           }
         }, '删除');
       };
-      // const restoreBtn = (h, params) => {
-      //   return h('Button', {
-      //     props: {
-      //       size: 'small'
-      //     },
-      //     on: {
-      //       click: () => {
-      //         this.hasreadMesList.unshift(this.recyclebinList.splice(params.index, 1)[0]);
-      //       }
-      //     }
-      //   }, '还原');
-      // };
       return {
         currentMesList: [],
         unreadMesList: [],
@@ -112,7 +91,6 @@
         showMesTitleList: true,
         unreadCount: 0,
         hasreadCount: 0,
-        recyclebinCount: 0,
         noDataText: '暂无未读消息',
         mes: {
           title: '',
@@ -122,11 +100,6 @@
         deleteConfirm: false,
         selectedRow: null,
         mesTitleColumns: [
-          // {
-          //     type: 'selection',
-          //     width: 50,
-          //     align: 'center'
-          // },
           {
             title: ' ',
             key: 'title',
@@ -141,7 +114,16 @@
                       this.mes.title = params.row.title;
                       this.mes.time = this.formatDate(params.row.time);
                       this.getContent(params.index);
-                      //访问后端置为已读
+                      //添加到已读列表
+                      this.hasreadMesList.unshift(this.currentMesList.splice(params.index, 1)[0]);
+                      //请求服务器置为已读
+                      let id = this.unreadMesList[this.selectedRow.index].id;
+                      this.axios.post("/backend/message/setMessageRead",{id:id})
+                        .then((res)=>{
+                          if(res.data.code!==0){
+                            this.$Message.error("something goes wrong")
+                          }
+                        });
                     }
                   }
                 }, params.row.title);
@@ -209,6 +191,7 @@
     },
     methods: {
       formatDate (time) {
+        //待修改
         let date = new Date(time);
         let year = date.getFullYear();
         let month = date.getMonth() + 1;
@@ -232,9 +215,6 @@
         } else if (type === 'hasread') {
           this.noDataText = '暂无已读消息';
           this.currentMesList = this.hasreadMesList;
-        } else {
-          this.noDataText = '回收站无消息';
-          this.currentMesList = this.recyclebinList;
         }
       },
       getContent (index) {
@@ -248,44 +228,29 @@
       },
       ok(){
         this.hasreadMesList.splice(this.selectedRow.index, 1);
-        //异步请求删除消息
+        let id = this.hasreadMesList[this.selectedRow.index].id;
+        this.axios.post("/backend/message/deleteMessage",{id:id})
+          .then((res)=>{
+            if(res.data.code!==0){
+              this.$Message.error("something goes wrong")
+            }
+          });
       }
     },
     mounted () {
-      //异步请求消息列表
-      this.currentMesList = this.unreadMesList = [
-        {
-          title: '欢迎登录iView-admin后台管理系统，来了解他的用途吧',
-          time: 1507390106000,
-          message:'',
-        },
-        {
-          title: '使用iView-admin和iView-ui组件库快速搭建你的后台系统吧',
-          time: 1507390106000,
-          message:'这是您点击的《欢迎登录iView-admin后台管理系统，来了解他的用途吧》的相关内容。',
-        },
-        {
-          title: '喜欢iView-admin的话，欢迎到github主页给个star吧',
-          time: 1507390106000,
-          message:'这是您点击的《喜欢iView-admin的话，欢迎到github主页给个star吧》的相关内容。',
-        }
-      ];
-      this.hasreadMesList = [
-        {
-          title: '这是一条您已经读过的消息',
-          time: 1507330106000,
-          message:'这是您点击的《这是一条您已经读过的消息》的相关内容。'
-        }
-      ];
-      this.recyclebinList = [
-        {
-          title: '这是一条被删除的消息',
-          time: 1506390106000
-        }
-      ];
+      /**
+       * 请求消息列表
+       */
+      this.axios.post("/backend/message/getMessage")
+        .then((res)=>{
+          this.currentMesList = this.unreadMesList = res.data.data.unread;
+          this.hasreadMesList = res.data.data.read;
+        })
+        .catch((error)=>{
+          console.log(error)
+        });
       this.unreadCount = this.unreadMesList.length;
       this.hasreadCount = this.hasreadMesList.length;
-      this.recyclebinCount = this.recyclebinList.length;
     },
     watch: {
       unreadMesList (arr) {
@@ -293,15 +258,18 @@
       },
       hasreadMesList (arr) {
         this.hasreadCount = arr.length;
-      },
-      recyclebinList (arr) {
-        this.recyclebinCount = arr.length;
       }
     }
   };
 </script>
 
 <style scoped>
+  .row{
+    background-color: #f0f0f0;
+  }
+  .min-h{
+    min-height: 600px;
+  }
   .message-mainlist-con {
     bottom: 0;
     padding: 10px 0;
