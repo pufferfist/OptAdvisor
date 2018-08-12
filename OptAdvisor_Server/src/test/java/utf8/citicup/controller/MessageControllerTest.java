@@ -30,7 +30,7 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static utf8.citicup.utils.JsonParse.*;
+import static utf8.citicup.service.util.JsonParse.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("dev")
@@ -135,7 +135,7 @@ public class MessageControllerTest {
         for (Message message : messageList) {
             Map<String, Object> params = new HashMap<>();
             params.put("id", message.getId());
-            this.mockMvc.perform(post("/message/delete/message")
+            this.mockMvc.perform(post("/message/deleteMessage").session(httpSession)
                     .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(params)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.code").value(0));

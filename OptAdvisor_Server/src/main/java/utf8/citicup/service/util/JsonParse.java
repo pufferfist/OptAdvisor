@@ -1,4 +1,4 @@
-package utf8.citicup.utils;
+package utf8.citicup.service.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;

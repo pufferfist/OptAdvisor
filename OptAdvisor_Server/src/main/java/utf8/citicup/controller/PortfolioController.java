@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import utf8.citicup.domain.common.Type;
-import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.PortfolioService;
 
@@ -24,23 +22,26 @@ public class PortfolioController {
     @PostMapping("addPortfolio")
     public ResponseMsg addPortfolio(@RequestParam Map<String, Object> params) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
-        return new ResponseMsg(0, "Add portfolio success",
-                portfolioService.addPortfolio(username, (Option[]) params.get("option"), (Type) params.get("type")));
+        return null;
+//        return portfolioService.addPortfolio(username, params.get("option"), params.get("type"));
+//        TODO
     }
 
     @PostMapping("riskTracking")
     public ResponseMsg riskTracking(Long portfolioId) {
-        return new ResponseMsg(0, "Get risk tracking success", portfolioService.riskTracking(portfolioId));
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return portfolioService.riskTracking(username, portfolioId);
     }
 
     @PostMapping("getPortfolio")
     public ResponseMsg getPortfolio() {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
-        return new ResponseMsg(0, "Get portfolio success", portfolioService.getPortfolio(username));
+        return portfolioService.getPortfolio(username);
     }
 
     @PostMapping("getPortfolioInfo")
     public ResponseMsg getPortfolioInfo(Long portfolioId) {
-        return new ResponseMsg(0, "Get portfolio information success", portfolioService.getPortfolioInfo(portfolioId));
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return portfolioService.getPortfolioInfo(username, portfolioId);
     }
 }

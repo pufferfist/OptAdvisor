@@ -10,7 +10,7 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static utf8.citicup.utils.JsonParse.objectToJsonString;
+import static utf8.citicup.service.util.JsonParse.objectToJsonString;
 
 public class AuthenticationProcess {
     public static MockHttpSession login(MockMvc mockMvc, String username, String password) throws Exception {

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:utils="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">
+        <property name="realm" ref="realm"/>
+    </bean>
+
+    <bean id="realm" class="utf8.citicup.shiro.CustomRealm"/>
+
+    <bean id="myFormAuthenticationFilter" class="utf8.citicup.shiro.myFormAuthenticationFilter"/>
+
+    <bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">
+        <property name="securityManager" ref="securityManager"/>
+        <property name="loginUrl" value="/auth"/>
+        <!--<property name="filters">
+            <utils:map>
+                <entry key="authc" value-ref="myFormAuthenticationFilter"/>
+            </utils:map>
+        </property>-->
+        <property name="filterChainDefinitions">
+            <value>
+                /user/private/** = anon
+                /message/private/** = anon
+                /user/** = user
+                /message/** = user
+                /** = anon
+            </value>
+        </property>
+    </bean>
+</beans>

@@ -1,6 +1,5 @@
 package utf8.citicup.shiro;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -13,9 +12,6 @@ import org.springframework.stereotype.Component;
 import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.User;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Component
 public class CustomRealm extends AuthorizingRealm {
 
@@ -26,13 +22,10 @@ public class CustomRealm extends AuthorizingRealm {
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principals) {
         logger.info("-----Authorization-----");
-        String username = (String) SecurityUtils.getSubject().getPrincipal();
+        String username = (String) principals.getPrimaryPrincipal();
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
-
         String role = (null == userDataService.findById(username)) ? "anon" : "user";
-        Set<String> set = new HashSet<>();
-        set.add(role);
-        info.setRoles(set);
+        info.addRole(role);
         return info;
     }
 
