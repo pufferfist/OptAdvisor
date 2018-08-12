@@ -29,6 +29,7 @@ public class StatusMsg {
 
     public static ResponseMsg isLoggedIn = new ResponseMsg(0, "You are now logged in");
     public static ResponseMsg needToLogin = new ResponseMsg(1008, "Need to login first");
+    public static ResponseMsg overMaxSessionNumber = new ResponseMsg(1009, "Over max number of login");
 
 
     public static ResponseMsg setMessageReadSuccess = new ResponseMsg(0, "Set message read success");

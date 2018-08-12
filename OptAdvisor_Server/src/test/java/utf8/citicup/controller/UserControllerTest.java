@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static utf8.citicup.service.util.JsonParse.*;
@@ -138,7 +137,8 @@ public class UserControllerTest {
         AuthenticationProcess.logout(mockMvc, httpSession);
 
         this.mockMvc.perform(post("/user/getInfo").session(httpSession))
-                .andExpect(status().is3xxRedirection()).andDo(print());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1008));
     }
 
     @Test

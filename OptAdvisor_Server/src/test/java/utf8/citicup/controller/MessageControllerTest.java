@@ -128,7 +128,6 @@ public class MessageControllerTest {
 
     @Test
     public void test98DeleteMessage() throws Exception {
-
         Map<String, List<Message>> stringListMap = this.getMessage();
         List<Message> messageList = stringListMap.get("unread");
         messageList.addAll(stringListMap.get("read"));

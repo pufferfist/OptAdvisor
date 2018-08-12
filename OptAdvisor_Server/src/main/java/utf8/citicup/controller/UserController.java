@@ -1,7 +1,12 @@
 package utf8.citicup.controller;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,12 +31,31 @@ public class UserController {
 
     @PostMapping("login")
     public ResponseMsg login(@RequestBody Map<String, Object> params) {
-        return userService.login(params.get("username").toString(), params.get("password").toString());
+        String username = params.get("username").toString();
+        String password = params.get("password").toString();
+        logger.info(username + ": " + password);
+        password = new Sha256Hash(password).toString();
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        token.setRememberMe(true);
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            subject.login(token);
+        } catch (UnknownAccountException uae) {
+            return StatusMsg.unknownUsername;
+        } catch (IncorrectCredentialsException ice) {
+            return StatusMsg.incorrectPassword;
+        }
+        if (!subject.isAuthenticated()) {
+            token.clear();
+            return StatusMsg.notAuthenticated;
+        }
+        return StatusMsg.loginSuccess;
     }
 
     @PostMapping("user/logout")
     public ResponseMsg logout() {
-        return userService.logout();
+        SecurityUtils.getSubject().logout();
+        return StatusMsg.logoutSuccess;
     }
 
     @PostMapping("signUp")
