@@ -1,10 +1,10 @@
 <template>
-    <div class="layout">
-      <Layout>
+    <div class="layout h-100 tc">
+      <Layout class="h-100">
         <Header ref="header" class="header dib">
           <NavBar class="nav"></NavBar>
         </Header>
-        <Content class="content">
+        <Content class="content h-100">
           <router-view class="child"></router-view>
         </Content>
         <Footer class="dib">
@@ -43,7 +43,8 @@
   }
 
   .content{
-    padding: 0 400px;
+    margin: auto;
+    width: 65%;
     background-color: #ffffff;
   }
 </style>

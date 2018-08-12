@@ -22,8 +22,8 @@ public class MessageServiceImpl implements MessageService {
             return StatusMsg.MessageNotMatchUser;
     }
 
-    public ResponseMsg putMessage(String username, String message) {
-        messageDataService.save(new Message(username, message));
+    public ResponseMsg putMessage(Message message) {
+        messageDataService.save(message);
         return StatusMsg.putMessageSuccess;
     }
 
@@ -36,5 +36,11 @@ public class MessageServiceImpl implements MessageService {
     public ResponseMsg getUnreadMessage(String username) {
         return new ResponseMsg(0, "Get number of unread message success",
                 messageDataService.findByUsernameAnReadStatus(username, false).size());
+    }
+
+    @Override
+    public ResponseMsg deleteMessage(Long id) {
+        messageDataService.delete(id);
+        return StatusMsg.deleteMessageSuccess;
     }
 }

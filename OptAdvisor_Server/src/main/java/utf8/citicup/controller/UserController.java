@@ -5,18 +5,17 @@ import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
-import utf8.citicup.service.util.StatusMsg;
 import utf8.citicup.service.UserService;
+import utf8.citicup.service.util.StatusMsg;
 
 import java.util.Map;
 
 @RestController
+@ResponseStatus(HttpStatus.OK)
 public class UserController {
 
     @Autowired
@@ -45,7 +44,7 @@ public class UserController {
         String username = params.get("username").toString();
         String verifyCode = Integer.toString((int) (Math.random() * 9999));
         ResponseMsg ret = userService.sendVerifyCode(username, verifyCode);
-        if (StatusMsg.sendVerifyCodeSuccess == ret){
+        if (StatusMsg.sendVerifyCodeSuccess == ret) {
             Session session = SecurityUtils.getSubject().getSession();
             session.setAttribute("username", username);
             session.setAttribute("verifyCode", verifyCode);
@@ -83,8 +82,16 @@ public class UserController {
         return userService.getInfo(username);
     }
 
-    @RequestMapping("auth")
+    @PostMapping("user/private/deleteUser")
+    public ResponseMsg deleteUser(@RequestBody Map<String, Object> params) {
+        return userService.deleteUser(params.get("username").toString());
+    }
+
+    @RequestMapping(value = "auth")
     public ResponseMsg auth() {
-        return StatusMsg.needToLogin;
+        if (SecurityUtils.getSubject().isAuthenticated())
+            return StatusMsg.isLoggedIn;
+        else
+            return StatusMsg.needToLogin;
     }
 }

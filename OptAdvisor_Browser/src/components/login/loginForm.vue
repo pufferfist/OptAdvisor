@@ -50,13 +50,17 @@
 
 
         this.$cookie.set("userName",this.formInline.user);
-        // this.axios.get('/sinaTime/StockOptionService.getStockName')
-        //   .then( (response)=> {
-        //     this.test=response
-        // })
-        //   .catch(function (error) {
-        //     console.log(error);
-        //   });
+        this.axios.post('/backend/login',{
+          username:this.formInline.user,
+          password:this.formInline.password
+        })
+          .then( (response)=> {
+            console.log(response.data.code);
+            console.log(response.data.msg);
+        })
+          .catch(function (error) {
+            console.log(error);
+          });
       }
     }
   }
