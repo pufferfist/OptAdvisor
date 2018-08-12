@@ -19,10 +19,17 @@ module.exports = {
         }
       },
       '/sinaTime': {
-        target: 'http://stock.finance.sina.com.cn/futures/api/openapi.php', //设置调用接口域名和端口号别忘了加http
+        target: 'http://stock.finance.sina.com.cn/futures/api/openapi.php',
         changeOrigin: true,
         pathRewrite: {
           '^/sinaTime': ''
+        }
+      },
+      '/backend': {
+        target: 'http://localhost:8088/',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/backend': ''
         }
       }
     },
