@@ -14,6 +14,7 @@ import InfoCollect from '../pages/InfoCollect'
 import DIY from '../pages/DIY'
 import MyPortfolio from '../pages/MyPortfolio'
 import Prompt from '../pages/Prompt'
+import test from '../components/Hedging/collect_info'
 
 
 Vue.use(Router)
@@ -96,6 +97,10 @@ export default new Router({
         {
           path: 'prompt',
           component: Prompt
+        },
+        {
+          path:'test',
+          component:test
         }
       ]
     }
