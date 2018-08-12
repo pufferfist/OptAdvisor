@@ -24,12 +24,17 @@ public class Option {
     private double executionPrice;//执行价格
     private double transactionPrice;//成交价
     private int quantity;//在组合中的份数,单独存在无意义
+    private double yclose;//期权前一天收盘价
+    private double price1;//期权实时买入价格
+    private double price2;//期权实时卖出价格
+    private double k;//期权行权价格
     private double delta;
     private double gamma;
     private double vega;
     private double theta;
     private double rho;
     private double beta;
+
 
     public Option(){}
 
@@ -55,6 +60,38 @@ public class Option {
     @Override
     public String toString() {
         return "{"+name+","+id+"}";
+    }
+
+    public double getK() {
+        return k;
+    }
+
+    public void setK(double k) {
+        this.k = k;
+    }
+
+    public double getPrice1() {
+        return price1;
+    }
+
+    public void setPrice1(double price1) {
+        this.price1 = price1;
+    }
+
+    public double getPrice2() {
+        return price2;
+    }
+
+    public void setPrice2(double price2) {
+        this.price2 = price2;
+    }
+
+    public double getYclose() {
+        return yclose;
+    }
+
+    public void setYclose(double yclose) {
+        this.yclose = yclose;
     }
 
     public String getId() { return id; }

@@ -10,18 +10,16 @@ public interface UserService {
 
     ResponseMsg signUp(User user);
 
-    ResponseMsg sendVerifyCode(String phoneNumber);
+    ResponseMsg sendVerifyCode(String username, String verifyCode);
 
-    ResponseMsg checkVerifyCode(String verifyCode, String newPassword);
+    ResponseMsg checkVerifyCode(Object username, Object srcVerifyCode, String verifyCode, String newPassword);
 
-    ResponseMsg resetPassword(String oldUsername, String newPassword);
+    ResponseMsg resetPassword(String username, String oldUsername, String newPassword);
 
-    ResponseMsg modifyInfo(User user);
+    ResponseMsg modifyInfo(String currentUsername, User user);
 
-    ResponseMsg getInfo();
+    ResponseMsg getInfo(String username);
 
     User getUser(String username);
-
-    String getRole(String username);
 
 }

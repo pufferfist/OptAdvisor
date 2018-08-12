@@ -13,15 +13,17 @@ public class Message {
     @GeneratedValue
     private Long id;
 
-    private String userName;
+    private String username;
 
-    private boolean readStatus;
+    private Boolean readStatus;
 
     private String message;
 
-    public Message(String userName,String message){
+    private String title;
+
+    public Message(String username,String message){
         readStatus=false;
-        this.userName=userName;
+        this.username=username;
         this.message=message;
     }
 
@@ -29,15 +31,19 @@ public class Message {
 
     public Long getId() { return id; }
 
-    public String getUserName() { return userName; }
+    public String getUsername() { return username; }
 
-    public void setUserName(String userName) { this.userName = userName; }
+    public void setUsername(String username) { this.username = username; }
 
-    public boolean isReadStatus() { return readStatus; }
+    public boolean getReadStatus() { return readStatus; }
 
     public void setReadStatus(boolean readStatus) { this.readStatus = readStatus; }
 
     public String getMessage() { return message; }
 
     public void setMessage(String message) { this.message = message; }
+
+    public String getTitle() { return title; }
+
+    public void setTitle(String title) { this.title = title; }
 }

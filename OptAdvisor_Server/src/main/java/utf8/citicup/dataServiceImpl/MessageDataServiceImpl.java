@@ -9,6 +9,9 @@ import org.springframework.stereotype.Service;
 import utf8.citicup.dao.MessageRepository;
 import utf8.citicup.dataService.MessageDataService;
 import utf8.citicup.domain.entity.Message;
+
+import java.util.List;
+
 @Service
 public class MessageDataServiceImpl implements MessageDataService{
     @Autowired
@@ -33,4 +36,25 @@ public class MessageDataServiceImpl implements MessageDataService{
     public Message findById(long id) {
         return messageRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public List<Message> findByUsername(String username) {
+        return messageRepository.findByUsername(username);
+    }
+
+    @Override
+    public List<Message> findByUsernameAnReadStatus(String username, boolean readStatus) {
+        return messageRepository.findByUsernameAndReadStatus(username,readStatus);
+    }
+
+    @Override
+    @CacheEvict(value="message")
+    public boolean updateReadStatus(Long id, String username, boolean readStatus) {
+        if(messageRepository.findByIdAndUsername(id,username)==null)return false;
+        messageRepository.updateReadStatus(id,username,readStatus);
+        return true;
+    }
+
+
 }
+
