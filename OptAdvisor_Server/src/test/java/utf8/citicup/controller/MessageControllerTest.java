@@ -30,8 +30,7 @@ import java.util.Map;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static utf8.citicup.utils.JsonParse.jsonStringToMap;
-import static utf8.citicup.utils.JsonParse.objectToJsonString;
+import static utf8.citicup.utils.JsonParse.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("dev")
@@ -73,20 +72,23 @@ public class MessageControllerTest {
                 .andExpect(jsonPath("$.code").value(0));
     }
 
-    private List<Message> getMessage() throws Exception {
+    private Map<String, List<Message>> getMessage() throws Exception {
         MvcResult mvcResult = this.mockMvc.perform(post("/message/getMessage").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
         Map<String, Object> map = jsonStringToMap(mvcResult.getResponse().getContentAsString());
-        ObjectMapper mapper = new ObjectMapper();
-        return mapper.convertValue(map.get("data"), new TypeReference<List<Message>>() {
-        });
+        Map<String, List<Message>> result = new HashMap<>();
+        result.put("read", this.mapper.convertValue(objectToMap(map.get("data")).get("read"), new TypeReference<List<Message>>() {
+        }));
+        result.put("unread", this.mapper.convertValue(objectToMap(map.get("data")).get("unread"), new TypeReference<List<Message>>() {
+        }));
+        return result;
     }
 
     @Test
     public void test02GetMessage() throws Exception {
-        Message message = this.getMessage().get(0);
+        Message message = this.getMessage().get("unread").get(0);
         Assert.assertEquals(message.getMessage(), firstContent);
         Assert.assertFalse(message.getReadStatus());
         Assert.assertEquals(message.getTitle(), firstTitle);
@@ -105,12 +107,12 @@ public class MessageControllerTest {
 
     @Test
     public void test04GetUnreadMessageAndReadMessage() throws Exception {
-        this.mockMvc.perform(post("/message/getUnreadMessage").session(httpSession))
+        this.mockMvc.perform(post("/message/getNumberUnreadMessage").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(jsonPath("$.data").value(2));
 
-        Long id = this.getMessage().get(0).getId();
+        Long id = this.getMessage().get("unread").get(0).getId();
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
         this.mockMvc.perform(post("/message/setMessageRead").session(httpSession)
@@ -118,21 +120,22 @@ public class MessageControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
 
-        this.mockMvc.perform(post("/message/getUnreadMessage").session(httpSession))
+        this.mockMvc.perform(post("/message/getNumberUnreadMessage").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(jsonPath("$.data").value(1));
     }
 
     @Test
-    @SuppressWarnings("unchecked")
     public void test98DeleteMessage() throws Exception {
 
-        List<Message> messageList = this.getMessage();
+        Map<String, List<Message>> stringListMap = this.getMessage();
+        List<Message> messageList = stringListMap.get("unread");
+        messageList.addAll(stringListMap.get("read"));
         for (Message message : messageList) {
             Map<String, Object> params = new HashMap<>();
             params.put("id", message.getId());
-            this.mockMvc.perform(post("/message/private/deleteMessage")
+            this.mockMvc.perform(post("/message/delete/message")
                     .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(params)))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.code").value(0));

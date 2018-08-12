@@ -10,7 +10,7 @@ public interface MessageService {
 
     ResponseMsg getMessage(String username);
 
-    ResponseMsg getUnreadMessage(String username);
+    ResponseMsg getNumberOfUnreadMessage(String username);
 
-    ResponseMsg deleteMessage(Long id);
+    ResponseMsg deleteMessage(String username, Long id);
 }
