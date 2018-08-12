@@ -11,11 +11,13 @@ import './assets/css/tachyons.css';
 import Cookies from 'vue-cookie'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import echarts from 'echarts'
 
 
 Vue.use(iView);
 Vue.use(Cookies);
 Vue.use(VueAxios,axios);
+Vue.prototype.$echarts = echarts
 
 Vue.config.productionTip = false;
 

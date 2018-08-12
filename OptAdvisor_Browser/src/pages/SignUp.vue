@@ -71,6 +71,9 @@
               if (valid) {
                 //计算
                 var points=this.calculateMarks();
+                //提交
+
+                //设置
                 this.ispage02="none";
                 this.ispage03=""
                 if(points<=10){
@@ -203,6 +206,9 @@
           }
 
           return total;
+        },
+        handleSubmit(){
+
         }
       }
 
