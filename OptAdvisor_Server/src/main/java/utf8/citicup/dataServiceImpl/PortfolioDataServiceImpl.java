@@ -59,6 +59,16 @@ public class PortfolioDataServiceImpl implements PortfolioDataService{
         return portfolioList;
     }
 
+    @Override
+    @CacheEvict(value = "portfolio")
+    public boolean updateTrackingStatus(long id, boolean trackingStatus) {
+        if(portfolioRepository.findById(id).isPresent()){
+            portfolioRepository.updateReadStatus(id,trackingStatus);
+            return true;
+        }
+        return false;
+    }
+
     /**
      * 为portfolio自动查找所属option并赋值
      */
