@@ -36,7 +36,7 @@
           </MenuItem>
 
           <div class="dib pr3 pl6">
-            <router-link to="/prompt" class="black">
+            <router-link v-if="isLogin" to="/prompt" class="black">
               <Badge :count="1" class="di">
                 <Icon type="md-notifications-outline" size="30"/>
               </Badge>
@@ -44,7 +44,11 @@
           </div>
 
           <div class="dib pl3 pr4">
-            <router-link :to="'/profile/'+userName">
+            <router-link v-if="isLogin" :to="'/profile/'+userName">
+              <!--此头像应为用户自定义头像-->
+              <Avatar style="background-color: #87d068" icon="ios-person" />
+            </router-link>
+            <router-link v-if="!isLogin" :to="'/login'">
               <Avatar style="background-color: #87d068" icon="ios-person" />
             </router-link>
           </div>
@@ -62,11 +66,17 @@
       data () {
         return {
           theme: 'light',
-          userName: 'noLogin'
+          userName: '',
+          isLogin: false
         }
       },
       created:function () {
-        this.userName=this.$cookie.get("userName")
+        this.userName=this.$cookie.get("userName");
+
+        this.axios.post("/backend/auth")
+          .then((res)=>{
+            this.isLogin = (res.data.code === 0);
+          })
       }
     }
 

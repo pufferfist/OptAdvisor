@@ -1,18 +1,16 @@
 <template>
-    <div class="layout">
-      <Layout>
+      <Layout class="h-100 bg-white tc">
         <Header ref="header" class="header dib">
           <NavBar class="nav"></NavBar>
         </Header>
-        <Content class="content">
+        <Content class="content mh1">
           <router-view class="child"></router-view>
         </Content>
-        <Footer class="dib">
+        <Footer class="dib footer">
           <my-footer></my-footer>
         </Footer>
         <BackTop></BackTop>
       </Layout>
-    </div>
 </template>
 
 <script>
@@ -43,7 +41,12 @@
   }
 
   .content{
-    padding: 0 400px;
+    margin: auto;
+    width: 65%;
+    background-color: #ffffff;
+  }
+
+  .footer{
     background-color: #ffffff;
   }
 </style>
