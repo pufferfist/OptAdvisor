@@ -1,12 +1,14 @@
 <template>
     <div>
-      这里将是资产配置
+      <al-info-collect></al-info-collect>
     </div>
 </template>
 
 <script>
+    import AlInfoCollect from "../components/allocation/al-infoCollect";
     export default {
-        name: "Allocation"
+        name: "Allocation",
+      components: {AlInfoCollect}
     }
 </script>
 
