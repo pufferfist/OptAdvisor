@@ -39,6 +39,11 @@ public class UserController {
         return userService.signUp(user);
     }
 
+    @PostMapping("isUsernameUsed")
+    public boolean isUsernameUsed(@RequestBody User user){
+        return userService.isUsernameUsed(user.getUsername());
+    }
+
     @PostMapping("sendVerifyCode")
     public ResponseMsg sendVerifyCode(@RequestBody Map<String, Object> params) {
         String username = params.get("username").toString();

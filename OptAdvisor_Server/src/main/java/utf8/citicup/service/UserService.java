@@ -10,6 +10,8 @@ public interface UserService {
 
     ResponseMsg signUp(User user);
 
+    boolean isUsernameUsed(String username);
+
     ResponseMsg sendVerifyCode(String username, String verifyCode);
 
     ResponseMsg checkVerifyCode(Object username, Object srcVerifyCode, String verifyCode, String newPassword);

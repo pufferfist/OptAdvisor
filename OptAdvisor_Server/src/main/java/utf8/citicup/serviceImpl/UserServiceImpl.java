@@ -67,6 +67,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean isUsernameUsed(String username){
+        User resultOfFind=userDataService.findById(username);
+        if(null==resultOfFind){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    @Override
     public ResponseMsg sendVerifyCode(String username, String verifyCode) {
         User user = getUser(username);
         if (null == user) {

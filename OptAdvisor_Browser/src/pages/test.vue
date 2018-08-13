@@ -1,6 +1,7 @@
 <template>
   <div>
-
+    <p class="xx">XXX</p>
+    <button onclick="test">XXX</button>
   </div>
 </template>
 
@@ -8,13 +9,13 @@
     export default {
         name: "test",
       data () {
+
       },
       methods: {
 
       }
 
     }
-
 
 
 </script>
