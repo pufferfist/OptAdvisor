@@ -102,7 +102,7 @@
               { required: true,validator: validatePassCheck, trigger: 'blur' }
             ],
             name: [
-              { required: true, message: '真是姓名不能为空', trigger: 'blur' }
+              { required: true, message: '真实姓名不能为空', trigger: 'blur' }
             ],
             mail: [
               { required: true, message: '常用邮箱不能为空', trigger: 'blur' },

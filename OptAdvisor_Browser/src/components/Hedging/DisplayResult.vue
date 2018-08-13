@@ -4,7 +4,8 @@
       <div style="text-align: left">
         <div>
           <p style="font-size: 20px;font-weight: bold">展示期权：</p>
-          <Table border :columns="columns" :data="data"></Table>
+          <Table border :columns="columns1" :data="data1"></Table><br>
+          <Table border :columns="columns2" :data="data2"></Table>
         </div>
         <br>
         <div>
@@ -13,7 +14,7 @@
         <br>
         <div>
           <p style="font-size: 20px;font-weight: bold">组合表现：</p>
-          <div id="myChart" style="width: 80%;height: 300px"></div>
+          <div id="myChart" style="width: 700px;height: 300px"></div>
         </div>
       </div>
     </div>
@@ -24,7 +25,7 @@
         name: "display_result",
       data () {
         return {
-          columns: [
+          columns1: [
             {
               title: 'ID',
               key: 'id'
@@ -49,6 +50,8 @@
               title: '执行价格',
               key: 'executionPrice'
             },
+          ],
+          columns2:[
             {
               title: '成交价格',
               key: 'transactionPrice'
@@ -78,14 +81,18 @@
               key: 'rho'
             }
           ],
-          data: [
+          data1: [
             {
-              id:'',
+              id:'xx',
               name:'',
               type:'',
               property:'',
               expireTime:'',
               executionPrice:'',
+            }
+          ],
+          data2:[
+            {
               transactionPrice:'',
               quantity:'',
               delta:'',
