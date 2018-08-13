@@ -6,7 +6,7 @@ import org.apache.shiro.mgt.SecurityManager;
 import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.apache.shiro.web.session.mgt.ServletContainerSessionManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
@@ -52,7 +52,7 @@ public class ShiroConfiguration {
     }
 
     private SessionManager sessionManager() {
-        return new DefaultWebSessionManager();
+        return new ServletContainerSessionManager();
     }
 
     private CacheManager cacheManager() {
@@ -72,12 +72,17 @@ public class ShiroConfiguration {
 
     @Bean
     public CustomRealm customRealm() {
-        return new CustomRealm();
+        CustomRealm customRealm = new CustomRealm();
+        customRealm.setCacheManager(cacheManager());
+        customRealm.setSessionManager(sessionManager());
+        return customRealm;
     }
 
     @Bean
     public SecurityManager securityManager() {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
+        securityManager.setCacheManager(cacheManager());
+        securityManager.setSessionManager(sessionManager());
         securityManager.setRealm(customRealm());
         logger.info("Shiro security managing");
         return securityManager;
