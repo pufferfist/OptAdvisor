@@ -31,6 +31,10 @@ spring:
       hibernate:
         dialect: utf8.citicup.dao.mysqlDialect.MySQL5DialectUTF8
 
+  test:
+    mockmvc:
+      print: system_out
+
 server:
   port: 8088
   max-http-header-size: 1048576

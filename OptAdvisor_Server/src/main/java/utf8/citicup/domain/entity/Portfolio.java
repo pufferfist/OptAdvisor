@@ -1,14 +1,17 @@
 package utf8.citicup.domain.entity;
 
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 public class Portfolio {
+
+    public Portfolio(String username, Option[] options, Enum type, boolean trackingStatus){
+        this.username = username;
+        this.options = options;
+        this.type = type;
+        this.trackingStatus = trackingStatus;
+    }
+
     @Id
     @GeneratedValue
     private Long id;
@@ -16,6 +19,7 @@ public class Portfolio {
     private String username;
 
     @Transient
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "Portfolio")
     private Option[] options;
 
     private Enum type; //type指1：资产配置组合 2：套期保值组合 3：DIY组合
