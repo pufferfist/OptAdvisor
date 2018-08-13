@@ -12,18 +12,11 @@
 
       },
       methods: {
-        next(){
-          alert($(".xx").val())
-        }
+
       }
 
     }
 
-    $(function () {
-      $(".xx").click(function () {
-        alert(1)
-      })
-    })
 
 </script>
 

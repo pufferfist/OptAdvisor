@@ -243,18 +243,6 @@
           user.avatarPath=""
           user.w1=w1
           user.w2=w2
-          $.ajax({
-            type: "POST",
-            url: "/backend/signUp",
-            contentType:"application/json",
-            data: user,
-            success:function(data){
-              alert("success")
-            },
-            error:function (data) {
-              alert("error")
-            }
-          })
 
           // this.axios.post('http://localhost:8088/signUp', {
           //   name:array[0].fieldValue,
