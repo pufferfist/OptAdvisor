@@ -26,7 +26,14 @@
         name: "register_page03",
       data(){
           return{
-            type:""
+            type:"",
+        text1:'',
+          text2:''
+          }
+      },
+      methods:{
+          next(){
+
           }
       }
     }

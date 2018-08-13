@@ -1,7 +1,7 @@
 <template>
     <div>
       <Form :model="formItem" :label-width="100">
-        <p style="font-size: 25px;font-weight: bold">套期保值信息设置&nbsp &nbsp</p><br>
+        <p style="font-size: 25px;font-weight: bold">套期保值信息设置&nbsp &nbsp</p><br><br>
         <Timeline>
           <TimelineItem color="green">
             <FormItem label="持仓量">

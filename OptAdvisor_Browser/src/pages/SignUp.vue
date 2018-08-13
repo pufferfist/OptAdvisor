@@ -23,6 +23,8 @@
       <div style="text-align: center" v-bind:style="{display:isLastPage}">
         <Button type="primary" @click="next">下一步</Button>
       </div>
+
+      <button @click="handleSubmit(1,2)">CC</button>
      </div>
 
    </div>
@@ -72,11 +74,8 @@
                 //计算
                 var points=this.calculateMarks();
                 //提交
-
-                //设置
-                this.ispage02="none";
-                this.ispage03=""
                 if(points<=10){
+                  this.handleSubmit()
                   this.$refs.results.type="C1（安逸型）"
                   this.$refs.results.text1="在投资时会以降低风险承受度为前提，风险承受能力低，对收益要求不高，但追求资金本金的绝对安全。预期报酬率优于中长期存款利率，并确保本金在通货膨胀中发挥保值功能。"
                   this.$refs.results.text2="R1（低风险）"
@@ -101,6 +100,10 @@
                   this.$refs.results.text1="具有较强的主观风险承受意愿。并试图尝试较高收益的投资，乐意承担一定的风险，希望获得比一般人更高的收益。"
                   this.$refs.results.text2="R5（高风险）"
                 }
+                //设置
+                this.ispage02="none";
+                this.ispage03=""
+
                 this.current+=1
                 this.PO="absolute"
                 this.isLastPage="none"
@@ -207,7 +210,67 @@
 
           return total;
         },
-        handleSubmit(){
+        handleSubmit(w1,w2){
+          var array=this.$refs.information.$refs.formValidate.fields
+          var name=array[0].fieldValue
+          var gender=array[1].fieldValue
+          var username=array[2].fieldValue
+          var password=array[3].fieldValue
+          var passcheck=array[4].fieldValue
+          var birth=array[5].fieldValue
+          var email=array[6].fieldValue
+          var phone=array[7].fieldValue
+          // //console.log(name,gender,username,password,passcheck,birth,email,phone )
+          //user={}
+          // user.username=username
+          // user.password=password
+          // user.name=name
+          // user.birthday=birth
+          // user.telephone=phone
+          // user.email=email
+          // user.gender=gender
+          // user.avatarPath=""
+          // user.w1=w1
+          // user.w2=w2
+          var user={}
+          user.username=username
+          user.password=password
+          user.name=name
+          user.birthday=birth
+          user.telephone=phone
+          user.email=email
+          user.gender=gender
+          user.avatarPath=""
+          user.w1=w1
+          user.w2=w2
+          $.ajax({
+            type: "POST",
+            url: "/backend/signUp",
+            contentType:"application/json",
+            data: user,
+            success:function(data){
+              alert("success")
+            },
+            error:function (data) {
+              alert("error")
+            }
+          })
+
+          // this.axios.post('http://localhost:8088/signUp', {
+          //   name:array[0].fieldValue,
+          //   gender:array[1].fieldValue,
+          //   username:array[2].fieldValue,
+          //   password:array[3].fieldValue,
+          //   passcheck:array[4].fieldValue,
+          //   birth:array[5].fieldValue,
+          //   email:array[6].fieldValue,
+          //   phone:array[7].fieldValue,
+          //   avatarPath:"",
+          //   w1:w1,
+          //   w2:w2,
+          // }).then((res)=>{
+          //   console.log(res.data.code)
+          // })
 
         }
       }
