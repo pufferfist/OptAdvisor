@@ -14,7 +14,7 @@ import InfoCollect from '../pages/InfoCollect'
 import DIY from '../pages/DIY'
 import MyPortfolio from '../pages/MyPortfolio'
 import Prompt from '../pages/Prompt'
-import test from '../pages/test'
+import test from '../components/signUp/register_page03'
 
 
 Vue.use(Router)
