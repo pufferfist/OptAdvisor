@@ -7,7 +7,7 @@ public interface UserService {
 
     ResponseMsg signUp(User user);
 
-    boolean isUsernameUsed(String username);
+    ResponseMsg isUsernameUsed(String username);
 
     ResponseMsg sendVerifyCode(String username, String verifyCode);
 

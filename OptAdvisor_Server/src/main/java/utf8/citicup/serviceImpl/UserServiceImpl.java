@@ -9,8 +9,8 @@ import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
-import utf8.citicup.service.util.StatusMsg;
 import utf8.citicup.service.util.PolySms;
+import utf8.citicup.service.util.StatusMsg;
 
 import java.io.IOException;
 import java.util.Map;
@@ -35,14 +35,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean isUsernameUsed(String username){
+    public ResponseMsg isUsernameUsed(String username) {
         User resultOfFind=userDataService.findById(username);
-        if(null==resultOfFind){
-            return false;
-        }
-        else{
-            return true;
-        }
+        return new ResponseMsg(0, "Find if username exists success", null != resultOfFind);
     }
 
     @Override
@@ -122,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseMsg getInfo(String username) {
-        return new ResponseMsg(0, "Get user info success", getUser(username));
+        return new ResponseMsg(0, "Get user info success", this.getUser(username));
     }
 
     @Override

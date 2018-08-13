@@ -24,7 +24,7 @@ public class ShiroConfiguration {
 
     @Bean
     public ShiroFilterFactoryBean shiroFilter(SecurityManager securityManager) {
-        ShiroFilterFactoryBean shiroFilterFactoryBean = new ShiroFilterFactoryBean();
+        ShiroFilterFactoryBean shiroFilterFactoryBean = new RestShiroFilterFactoryBean();
         shiroFilterFactoryBean.setSecurityManager(securityManager);
         shiroFilterFactoryBean.setLoginUrl("/auth");  //若用户无权限,将跳转到该路径
         shiroFilterFactoryBean.setUnauthorizedUrl("/login");
@@ -32,8 +32,12 @@ public class ShiroConfiguration {
         //拦截器设置
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
         filterChainDefinitionMap.put("/admin/**", "admin");
+
         filterChainDefinitionMap.put("/user/private/**", "anon");
         filterChainDefinitionMap.put("/message/private/**", "anon");
+
+        filterChainDefinitionMap.put("/user/username/**", "anon");
+        filterChainDefinitionMap.put("/user--POST", "anon");
 
         filterChainDefinitionMap.put("/user/**", "user");
         filterChainDefinitionMap.put("/recommend/**", "user");

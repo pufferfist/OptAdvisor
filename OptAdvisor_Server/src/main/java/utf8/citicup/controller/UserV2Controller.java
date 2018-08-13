@@ -1,13 +1,16 @@
 package utf8.citicup.controller;
 
 import org.apache.shiro.SecurityUtils;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
+import org.apache.shiro.authc.UsernamePasswordToken;
+import org.apache.shiro.crypto.hash.Sha256Hash;
 import org.apache.shiro.session.Session;
+import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
@@ -15,42 +18,49 @@ import utf8.citicup.service.util.StatusMsg;
 
 import java.util.Map;
 
-import static utf8.citicup.controller.UserV2Controller.commonLogin;
-
-//@RestController
-//@ResponseStatus(HttpStatus.OK)
-public class UserController {
-
+@RestController
+public class UserV2Controller {
     @Autowired
     private UserService userService;
 
     private Logger logger = LoggerFactory.getLogger(UserController.class);
 
 
-    @PostMapping("login")
+    @PostMapping("session")
     public ResponseMsg login(@RequestBody Map<String, Object> params) {
         return commonLogin(params, logger);
     }
 
-    @PostMapping("user/logout")
+    static ResponseMsg commonLogin(@RequestBody Map<String, Object> params, Logger logger) {
+        String username = params.get("username").toString();
+        String password = params.get("password").toString();
+        logger.info(username + ": " + password);
+        password = new Sha256Hash(password).toString();
+        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
+        token.setRememberMe(true);
+        Subject subject = SecurityUtils.getSubject();
+        try {
+            subject.login(token);
+        } catch (UnknownAccountException uae) {
+            return StatusMsg.unknownUsername;
+        } catch (IncorrectCredentialsException ice) {
+            return StatusMsg.incorrectPassword;
+        }
+        if (!subject.isAuthenticated()) {
+            token.clear();
+            return StatusMsg.notAuthenticated;
+        }
+        return StatusMsg.loginSuccess;
+    }
+
+    @DeleteMapping("session")
     public ResponseMsg logout() {
         SecurityUtils.getSubject().logout();
         return StatusMsg.logoutSuccess;
     }
 
-    @PostMapping("signUp")
-    public ResponseMsg signUp(@RequestBody User user) {
-        return userService.signUp(user);
-    }
-
-    @PostMapping("isUsernameUsed")
-    public ResponseMsg isUsernameUsed(@RequestBody User user){
-        return userService.isUsernameUsed(user.getUsername());
-    }
-
-    @PostMapping("sendVerifyCode")
-    public ResponseMsg sendVerifyCode(@RequestBody Map<String, Object> params) {
-        String username = params.get("username").toString();
+    @GetMapping("code")
+    public ResponseMsg sendVerifyCode(String username) {
         String verifyCode = Integer.toString((int) (Math.random() * 9999));
         ResponseMsg ret = userService.sendVerifyCode(username, verifyCode);
         if (StatusMsg.sendVerifyCodeSuccess == ret) {
@@ -61,11 +71,11 @@ public class UserController {
         return ret;
     }
 
-    @PostMapping("checkVerifyCode")
+    @PostMapping("code")
     public ResponseMsg checkVerifyCode(@RequestBody Map<String, Object> params) {
         Session session = SecurityUtils.getSubject().getSession();
         ResponseMsg ret = userService.checkVerifyCode(session.getAttribute("username"), session.getAttribute("verifyCode"),
-                params.get("verifyCode").toString(), params.get("newPassword").toString());
+                params.get("code").toString(), params.get("password").toString());
         if (StatusMsg.checkCodeAndSetPasswordSuccess == ret || StatusMsg.unknownUsername == ret) {
             session.removeAttribute("username");
             session.removeAttribute("verifyCode");
@@ -73,30 +83,40 @@ public class UserController {
         return ret;
     }
 
-    @PostMapping("user/resetPassword")
+    @PutMapping("user/password")
     public ResponseMsg resetPassword(@RequestBody Map<String, Object> params) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         return userService.resetPassword(username, params.get("oldPassword").toString(), params.get("newPassword").toString());
     }
 
-    @PostMapping("user/modifyInfo")
+    @PostMapping("user")
+    public ResponseMsg signUp(@RequestBody User user) {
+        return userService.signUp(user);
+    }
+
+    @GetMapping("user/username")
+    public ResponseMsg isUsernameUsed(String search){
+        return userService.isUsernameUsed(search);
+    }
+
+    @PutMapping("user")
     public ResponseMsg modifyInfo(@RequestBody User user) {
         String currentUsername = SecurityUtils.getSubject().getPrincipal().toString();
         return userService.modifyInfo(currentUsername, user);
     }
 
-    @PostMapping("user/getInfo")
+    @GetMapping("user")
     public ResponseMsg getInfo() {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         return userService.getInfo(username);
     }
 
-    @PostMapping("user/private/deleteUser")
-    public ResponseMsg deleteUser(@RequestBody Map<String, Object> params) {
-        return userService.deleteUser(params.get("username").toString());
+    @DeleteMapping("admin/user/{username}")
+    public ResponseMsg deleteUser(@PathVariable String username) {
+        return userService.deleteUser(username);
     }
 
-    @RequestMapping(value = "auth")
+    @GetMapping(value = "session")
     public ResponseMsg auth() {
         if (SecurityUtils.getSubject().isAuthenticated())
             return StatusMsg.isLoggedIn;

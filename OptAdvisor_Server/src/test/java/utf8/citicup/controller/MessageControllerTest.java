@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import utf8.citicup.CiticupApplication;
 import utf8.citicup.domain.entity.Message;
-import utf8.citicup.utils.AuthenticationProcess;
+import utf8.citicup.util.AuthenticationProcess;
 
 import java.util.HashMap;
 import java.util.List;
