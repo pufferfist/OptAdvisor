@@ -12,6 +12,7 @@ import Cookies from 'vue-cookie'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import echarts from 'echarts'
+import $ from 'jquery'
 
 
 Vue.use(iView);
