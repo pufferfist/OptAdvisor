@@ -6,7 +6,7 @@ import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.ResponseMsg;
 
 public interface PortfolioService {
-    ResponseMsg addPortfolio(String username, Option[] list, Type type);
+    ResponseMsg addPortfolio(String username, Option[] options, Type type);
     ResponseMsg riskTracking(String username, Long portfolioId);
     ResponseMsg getPortfolio(String username);
     ResponseMsg getPortfolioInfo(String username, Long portfolioId);

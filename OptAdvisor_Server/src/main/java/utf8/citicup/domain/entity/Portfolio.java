@@ -8,6 +8,9 @@ import javax.persistence.Transient;
 @Entity
 public class Portfolio {
 
+    public Portfolio() {
+    }
+
     public Portfolio(String username, Option[] options, Enum type, boolean trackingStatus){
         this.username = username;
         this.options = options;

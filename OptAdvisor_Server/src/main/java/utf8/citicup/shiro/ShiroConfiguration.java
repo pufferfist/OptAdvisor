@@ -31,6 +31,7 @@ public class ShiroConfiguration {
 
         //拦截器设置
         Map<String, String> filterChainDefinitionMap = new LinkedHashMap<>();
+        filterChainDefinitionMap.put("/admin/**", "admin");
         filterChainDefinitionMap.put("/user/private/**", "anon");
         filterChainDefinitionMap.put("/message/private/**", "anon");
 
@@ -45,7 +46,8 @@ public class ShiroConfiguration {
         shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
 
         Map<String, Filter> filtersMap = new HashMap<>();
-        filtersMap.put("user", kickSessionControlFilter());
+        filtersMap.put("user", customAccessControlFilter());
+        filtersMap.put("admin", customAccessControlFilter());
         shiroFilterFactoryBean.setFilters(filtersMap);
         logger.info("Shiro Configuration filter initializing");
         return shiroFilterFactoryBean;
@@ -59,15 +61,8 @@ public class ShiroConfiguration {
         return new MemoryConstrainedCacheManager();
     }
 
-    private CustomAccessControlFilter kickSessionControlFilter(){
-        CustomAccessControlFilter kickSessionControlFilter = new CustomAccessControlFilter();
-        //使用cacheManager获取相应的cache来缓存用户登录的会话；用于保存用户—会话之间的关系的；
-        //这里我们还是用之前shiro使用的redisManager()实现的cacheManager()缓存管理
-        //也可以重新另写一个，重新配置缓存时间之类的自定义缓存属性
-        kickSessionControlFilter.setCacheManager(cacheManager());
-        //用于根据会话ID，获取会话进行踢出操作的；
-        kickSessionControlFilter.setSessionManager(sessionManager());
-        return kickSessionControlFilter;
+    private CustomAccessControlFilter customAccessControlFilter(){
+        return new CustomAccessControlFilter();
     }
 
     @Bean

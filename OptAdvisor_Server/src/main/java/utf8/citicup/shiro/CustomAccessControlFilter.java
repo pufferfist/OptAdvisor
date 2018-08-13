@@ -1,9 +1,5 @@
 package utf8.citicup.shiro;
 
-import org.apache.shiro.cache.Cache;
-import org.apache.shiro.cache.CacheManager;
-import org.apache.shiro.session.Session;
-import org.apache.shiro.session.mgt.SessionManager;
 import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.slf4j.Logger;
@@ -13,29 +9,21 @@ import utf8.citicup.service.util.StatusMsg;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import java.util.Deque;
 
 class CustomAccessControlFilter extends AccessControlFilter {
 
-    private SessionManager sessionManager;
-    private Cache<String, Deque<Session>> cache;
     private Logger logger = LoggerFactory.getLogger(CustomAccessControlFilter.class);
 
-    void setSessionManager(SessionManager sessionManager) {
-        this.sessionManager = sessionManager;
-    }
-
-    //设置Cache的key的前缀
-    void setCacheManager(CacheManager cacheManager) {
-        this.cache = cacheManager.getCache("shiro_redis_cache");
-    }
-
-    @Override
-    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        logger.info("Access is allowed");
-        return false;
-    }
-
+//    private SessionManager sessionManager;
+//    private Cache<String, Deque<Session>> cache;
+//    void setSessionManager(SessionManager sessionManager) {
+//        this.sessionManager = sessionManager;
+//    }
+//
+//    //设置Cache的key的前缀
+//    void setCacheManager(CacheManager cacheManager) {
+//        this.cache = cacheManager.getCache("shiro_redis_cache");
+//    }
 //    private void deleteCacheSession(Subject subject) {
 //        if (subject.getPrincipal() != null) {
 //            String username = subject.getPrincipal().toString();
@@ -44,6 +32,11 @@ class CustomAccessControlFilter extends AccessControlFilter {
 //                deque.remove(subject.getSession());
 //        }
 //    }
+
+    @Override
+    protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
+        return false;
+    }
 
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
@@ -55,6 +48,7 @@ class CustomAccessControlFilter extends AccessControlFilter {
 //            deleteCacheSession(subject);
             return false;
         }
+        return true;
 //        Session session = subject.getSession();
 //        String username = subject.getPrincipal().toString();
 //
@@ -107,6 +101,5 @@ class CustomAccessControlFilter extends AccessControlFilter {
 //            response.getWriter().print(JsonParse.objectToJsonString(StatusMsg.overMaxSessionNumber));
 //            return false;
 //        }
-        return true;
     }
 }

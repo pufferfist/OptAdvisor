@@ -25,10 +25,11 @@ public class Message {
 
     private String time;
 
-    public Message(String username,String message){
+    public Message(String username,String message, String title){
         readStatus=false;
         this.username=username;
         this.message=message;
+        this.title = title;
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd hh:mm");
         this.time = dateFormat.format(date);
