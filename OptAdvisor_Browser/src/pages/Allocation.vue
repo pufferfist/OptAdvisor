@@ -1,7 +1,9 @@
 <template>
-    <div>
-      <al-info-collect></al-info-collect>
-    </div>
+    <Row>
+      <Col class="box">
+        <al-info-collect class="boxChild"></al-info-collect>
+      </Col>
+    </Row>
 </template>
 
 <script>
@@ -13,5 +15,13 @@
 </script>
 
 <style scoped>
+  .box{
+    display: table;
+    height: 600px;
+  }
 
+  .boxChild{
+    display: table-cell;
+    vertical-align: middle;
+  }
 </style>

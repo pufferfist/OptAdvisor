@@ -62,6 +62,23 @@
             callback();
           }
         };
+        const validateUsername = (rule, value, callback)=>{
+          if(value===''){
+            callback(new Error('用户名不能为空'));
+          }
+          else{
+            this.axios.post('/backend/isUsernameUsed',{
+              username:this.formValidate.username
+            }).then(function (response) {
+              if(response.data==true){
+                callback(new Error("用户名已存在，请修改用户名"))
+              }
+              else{
+                callback();
+              }
+            })
+          }
+        }
         return {
           formValidate: {
             isman:true,
@@ -76,7 +93,7 @@
           },
           ruleValidate: {
             username: [
-              { required: true, message: '用户名不能为空', trigger: 'blur' }
+              { required: true, validator:validateUsername, trigger: 'blur' }
             ],
             passwd: [
               { required: true,validator: validatePass, trigger: 'blur' }
