@@ -1,9 +1,6 @@
 package utf8.citicup.domain.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * 期权实体
@@ -34,6 +31,10 @@ public class Option {
     private double theta;
     private double rho;
     private double beta;
+
+    @ManyToOne
+    @JoinColumn(name = "portfolio_id")
+    private Portfolio portfolio;
 
 
     public Option(){}
@@ -156,5 +157,13 @@ public class Option {
 
     public Long getPersisentId() {
         return persisentId;
+    }
+
+    public Portfolio getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(Portfolio portfolio) {
+        this.portfolio = portfolio;
     }
 }
