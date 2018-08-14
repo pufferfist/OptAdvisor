@@ -1,9 +1,6 @@
 package utf8.citicup.domain.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 public class Portfolio {
@@ -21,7 +18,8 @@ public class Portfolio {
 
     private String username;
 
-    @Transient
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "portfolio")
+    @OrderColumn
     private Option[] options;
 
     private Enum type; //type指1：资产配置组合 2：套期保值组合 3：DIY组合
