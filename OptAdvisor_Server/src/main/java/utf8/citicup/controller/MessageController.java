@@ -23,8 +23,8 @@ public class MessageController {
     }
 
     @PostMapping("private/putMessage")
-//    public ResponseMsg putMessage(@RequestBody Map<String, Object> params) {
-//        return messageService.putMessage(params.get("username").toString(), params.get("message").toString());
+//    public ResponseMsg addMessage(@RequestBody Map<String, Object> params) {
+//        return messageService.addMessage(params.get("username").toString(), params.get("message").toString());
 //    }
     public ResponseMsg putMessage(@RequestBody Message message) {
         return messageService.putMessage(message);

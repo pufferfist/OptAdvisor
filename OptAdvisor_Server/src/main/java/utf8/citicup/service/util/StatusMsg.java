@@ -29,6 +29,7 @@ public class StatusMsg {
 
     public static ResponseMsg isLoggedIn = new ResponseMsg(0, "You are now logged in");
     public static ResponseMsg needToLogin = new ResponseMsg(1008, "Need to login first");
+    public static ResponseMsg overMaxSessionNumber = new ResponseMsg(1009, "Over max number of login");
 
 
     public static ResponseMsg setMessageReadSuccess = new ResponseMsg(0, "Set message read success");
@@ -37,5 +38,11 @@ public class StatusMsg {
 
     public static ResponseMsg putMessageSuccess = new ResponseMsg(0, "Put message success");
     public static ResponseMsg deleteMessageSuccess = new ResponseMsg(0, "Delete message success");
+
+    public static ResponseMsg addPortfolioSuccess = new ResponseMsg(0, "Add portfolio success");
+    public static ResponseMsg updateRiskTrackingSuccess = new ResponseMsg(0, "Update portfolio risk tracking success");
+    public static ResponseMsg portfolioNotMatchUser = new ResponseMsg(3001, "Portfolio does not match the user");
+
+    public static ResponseMsg portfolioNotExists = new ResponseMsg(3002, "Portfolio does not exists");
 
 }

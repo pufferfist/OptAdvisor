@@ -21,16 +21,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import utf8.citicup.CiticupApplication;
 import utf8.citicup.domain.entity.Message;
-import utf8.citicup.utils.AuthenticationProcess;
+import utf8.citicup.util.AuthenticationProcess;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static utf8.citicup.utils.JsonParse.*;
+import static utf8.citicup.service.util.JsonParse.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("dev")
@@ -62,18 +62,17 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void test01PutMessage() throws Exception {
-        Message message = new Message(username, firstContent);
-        message.setTitle(firstTitle);
+    public void test01PostMessage() throws Exception {
+        Message message = new Message(username, firstContent, firstTitle);
 
-        this.mockMvc.perform(post("/message/private/putMessage").session(httpSession)
+        this.mockMvc.perform(post("/admin/message").session(httpSession)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(message)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
     }
 
     private Map<String, List<Message>> getMessage() throws Exception {
-        MvcResult mvcResult = this.mockMvc.perform(post("/message/getMessage").session(httpSession))
+        MvcResult mvcResult = this.mockMvc.perform(get("/message").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andReturn();
@@ -97,9 +96,9 @@ public class MessageControllerTest {
 
     @Test
     public void test03PutSecondMessage() throws Exception {
-        Message message = new Message(username, secondContent);
+        Message message = new Message(username, secondContent, secondTitle);
         message.setTitle(secondTitle);
-        this.mockMvc.perform(post("/message/private/putMessage")
+        this.mockMvc.perform(post("/admin/message").session(httpSession)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(message)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
@@ -107,7 +106,7 @@ public class MessageControllerTest {
 
     @Test
     public void test04GetUnreadMessageAndReadMessage() throws Exception {
-        this.mockMvc.perform(post("/message/getNumberUnreadMessage").session(httpSession))
+        this.mockMvc.perform(get("/message/count").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(jsonPath("$.data").value(2));
@@ -115,12 +114,12 @@ public class MessageControllerTest {
         Long id = this.getMessage().get("unread").get(0).getId();
         Map<String, Object> map = new HashMap<>();
         map.put("id", id);
-        this.mockMvc.perform(post("/message/setMessageRead").session(httpSession)
+        this.mockMvc.perform(put("/message/" + id + "/read").session(httpSession)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
 
-        this.mockMvc.perform(post("/message/getNumberUnreadMessage").session(httpSession))
+        this.mockMvc.perform(get("/message/count").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
                 .andExpect(jsonPath("$.data").value(1));
@@ -128,15 +127,11 @@ public class MessageControllerTest {
 
     @Test
     public void test98DeleteMessage() throws Exception {
-
         Map<String, List<Message>> stringListMap = this.getMessage();
         List<Message> messageList = stringListMap.get("unread");
         messageList.addAll(stringListMap.get("read"));
         for (Message message : messageList) {
-            Map<String, Object> params = new HashMap<>();
-            params.put("id", message.getId());
-            this.mockMvc.perform(post("/message/delete/message")
-                    .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(params)))
+            this.mockMvc.perform(delete("/message/" + message.getId()).session(httpSession))
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.code").value(0));
         }
