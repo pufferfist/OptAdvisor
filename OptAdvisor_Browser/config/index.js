@@ -25,6 +25,13 @@ module.exports = {
           '^/sinaTime': ''
         }
       },
+      '/sigma':{
+        target:'http://www.optbbs.com/d/csv/d/data.csv',
+        changeOrigin:true,
+        pathRewrite: {
+          '^/sigma': ''
+        }
+      },
       '/backend': {
         target: 'http://localhost:8088/',
         changeOrigin: true,
