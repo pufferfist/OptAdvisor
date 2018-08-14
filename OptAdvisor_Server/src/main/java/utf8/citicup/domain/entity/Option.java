@@ -12,7 +12,6 @@ public class Option {
     @GeneratedValue
     private Long persisentId;//存储用主键
 
-    private Long parentId;//Portfolio主键
     private String id;
     private String name;//例如:50ETF购8月2600
     private int type;//1为买入0为卖出
@@ -39,9 +38,8 @@ public class Option {
 
     public Option(){}
 
-    public Option(Long parentId,String id,String name,int type,int property,String expireTime,double executionPrice,
+    public Option(String id,String name,int type,int property,String expireTime,double executionPrice,
                   double transactionPrice,int quantity,double delta,double gamma,double vega,double theta,double rho,double beta){
-        this.parentId=parentId;
         this.id=id;
         this.name=name;
         this.type=type;
@@ -150,10 +148,6 @@ public class Option {
     public double getBeta() { return beta; }
 
     public void setBeta(double beta) { this.beta = beta; }
-
-    public Long getParentId() { return parentId; }
-
-    public void setParentId(Long parentId) { this.parentId = parentId; }
 
     public Long getPersisentId() {
         return persisentId;
