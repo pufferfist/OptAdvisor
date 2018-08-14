@@ -22,7 +22,7 @@ public class PortfolioController {
 
     private Logger logger = LoggerFactory.getLogger(PortfolioController.class);
 
-    @RequestMapping(value = "portfolio", method = RequestMethod.POST)
+    @PostMapping("portfolio")
     public ResponseMsg addPortfolio(@RequestBody Map<String, Object> params) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         Option[] options = JsonParse.objectToAnyType(params.get("options"), Option[].class);
@@ -30,21 +30,25 @@ public class PortfolioController {
         return portfolioService.addPortfolio(username, options, type);
     }
 
-    @RequestMapping(value = "portfolio/track", method = RequestMethod.PUT)
-    public ResponseMsg riskTracking(@RequestBody Map<String, Object> params) {
+    @PutMapping("portfolio/{id}/track")
+    public ResponseMsg riskTracking(@PathVariable Long id) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
-        Long id = Long.parseLong(params.get("id").toString());
-        logger.info(String.valueOf(id));
         return portfolioService.riskTracking(username, id);
     }
 
-    @RequestMapping(value = "portfolio", method = RequestMethod.GET)
+    @GetMapping("portfolio")
     public ResponseMsg getPortfolio() {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         return portfolioService.getPortfolio(username);
     }
 
-    @RequestMapping(value = "portfolio/{portfolioId}", method = RequestMethod.GET)
+    @DeleteMapping("portfolio/{portfolioId}")
+    public ResponseMsg deletePortfolio(@PathVariable Long portfolioId) {
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return portfolioService.deletePortfolio(username, portfolioId);
+    }
+
+    @GetMapping("portfolio/{portfolioId}")
     public ResponseMsg getPortfolioInfo(@Valid @PathVariable Long portfolioId) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         return portfolioService.getPortfolioInfo(username, portfolioId);

@@ -9,5 +9,6 @@ public interface PortfolioService {
     ResponseMsg addPortfolio(String username, Option[] options, Type type);
     ResponseMsg riskTracking(String username, Long portfolioId);
     ResponseMsg getPortfolio(String username);
+    ResponseMsg deletePortfolio(String username, Long portfolioId);
     ResponseMsg getPortfolioInfo(String username, Long portfolioId);
 }

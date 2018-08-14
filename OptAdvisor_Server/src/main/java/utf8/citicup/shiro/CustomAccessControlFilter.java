@@ -4,11 +4,15 @@ import org.apache.shiro.subject.Subject;
 import org.apache.shiro.web.filter.AccessControlFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.RequestMethod;
 import utf8.citicup.service.util.JsonParse;
 import utf8.citicup.service.util.StatusMsg;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 class CustomAccessControlFilter extends AccessControlFilter {
 
@@ -41,7 +45,6 @@ class CustomAccessControlFilter extends AccessControlFilter {
     @Override
     protected boolean onAccessDenied(ServletRequest request, ServletResponse response) throws Exception {
         Subject subject = getSubject(request, response);
-        logger.info(subject.getSession().getId().toString());
         if (!subject.isAuthenticated() && !subject.isRemembered()) {
             response.setContentType("application/json;charset=UTF-8");
             response.getWriter().print(JsonParse.objectToJsonString(StatusMsg.needToLogin));
@@ -101,5 +104,19 @@ class CustomAccessControlFilter extends AccessControlFilter {
 //            response.getWriter().print(JsonParse.objectToJsonString(StatusMsg.overMaxSessionNumber));
 //            return false;
 //        }
+    }
+
+    @Override
+    public boolean onPreHandle(ServletRequest request, ServletResponse response, Object mappedValue) throws Exception {
+        HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+//        httpServletResponse.setHeader("Access-Control-Allow-Origin", httpServletRequest.getHeader("Origin"));
+//        httpServletResponse.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+//        httpServletResponse.setHeader("Access-Control-Allow-Headers", httpServletRequest.getHeader("Access-Control-Request-Headers"));
+        if (httpServletRequest.getMethod().equals(RequestMethod.OPTIONS.name())) {
+            httpServletResponse.setStatus(HttpStatus.OK.value());
+            return false;
+        }
+        return super.onPreHandle(request, response, mappedValue);
     }
 }
