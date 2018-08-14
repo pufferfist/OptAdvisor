@@ -2,7 +2,7 @@
   <div id="login">
     <Row class="middle">
       <i-col span="8" offset="8">
-        <div id="form" class="login-form animated  tc">
+        <div id="form" class="login-form animated fadeInLeft tc">
           <Logo class="pb3"></Logo>
           <login-form class="pt3-l pl4 pr4"></login-form>
         </div>
