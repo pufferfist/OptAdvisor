@@ -1,5 +1,6 @@
 package utf8.citicup;
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,7 @@ import utf8.citicup.dataService.historyDataService.TimeSeriesDataSerice;
 import utf8.citicup.domain.common.Type;
 import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.Portfolio;
+import utf8.citicup.domain.entity.User;
 
 import java.util.List;
 
@@ -41,14 +43,7 @@ public class Initializer implements CommandLineRunner {
     }
 
     public void test(){
-        Option option1=new Option();
-        option1.setName("opt1");
-        Option option2=new Option();
-        option2.setName("opt2");
-        Option[] options={option1,option2};
-        Portfolio portfolio=new Portfolio("male",options, Type.DIY,false);
-        portfolio=portfolioDataService.save(portfolio);
-
+        List<Portfolio> portfolioList=portfolioDataService.findByUsername("male");
     }
 
 }

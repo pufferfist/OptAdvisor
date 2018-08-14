@@ -7,6 +7,8 @@ import utf8.citicup.dao.historyDao.OptionTsdRepository;
 import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
 import utf8.citicup.domain.historyEntity.OptionTsd;
 
+import java.util.List;
+
 @Service
 public class OptionTsdDataServiceImpl implements OptionTsdDataService{
     @Autowired
@@ -16,5 +18,15 @@ public class OptionTsdDataServiceImpl implements OptionTsdDataService{
     @Cacheable(value="optionTsdData")
     public OptionTsd findByCodeNameAndLatestDate(String codeName, String latestDate) {
         return optionTsdRepository.findByCodeNameAndLatestDate(codeName,latestDate);
+    }
+
+    @Override
+    public List<OptionTsd> complexFind(String startDate, String endDate, boolean type, int findType) {
+        if(findType==0){
+            return optionTsdRepository.complexFindLow(startDate,endDate,type);
+        }else if(findType==1){
+            return optionTsdRepository.complexFindHigh(startDate,endDate,type);
+        }
+        return null;
     }
 }
