@@ -5,9 +5,8 @@ import org.apache.shiro.session.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
@@ -17,8 +16,8 @@ import java.util.Map;
 
 import static utf8.citicup.controller.UserV2Controller.commonLogin;
 
-//@RestController
-//@ResponseStatus(HttpStatus.OK)
+@RestController
+@ResponseStatus(HttpStatus.OK)
 public class UserController {
 
     @Autowired
