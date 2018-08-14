@@ -41,7 +41,7 @@ public class Initializer implements CommandLineRunner {
     }
 
     public void test(){
-/*        Option option1=new Option();
+        Option option1=new Option();
         option1.setName("opt1");
         Option option2=new Option();
         option2.setName("opt2");
@@ -49,8 +49,6 @@ public class Initializer implements CommandLineRunner {
         Portfolio portfolio=new Portfolio("male",options, Type.DIY,false);
         portfolio=portfolioDataService.save(portfolio);
 
-        Portfolio result=portfolioDataService.findById(portfolio.getId());
-        System.out.println(result.getOptions().length);*/
     }
 
 }
