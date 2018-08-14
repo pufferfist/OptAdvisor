@@ -224,17 +224,16 @@ public class GetData {
         return rtn;
     }
 
-    public double getSigma() {
-        return 0;
+    public double get_Sigma() throws IOException {
+        String url = "http://www.optbbs.com/d/csv/d/data.csv?v=";
+        Date d = new Date();
+        long time = d.getTime();
+        url = url + time;
+        String result = getDataFromURL(url);
+        String[] output = result.split(",");
+        return Double.valueOf(output[output.length-1]);
     }
 
-    public void dataStruct() {
-        Map<String, ArrayList<Option>> chigh = new Hashtable<String, ArrayList<Option>>();
-        Map<String, ArrayList<Option>> clow = new Hashtable<String, ArrayList<Option>>();
-        Map<String, ArrayList<Option>> phigh = new Hashtable<String, ArrayList<Option>>();
-        Map<String, ArrayList<Option>> plow = new Hashtable<String, ArrayList<Option>>();
-        String[] expireTimeArray = {};//网上获取
-    }
 
     public double[] get_Attributes(String contract) throws IOException {
         String url = "http://hq.sinajs.cn/list="+contract;
@@ -251,7 +250,23 @@ public class GetData {
         double Price2 = Double.valueOf(output[3]);
         double y_close = Double.valueOf(output[8]);
 
-        return new double[]{ExercisePrice, Price1, Price2, y_close};
+        contract = contract.replace("OP","SO");
+        url = "http://hq.sinajs.cn/list="+contract;
+        result = getDataFromURL(url);
+        pattern = "=\"(.*?)\"";
+        r = Pattern.compile(pattern);
+        m = r.matcher(result);
+        String greekValue = null;
+        if(m.find()) greekValue = m.group(1);
+        output = greekValue.split(",");
+//        System.out.println(Arrays.toString(output));
+        double delta = Double.valueOf(output[5]);
+        double gamma = Double.valueOf(output[6]);
+        double theta = Double.valueOf(output[7]);
+        double vega = Double.valueOf(output[8]);
+
+        return new double[]{ExercisePrice, Price1, Price2, y_close,delta,gamma,theta,vega};
+
     }
 
 }
