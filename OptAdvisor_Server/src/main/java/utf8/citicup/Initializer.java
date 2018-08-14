@@ -1,56 +1,44 @@
 package utf8.citicup;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import utf8.citicup.dataService.MessageDataService;
-import utf8.citicup.dataService.OptionDataService;
-import utf8.citicup.dataService.PortfolioDataService;
-import utf8.citicup.dataService.UserDataService;
-import utf8.citicup.dataService.historyDataService.OptionBasicInfoDataService;
-import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
-import utf8.citicup.dataService.historyDataService.TimeSeriesDataSerice;
-import utf8.citicup.domain.common.Type;
-import utf8.citicup.domain.entity.Option;
-import utf8.citicup.domain.entity.Portfolio;
-
-import java.util.List;
+import utf8.citicup.domain.entity.User;
+import utf8.citicup.service.UserService;
 
 @Component
 public class Initializer implements CommandLineRunner {
     @Autowired
-    private TimeSeriesDataSerice timeSeriesDataSerice;
-    @Autowired
-    private OptionTsdDataService optionTsdDataService;
-    @Autowired
-    private OptionBasicInfoDataService optionBasicInfoDataService;
-    @Autowired
-    private UserDataService userDataService;
-    @Autowired
-    private MessageDataService messageDataService;
-    @Autowired
-    private PortfolioDataService portfolioDataService;
-    @Autowired
-    private OptionDataService optionDataService;
+    private UserService userService;
+
+    private Logger logger = LoggerFactory.getLogger(Initializer.class);
+
     @Override
     public void run(String... args) throws Exception {
+        this.initializeAdministrator();
         System.out.println(System.getProperty("user.dir"));
         System.out.println("initializing...");
         System.out.println("===============");
-        test();
+//        test();
     }
 
-    public void test(){
-/*        Option option1=new Option();
-        option1.setName("opt1");
-        Option option2=new Option();
-        option2.setName("opt2");
-        Option[] options={option1,option2};
-        Portfolio portfolio=new Portfolio("male",options, Type.DIY,false);
-        portfolio=portfolioDataService.save(portfolio);
-
-        Portfolio result=portfolioDataService.findById(portfolio.getId());
-        System.out.println(result.getOptions().length);*/
+    private void initializeAdministrator() {
+        if (!(Boolean) userService.isUsernameUsed("suun").getData()) {
+            User user = new User();
+            user.setUsername("suun");
+            user.setPassword("suunPassword");
+            user.setName("suun");
+            user.setBirthday("2000/7/9");
+            user.setTelephone("17602529171");
+            user.setEmail("imagecser@gmail.com");
+            user.setAvatarPath("");
+            user.setGender("male");
+            user.setW1(70);
+            user.setW2(30);
+            userService.signUp(user);
+            this.logger.info("Administrator user information posted");
+        }
     }
-
 }

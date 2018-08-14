@@ -14,7 +14,7 @@ import javax.servlet.ServletResponse;
 public class RestPathMatchingFilterChainResolver extends PathMatchingFilterChainResolver {
     private Logger logger = LoggerFactory.getLogger(RestPathMatchingFilterChainResolver.class);
 
-    public RestPathMatchingFilterChainResolver() {
+    RestPathMatchingFilterChainResolver() {
         super();
     }
 

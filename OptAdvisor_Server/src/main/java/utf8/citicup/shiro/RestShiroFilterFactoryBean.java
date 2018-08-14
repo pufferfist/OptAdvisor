@@ -13,7 +13,7 @@ import org.springframework.beans.factory.BeanInitializationException;
 public class RestShiroFilterFactoryBean extends ShiroFilterFactoryBean {
     private Logger logger = LoggerFactory.getLogger(RestShiroFilterFactoryBean.class);
 
-    public RestShiroFilterFactoryBean() {
+    RestShiroFilterFactoryBean() {
         super();
     }
 

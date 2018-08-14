@@ -48,8 +48,20 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public ResponseMsg getPortfolio(String username) {
         List<Portfolio> portfolioList = dataService.findByUsername(username);
-        logger.info(String.valueOf(portfolioList.get(0).getOptions().length));
         return new ResponseMsg(0, "Get portfolio success", portfolioList);
+    }
+
+    @Override
+    public ResponseMsg deletePortfolio(String username, Long portfolioId) {
+        Portfolio portfolio = dataService.findById(portfolioId);
+        if (null == portfolio) {
+            return StatusMsg.portfolioNotExists;
+        } else if (portfolio.getUsername().equals(username)) {
+            dataService.delete(portfolioId);
+            return StatusMsg.deletePortfolioSuccess;
+        } else {
+            return StatusMsg.portfolioNotMatchUser;
+        }
     }
 
     @Override
