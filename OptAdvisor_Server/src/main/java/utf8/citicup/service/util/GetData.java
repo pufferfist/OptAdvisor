@@ -1,19 +1,21 @@
 package utf8.citicup.service.util;
 
-import utf8.citicup.domain.entity.Option;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GetData {
-    private final String USER_AGENT = "Mozilla/5.0";
 
+    public final String USER_AGENT = "Mozilla/5.0";
+    private Logger logger = LoggerFactory.getLogger(GetData.class);
     /*
     public static void main(String[] args) throws IOException {
         GetData http = new GetData();
@@ -50,7 +52,7 @@ public class GetData {
 
         int responseCode = con.getResponseCode();
 
-        System.out.println("Response Code : " + responseCode);
+//        System.out.println("Response Code : " + responseCode);
 
         BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
         String inputLine;
@@ -80,7 +82,7 @@ public class GetData {
             i++;
         }
 
-        System.out.println(Arrays.toString(data));
+//        System.out.println(Arrays.toString(data));
         return data;
     }
 
@@ -221,16 +223,105 @@ public class GetData {
         return rtn;
     }
 
-    public double getSigma() {
-        return 0;
+    public double get_Sigma() throws IOException {
+        String url = "http://www.optbbs.com/d/csv/d/data.csv?v=";
+        Date d = new Date();
+        long time = d.getTime();
+        url = url + time;
+        String result = getDataFromURL(url);
+        String[] output = result.split(",");
+        return Double.valueOf(output[output.length-1]);
     }
 
-    public void dataStruct() {
-        Map<String, ArrayList<Option>> chigh = new Hashtable<String, ArrayList<Option>>();
-        Map<String, ArrayList<Option>> clow = new Hashtable<String, ArrayList<Option>>();
-        Map<String, ArrayList<Option>> phigh = new Hashtable<String, ArrayList<Option>>();
-        Map<String, ArrayList<Option>> plow = new Hashtable<String, ArrayList<Option>>();
-        String[] expireTimeArray = {};//网上获取
+
+    public double[] get_Attributes(String contract) throws IOException {
+        String url = "http://hq.sinajs.cn/list="+contract;
+        String result = getDataFromURL(url);
+        String pattern = "=\"(.*?)\"";
+        Pattern r = Pattern.compile(pattern);
+        Matcher m = r.matcher(result);
+        String atb=null;
+        if(m.find()) atb = m.group(1);
+        String[] output = atb.split(",");
+
+        double ExercisePrice = Double.valueOf(output[7]);
+        double Price1 = Double.valueOf(output[1]);
+        double Price2 = Double.valueOf(output[3]);
+        double y_close = Double.valueOf(output[8]);
+
+        contract = contract.replace("OP","SO");
+        url = "http://hq.sinajs.cn/list="+contract;
+        result = getDataFromURL(url);
+        pattern = "=\"(.*?)\"";
+        r = Pattern.compile(pattern);
+        m = r.matcher(result);
+        String greekValue = null;
+        if(m.find()) greekValue = m.group(1);
+        output = greekValue.split(",");
+//        System.out.println(Arrays.toString(output));
+        double delta = Double.valueOf(output[5]);
+        double gamma = Double.valueOf(output[6]);
+        double theta = Double.valueOf(output[7]);
+        double vega = Double.valueOf(output[8]);
+
+        return new double[]{ExercisePrice, Price1, Price2, y_close,delta,gamma,theta,vega};
+
+    }
+
+    //回测到某个月返回的日期
+    private String caculateDate(int year, int month,int difference){
+        int date = caculateDateFrom1(year,month);
+        String result;
+        if(date>=difference) {
+            result =String.valueOf(year)+"/"+String.valueOf(month)+"/"+String.valueOf(date+1-difference);
+        }
+        else {
+            int temp = difference-date;
+            month--;
+            if(month<=0){
+                year--;
+                month+=12;
+            }
+            int days = caculateDaysInMonth(year, month);
+            int day = days-temp+1;
+            result = String.valueOf(year)+"/"+String.valueOf(month)+"/"+String.valueOf(day);
+        }
+        return result;
+    }
+
+    //计算一共差几天
+    private int caculataDifference(int year, int month, int day){
+        int date = caculateDateFrom1(year,month);
+        if(day<date) return date-day;
+        else{
+            date = caculateDateFrom1(year,month+1);
+            int daysInMonth = caculateDaysInMonth(year, month);
+            return daysInMonth-day+date+1;
+        }
+    }
+
+    //计算第四个星期三距离1号差几天
+    private int caculateDateFrom1(int year, int month){
+        int WeekDay = -1;
+        int startDay = 1;
+        if(1 == month || 2 == month){
+            month += 12;
+            year--;
+        }
+        WeekDay = (startDay + 1 + 2 * month + 3 * (month + 1) / 5 + year + year / 4 - year / 100 + year / 400) % 7;
+        if(WeekDay<=3) return 24-WeekDay;
+        else return 31-WeekDay;
+    }
+
+    //计算一个月有几天
+    private int caculateDaysInMonth(int year, int month){
+        if(month == 2) return isLeapYear(year)? 29:28;
+        else return (int) Math.ceil(Math.abs(month-7.5)%2+30);
+    }
+
+    //计算是否为闰年
+    private boolean isLeapYear(int year){
+        return ((year%4==0 && year%100!=0) || year%400==0);
     }
 
 }
