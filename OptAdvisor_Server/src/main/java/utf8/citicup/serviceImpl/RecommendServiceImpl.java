@@ -286,7 +286,7 @@ public class RecommendServiceImpl implements RecommendService {
         return cp * S0 * Math.exp(-1 * dv * t) * normcdf(cp * d_1) -
                 cp * k * Math.exp(-1 * r * t) * normcdf(cp * d_2);
     }
-///*
+    ///*
     //计算希腊值，此处的t不是全局的t
     private void GreekCharacteValue(Option A, int t){
         //unfinished 希腊值计算未完成
@@ -305,7 +305,7 @@ public class RecommendServiceImpl implements RecommendService {
     private double betaValue(double delta, double price){
         return S0 * delta / price;
     }
-//*/
+    //*/
     private double[] Interest(int cp, double k, double price) {
         int n = S.length;
         double[] C = new double[n];
@@ -436,10 +436,10 @@ public class RecommendServiceImpl implements RecommendService {
                 sellOptions = chigh.get(T).toArray(new Option[0]);
                 break;
 
-             default:break;
+            default:break;
         }
         //endregion
-        
+
         List<structD> D = new ArrayList<structD>();
         generateD(D, sellOptions, sell, buyOptions, buy, choose);
         //D和E第一步有两种构造方式，两种构造方式得到的组合都放入D中
@@ -530,10 +530,10 @@ public class RecommendServiceImpl implements RecommendService {
     //期权组合第二步，在集合D中寻找goal值最高的组合
     private structD secondStep(List<structD> D){
         /*第二步
-        * 1.D中的 optionCombination 是一个期权组合
-        * 2.buyAndSell是与上面对应的买卖的个数，买为正，卖为负
-        * 3.这个步骤对所有组合都适应
-        * */
+         * 1.D中的 optionCombination 是一个期权组合
+         * 2.buyAndSell是与上面对应的买卖的个数，买为正，卖为负
+         * 3.这个步骤对所有组合都适应
+         * */
         double max_numE = Double.MIN_VALUE;
         double min_numE = Double.MAX_VALUE;
         double max_beta = Double.MIN_VALUE;
@@ -660,7 +660,7 @@ public class RecommendServiceImpl implements RecommendService {
                     }
                 }
             }*/
-            } catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
 

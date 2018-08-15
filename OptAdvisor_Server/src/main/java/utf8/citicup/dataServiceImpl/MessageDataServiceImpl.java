@@ -47,6 +47,14 @@ public class MessageDataServiceImpl implements MessageDataService{
         return messageRepository.findByUsernameAndReadStatus(username,readStatus);
     }
 
+    @Override
+    @CacheEvict(value="message")
+    public boolean updateReadStatus(Long id, String username, boolean readStatus) {
+        if(messageRepository.findByIdAndUsername(id,username)==null)return false;
+        messageRepository.updateReadStatus(id,username,readStatus);
+        return true;
+    }
+
 
 }
 

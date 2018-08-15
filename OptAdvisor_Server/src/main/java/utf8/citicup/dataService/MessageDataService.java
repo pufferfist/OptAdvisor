@@ -16,4 +16,6 @@ public interface MessageDataService {
     public List<Message> findByUsername(String username);
 
     public List<Message> findByUsernameAnReadStatus(String username,boolean readStatus);
+
+    public boolean updateReadStatus(Long id,String username,boolean readStatus);
 }

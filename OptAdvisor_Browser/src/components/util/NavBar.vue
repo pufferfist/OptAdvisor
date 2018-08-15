@@ -6,9 +6,13 @@
           </router-link>
         </div>
         <div class="fl dib">
-          <p>个性化投顾</p>
+          <p class="light-blue" style="font-family: 方正清刻本悦宋简体;font-size: 1.2rem">个性化投顾</p>
         </div>
         <div class="fr dib">
+          <MenuItem name="0" to="/home" style="padding: 0 2.5rem">
+            <Icon type="ios-bonfire" size="20"/>
+            首页
+          </MenuItem>
           <Submenu name="1">
             <template slot="title">
               <Icon type="md-analytics" size="16"/>
@@ -31,16 +35,20 @@
             我的组合
           </MenuItem>
 
-          <div class="dib ph3">
-            <router-link to="/prompt">
+          <div class="dib pr3 pl6">
+            <router-link v-if="isLogin" to="/prompt" class="black">
               <Badge :count="1" class="di">
                 <Icon type="md-notifications-outline" size="30"/>
               </Badge>
             </router-link>
           </div>
 
-          <div class="dib ph3">
-            <router-link :to="'/profile/'+userName">
+          <div class="dib pl3 pr4">
+            <router-link v-if="isLogin" :to="'/profile/'+userName">
+              <!--此头像应为用户自定义头像-->
+              <Avatar style="background-color: #87d068" icon="ios-person" />
+            </router-link>
+            <router-link v-if="!isLogin" :to="'/login'">
               <Avatar style="background-color: #87d068" icon="ios-person" />
             </router-link>
           </div>
@@ -58,11 +66,17 @@
       data () {
         return {
           theme: 'light',
-          userName: 'noLogin'
+          userName: '',
+          isLogin: false
         }
       },
       created:function () {
-        this.userName=this.$cookie.get("userName")
+        this.userName=this.$cookie.get("userName");
+
+        this.axios.post("/backend/auth")
+          .then((res)=>{
+            this.isLogin = (res.data.code === 0);
+          })
       }
     }
 
@@ -82,5 +96,14 @@
     position: absolute;
     top: 20px;
     left: 273px;
+  }
+
+  @font-face {
+    font-family: '方正清刻本悦宋简体';
+    src: url("../../assets/fonts/navbar/sfont.svg"),
+          url("../../assets/fonts/navbar/sfont.eot"),
+          url("../../assets/fonts/navbar/sfont.ttf"),
+          url("../../assets/fonts/navbar/sfont.woff"),
+          url("../../assets/fonts/navbar/sfont.woff2");
   }
 </style>

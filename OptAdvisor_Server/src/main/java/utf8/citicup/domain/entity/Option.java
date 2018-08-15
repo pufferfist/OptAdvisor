@@ -1,9 +1,8 @@
 package utf8.citicup.domain.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 
 /**
  * 期权实体
@@ -15,7 +14,6 @@ public class Option {
     @GeneratedValue
     private Long persisentId;//存储用主键
 
-    private Long parentId;//Portfolio主键
     private String id;
     private String name;//例如:50ETF购8月2600
     private int type;//1为买入0为卖出
@@ -35,12 +33,16 @@ public class Option {
     private double rho;
     private double beta;
 
+    @ManyToOne
+    @JoinColumn(name = "portfolio_id")
+    @JsonIgnore
+    private Portfolio portfolio;
+
 
     public Option(){}
 
-    public Option(Long parentId,String id,String name,int type,int cp,String expireTime,double executionPrice,
+    public Option(String id,String name,int type,int cp,String expireTime,double executionPrice,
                   double transactionPrice,int quantity,double delta,double gamma,double vega,double theta,double rho,double beta){
-        this.parentId=parentId;
         this.id=id;
         this.name=name;
         this.type=type;
@@ -154,12 +156,15 @@ public class Option {
 
     public void setBeta(double beta) { this.beta = beta; }
 
-    public Long getParentId() { return parentId; }
-
-    public void setParentId(Long parentId) { this.parentId = parentId; }
-
     public Long getPersisentId() {
         return persisentId;
     }
 
+    public Portfolio getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(Portfolio portfolio) {
+        this.portfolio = portfolio;
+    }
 }
