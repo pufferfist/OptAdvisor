@@ -13,4 +13,5 @@ public interface PortfolioDataService {
     public List<Portfolio> findAll();
     //额外操作
     public List<Portfolio> findByUsername(String username);
+    public boolean updateTrackingStatus(long id,boolean trackingStatus);
 }

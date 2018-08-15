@@ -1,5 +1,5 @@
 <template>
-  <div class="fl f0" @click="onGrid">
+  <div class="font0" @click="onGrid">
     <Row>
       <Col span="6" class="box">
         <span>波动率/价格</span>
@@ -13,13 +13,12 @@
       <Col span="6" class="box">
         <span>下跌</span>
       </Col>
-
     </Row>
     <Row>
       <Col span="6" class="box">
-        <span class="box">增加</span>
+        <span>增加</span>
       </Col>
-      <Col span="18">
+      <Col span="18" class="flex">
         <div class="grid" v-bind:class="{selected:volatility===1&&price===1}" v-on:click="volatility=1;price=1">a</div>
         <div class="grid" v-bind:class="{selected:volatility===1&&price===0}" v-on:click="volatility=1;price=0">a</div>
         <div class="grid" v-bind:class="{selected:volatility===1&&price===-1}" v-on:click="volatility=1;price=-1">a</div>
@@ -29,9 +28,9 @@
       <Col span="6" class="box">
         <span>中性</span>
       </Col>
-      <Col span="18">
+      <Col span="18" class="flex">
         <div class="grid" v-bind:class="{selected:volatility===0&&price===1}" v-on:click="volatility=0;price=1">a</div>
-        <div class="grid" v-bind:class="{selected:volatility===0&&price===0}" v-on:click="volatility=0;price=0">a</div>
+        <div class="grid" v-bind:class="{selected:volatility===0&&price===0}" v-on:click="middle">a</div>
         <div class="grid" v-bind:class="{selected:volatility===0&&price===-1}" v-on:click="volatility=0;price=-1">a</div>
       </Col>
     </Row>
@@ -39,7 +38,7 @@
       <Col span="6" class="box">
         <span>降低</span>
       </Col>
-      <Col span="18">
+      <Col span="18" class="flex">
         <div class="grid" v-bind:class="{selected:volatility===-1&&price===1}" v-on:click="volatility=-1;price=1">a
         </div>
         <div class="grid" v-bind:class="{selected:volatility===-1&&price===0}" v-on:click="volatility=-1;price=0">a
@@ -53,7 +52,7 @@
 
 <script>
     export default {
-      name: "al-infoCollect",
+      name: "NineGrid",
       data(){
         return {
           volatility:1,
@@ -63,6 +62,9 @@
       methods:{
         onGrid:function(){
           this.$emit('onGrid',{volatility:this.volatility,price:this.price})
+        },
+        middle:function () {
+          this.$Message.warning("不能选择双中性")
         }
       }
 
@@ -74,7 +76,7 @@
     font-size: 16px;
   }
 
-  .f0{
+  .font0{
     font-size: 0;
   }
 
@@ -98,6 +100,7 @@
     border-style: solid;
     border-width: 1px;
     border-radius: 0.25rem;
+    cursor: pointer;
     }
 
   .selected{

@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.EnableCaching;
 
 @SpringBootApplication
 @EnableCaching
+//@ImportResource(value = "classpath:spring-shiro.xml")
 public class CiticupApplication {
 
     public static void main(String[] args) {

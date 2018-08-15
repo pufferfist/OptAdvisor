@@ -1,9 +1,8 @@
 package utf8.citicup.domain.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import javax.persistence.*;
 
 /**
  * 期权实体
@@ -15,11 +14,10 @@ public class Option {
     @GeneratedValue
     private Long persisentId;//存储用主键
 
-    private Long parentId;//Portfolio主键
     private String id;
     private String name;//例如:50ETF购8月2600
     private int type;//1为买入0为卖出
-    private int property;//1为看涨0为看跌
+    private int cp;//1为看涨 -1为看跌
     private String expireTime;//到期时间
     private double executionPrice;//执行价格
     private double transactionPrice;//成交价
@@ -35,16 +33,20 @@ public class Option {
     private double rho;
     private double beta;
 
+    @ManyToOne
+    @JoinColumn(name = "portfolio_id")
+    @JsonIgnore
+    private Portfolio portfolio;
+
 
     public Option(){}
 
-    public Option(Long parentId,String id,String name,int type,int property,String expireTime,double executionPrice,
+    public Option(String id,String name,int type,int cp,String expireTime,double executionPrice,
                   double transactionPrice,int quantity,double delta,double gamma,double vega,double theta,double rho,double beta){
-        this.parentId=parentId;
         this.id=id;
         this.name=name;
         this.type=type;
-        this.property=property;
+        this.cp=cp;
         this.expireTime=expireTime;
         this.executionPrice=executionPrice;
         this.transactionPrice=transactionPrice;
@@ -59,7 +61,7 @@ public class Option {
 
     @Override
     public String toString() {
-        return "{"+name+","+id+"}";
+        return "{"+name+",id:"+id+",delta:"+delta + ",expireTime:"+expireTime + ",k:"+ k + ",price1:"+ price1 + ",price2:" + price2 + "}";
     }
 
     public double getK() {
@@ -106,9 +108,13 @@ public class Option {
 
     public void setType(int type) { this.type = type; }
 
-    public int getProperty() { return property; }
+    public int getCp() {
+        return cp;
+    }
 
-    public void setProperty(int property) { this.property = property; }
+    public void setCp(int cp) {
+        this.cp = cp;
+    }
 
     public String getExpireTime() { return expireTime; }
 
@@ -150,11 +156,15 @@ public class Option {
 
     public void setBeta(double beta) { this.beta = beta; }
 
-    public Long getParentId() { return parentId; }
-
-    public void setParentId(Long parentId) { this.parentId = parentId; }
-
     public Long getPersisentId() {
         return persisentId;
+    }
+
+    public Portfolio getPortfolio() {
+        return portfolio;
+    }
+
+    public void setPortfolio(Portfolio portfolio) {
+        this.portfolio = portfolio;
     }
 }

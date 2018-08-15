@@ -1,13 +1,15 @@
 <template>
   <div id="main_part">
     <div id="fill_part" v-bind:style="{position:PO}">
-      <logo></logo><br>
+      <logo></logo>
+      <br>
       <div style="text-align: center">
         <Steps :current="current">
           <Step title="完善信息"></Step>
           <Step title="填写问卷"></Step>
           <Step title="完成注册"></Step>
-        </Steps><br>
+        </Steps>
+        <br>
       </div>
 
       <div id="page1" v-bind:style="{display:ispage01}">
@@ -23,12 +25,9 @@
       <div style="text-align: center" v-bind:style="{display:isLastPage}">
         <Button type="primary" @click="next">下一步</Button>
       </div>
-     </div>
+    </div>
 
-   </div>
-
-
-
+  </div>
 </template>
 
 <script>
@@ -252,7 +251,7 @@
   #main_part{
     background-image: url("../../static/graph/back1.jpg");
     background-repeat:no-repeat;
-    min-height: 100%;
+    min-height: 1080px;
   }
   #fill_part{
     position: absolute;
