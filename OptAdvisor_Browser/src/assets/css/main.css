@@ -48,7 +48,7 @@ html::-webkit-scrollbar-track:hover {
 }
 
 /*用于强行提高iview组件内部字体大小*/
-.cover input,span{
+.cover input,.cover span{
   font-size: 16px !important;
 }
 

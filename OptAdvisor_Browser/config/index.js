@@ -18,6 +18,13 @@ module.exports = {
           '^/sinaOption': ''
         }
       },
+      '/sse': {
+        target: 'http://yunhq.sse.com.cn:32041/v1/sh1', //设置调用接口域名和端口号别忘了加http
+        changeOrigin: true,
+        pathRewrite: {
+          '^/sse': ''
+        }
+      },
       '/sinaTime': {
         target: 'http://stock.finance.sina.com.cn/futures/api/openapi.php',
         changeOrigin: true,
