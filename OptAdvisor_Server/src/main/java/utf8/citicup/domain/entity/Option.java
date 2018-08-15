@@ -19,7 +19,7 @@ public class Option {
     private String id;
     private String name;//例如:50ETF购8月2600
     private int type;//1为买入0为卖出
-    private int property;//1为看涨0为看跌
+    private int cp;//1为看涨 -1为看跌
     private String expireTime;//到期时间
     private double executionPrice;//执行价格
     private double transactionPrice;//成交价
@@ -38,13 +38,13 @@ public class Option {
 
     public Option(){}
 
-    public Option(Long parentId,String id,String name,int type,int property,String expireTime,double executionPrice,
+    public Option(Long parentId,String id,String name,int type,int cp,String expireTime,double executionPrice,
                   double transactionPrice,int quantity,double delta,double gamma,double vega,double theta,double rho,double beta){
         this.parentId=parentId;
         this.id=id;
         this.name=name;
         this.type=type;
-        this.property=property;
+        this.cp=cp;
         this.expireTime=expireTime;
         this.executionPrice=executionPrice;
         this.transactionPrice=transactionPrice;
@@ -106,9 +106,13 @@ public class Option {
 
     public void setType(int type) { this.type = type; }
 
-    public int getProperty() { return property; }
+    public int getCp() {
+        return cp;
+    }
 
-    public void setProperty(int property) { this.property = property; }
+    public void setCp(int cp) {
+        this.cp = cp;
+    }
 
     public String getExpireTime() { return expireTime; }
 

@@ -7,6 +7,7 @@ import utf8.citicup.domain.entity.*;
 import utf8.citicup.service.RecommendService;
 import utf8.citicup.service.util.GetData;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.*;
@@ -130,9 +131,36 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     //计算期权回测时到期日
-//    private String caculateBackTestExpiryDate(String date, int firstFew){
-//
-//    }
+    private String caculateBackTestExpiryDate(String date, int firstFew){
+        String[] dates = date.split("/");
+        int year = Integer.parseInt(dates[0]);//得到传入的年月日 和 阶段
+        int month = Integer.parseInt(dates[1]);
+        int day = Integer.parseInt(dates[2]);
+
+        int thirdWednesday = caculateDateFrom1(year, month)+1;
+        //判断是不是这个月第四个星期三之后
+        if(day >= thirdWednesday){
+            year += (month+1)/13;
+            month = (month+1)%13;
+        }
+        //不清楚第四个星期三当天是什么情况，先暂时定第四个星期三当天的第一个阶段是下个月的第四个星期三
+        if(firstFew<=2){
+            year += (month+firstFew) /13;
+            month = (month+firstFew) %13;
+        }else {                                                 //找季月
+            month+=2;
+            int temp = firstFew-2;      //找接下来的几个季月
+            while (temp!=0){
+                year += (month+1) /13;
+                month = (month+1)%13;
+                if(month==0) month++;
+                if(month %3 == 0){ temp--;}
+            }
+        }
+        int expiryDay = caculateDateFrom1(year,month)+1;  //计算当时的第四个星期三是几号
+
+        return String.valueOf(year)+"/"+String.valueOf(month)+"/"+String.valueOf(expiryDay);
+    }
 
 
 
@@ -379,15 +407,35 @@ public class RecommendServiceImpl implements RecommendService {
 
 //            int reaminDays = Integer.parseInt(dataSource.get_expireAndremainder(T)[1]);   tttt
 
+            String[] nowStr = T.split("-");
+            int nowYear = Integer.parseInt(nowStr[0]);
+            int nowMonth = Integer.parseInt(nowStr[1]);
+            Calendar c= Calendar.getInstance();
+            int nowDay = c.get(Calendar.DATE);
+
+
+
+
 
 
 
             //第三步
 
 
-/*
+
             if(flag) {
                 for (String m : month) {
+                    String[] str = m.split("-");
+                    int year = Integer.parseInt(str[0]);                //得到回测年月
+                    int month = Integer.parseInt(str[1]);
+
+                    int difference = caculataDifference(nowYear,nowMonth,nowDay);  //得到今天距离最近的第四个星期三所差的天数
+                    String startDate =caculateDate(year,month,difference);       //得到回测月的起始日期
+                    int stage = caculateFirstFew(T);                            //得到是在第几个阶段
+                    String endDate = caculateBackTestExpiryDate(startDate,stage);//得到回测的终止日期
+
+
+
                     Option[] bt_plow = get_from_dataBase(m);
                     for (Option bt_i : bt_plow) {
                         double bt_i_k = bt_i.getK();
@@ -419,7 +467,7 @@ public class RecommendServiceImpl implements RecommendService {
                         }
                     }
                 }
-            }*/
+            }
             } catch (IOException e) {
             e.printStackTrace();
         }
