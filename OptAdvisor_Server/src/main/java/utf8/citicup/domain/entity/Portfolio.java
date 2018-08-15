@@ -1,16 +1,18 @@
 package utf8.citicup.domain.entity;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Transient;
+import javax.persistence.*;
 
 @Entity
 public class Portfolio {
 
+    public Portfolio(){}
+
     public Portfolio(String username, Option[] options, Enum type, boolean trackingStatus){
         this.username = username;
         this.options = options;
+        for(Option each:options){
+            each.setPortfolio(this);
+        }
         this.type = type;
         this.trackingStatus = trackingStatus;
     }
@@ -21,7 +23,8 @@ public class Portfolio {
 
     private String username;
 
-    @Transient
+    @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "portfolio")
+    @OrderColumn
     private Option[] options;
 
     private Enum type; //type指1：资产配置组合 2：套期保值组合 3：DIY组合
@@ -41,6 +44,12 @@ public class Portfolio {
     }
 
     public void setOptions(Option[] options) {
+        for(Option each:this.options){
+            each.setPortfolio(null);
+        }
+        for(Option each:options){
+            each.setPortfolio(this);
+        }
         this.options = options;
     }
 

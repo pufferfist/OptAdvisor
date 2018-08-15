@@ -1,15 +1,24 @@
 <template>
-  <div>
-    <NavBar class="nav"></NavBar>
-    <router-view class="child"></router-view>
-  </div>
+      <Layout class="h-100 bg-white tc">
+        <Header ref="header" class="header dib">
+          <NavBar class="nav"></NavBar>
+        </Header>
+        <Content class="content mh1">
+          <router-view class="child"></router-view>
+        </Content>
+        <Footer class="dib footer">
+          <my-footer></my-footer>
+        </Footer>
+        <BackTop></BackTop>
+      </Layout>
 </template>
 
 <script>
     import NavBar from "../components/util/NavBar";
+    import MyFooter from "../components/util/myFooter";
     export default {
-        name: "FatherPage",
-      components: {NavBar}
+      name: "FatherPage",
+      components: {MyFooter, NavBar}
     }
 </script>
 
@@ -21,7 +30,23 @@
     top:0;left:0;
   }
   .child{
-    margin-top: 60px;
     padding-top: 20px;
+  }
+
+  .header{
+    background-color: #ffffff;
+    padding: 0 50px;
+    height: 60px;
+    line-height: 60px;
+  }
+
+  .content{
+    margin: auto;
+    width: 65%;
+    background-color: #ffffff;
+  }
+
+  .footer{
+    background-color: #ffffff;
   }
 </style>

@@ -35,9 +35,4 @@ public class OptionDataServiceImpl implements OptionDataService{
     public Option findById(long id) {
         return optionRepository.findById(id).orElse(null);
     }
-
-    @Override
-    public List<Option> findByParentId(long parentId) {
-        return optionRepository.findByParentId(parentId);
-    }
 }

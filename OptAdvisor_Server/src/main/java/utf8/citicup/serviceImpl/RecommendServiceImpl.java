@@ -1,9 +1,9 @@
 package utf8.citicup.serviceImpl;
 
-import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
-import utf8.citicup.domain.entity.*;
+import utf8.citicup.domain.entity.Option;
+import utf8.citicup.domain.entity.RecommendOption1;
+import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.RecommendService;
 import utf8.citicup.service.util.GetData;
 
@@ -258,7 +258,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Override
-    public ResponseMsg recommendPortfolio(double M0, double k, double a, String T, char combination, double p1, double p2, double sigma1, double sigma2) {
+    public ResponseMsg recommendPortfolio(double M0, double k, double a, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) {
         //参数都是由用户输入的
         this.M0 = M0;
         this.k = k;
