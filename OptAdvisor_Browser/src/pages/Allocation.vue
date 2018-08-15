@@ -1,7 +1,7 @@
 <template>
   <div>
     <Row>
-      <ICol offset="3"><h1 class="w-50">资产配置</h1></ICol>
+      <Col offset="3"><h1 class="w-50">资产配置</h1></Col>
     </Row>
     <transition name="move-left">
       <div v-if="infoStep">
@@ -29,6 +29,7 @@
     <transition name="move-right">
       <div v-if="resultStep">
         <h1>结果展示</h1>
+        <ResultDisplay></ResultDisplay>
         <Button size="large" type="warning" @click="lastStep" class="fr forwardButton" ghost>
           <Icon type="ios-arrow-back"/>
           上一步
@@ -41,18 +42,19 @@
 <script>
     import NineGrid from "../components/allocation/infoCollect/NineGrid";
     import AlForm from "../components/allocation/infoCollect/AlForm";
+    import ResultDisplay from "../components/allocation/ResultDisplay";
     export default {
         name: "Allocation",
       data(){
         return {
           price:1,
           volatility:1,
-          infoStep:true,
+          infoStep:false,
           loading:false,
-          resultStep:false,
+          resultStep:true,
         }
       },
-      components: {AlForm, NineGrid},
+      components: {ResultDisplay, AlForm, NineGrid},
       methods:{
           handleOnGrid:function (event) {
             this.price=event.price;

@@ -33,7 +33,7 @@
     background-image: url("../../static/graph/back1.jpg");
     background-size:1920px 1200px;
     background-repeat:no-repeat;
-    height: 100%;
+    height: 1080px;
   }
 
   .login-form {
@@ -43,9 +43,11 @@
     -o-box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
     box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
     background: #ffffff;
+    position: fixed;
   }
 
   #login {position: relative;}
+
   .middle {
     position: absolute;
     top: 0;
