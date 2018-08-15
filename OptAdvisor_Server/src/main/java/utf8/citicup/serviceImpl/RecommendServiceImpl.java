@@ -12,7 +12,8 @@ import java.io.IOException;
 import java.util.*;
 @Service
 public class RecommendServiceImpl implements RecommendService {
-    public static final double eps = 0.0001;
+
+    private static final double eps = 0.0001;
 
     /*用户输入数据*/
     private double M0;//托管资金总额
@@ -35,10 +36,10 @@ public class RecommendServiceImpl implements RecommendService {
     private double sigma;//实时波动率[6]
     private int t;//距离期权剩余时间（天)
     private String[] expiredMonths;//期权月份4个
-    private Map<String, ArrayList<Option>> chigh = new Hashtable<String, ArrayList<Option>>();
-    private Map<String, ArrayList<Option>> clow = new Hashtable<String, ArrayList<Option>>();
-    private Map<String, ArrayList<Option>> phigh = new Hashtable<String, ArrayList<Option>>();
-    private Map<String, ArrayList<Option>> plow = new Hashtable<String, ArrayList<Option>>();
+    private Map<String, ArrayList<Option>> chigh = new Hashtable<>();
+    private Map<String, ArrayList<Option>> clow = new Hashtable<>();
+    private Map<String, ArrayList<Option>> phigh = new Hashtable<>();
+    private Map<String, ArrayList<Option>> plow = new Hashtable<>();
 //    private String[] expireTimeArray = {};//网上获取
 
     /*自设值*/
@@ -158,11 +159,6 @@ public class RecommendServiceImpl implements RecommendService {
     private int caculateFirstFew(String T){
         return Arrays.binarySearch(expiredMonths,T)+1;
     }
-
-    //计算期权回测时到期日
-//    private String caculateBackTestExpiryDate(String date, int firstFew){
-//
-//    }
 
     public RecommendServiceImpl(){
         dataSource = new GetData();
@@ -379,6 +375,7 @@ public class RecommendServiceImpl implements RecommendService {
 
         /*货币基金与衍生品组合分配：*/
         this.M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
+
         List<structD> D = firstStep(combination);
         structD maxGoalD = new structD();
         maxGoalD = secondStep(D);
