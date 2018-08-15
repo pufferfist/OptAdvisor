@@ -15,6 +15,7 @@ import utf8.citicup.domain.common.Type;
 import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.Portfolio;
 import utf8.citicup.domain.entity.User;
+import utf8.citicup.domain.historyEntity.OptionTsd;
 
 import java.util.List;
 
@@ -43,7 +44,18 @@ public class Initializer implements CommandLineRunner {
     }
 
     public void test(){
-        List<Portfolio> portfolioList=portfolioDataService.findByUsername("male");
-    }
+        List<OptionTsd> optionTsds=optionTsdDataService.complexFind("2015/2/9","2015/3/25",true,0);
+        List<OptionTsd> optionTsds1=optionTsdDataService.complexFind("2015/2/9","2015/3/25",true,1);
+
+        for(OptionTsd each:optionTsds){
+            System.out.println(each.getCodeName());
+        }
+        System.out.println("-------------");
+        for(OptionTsd each:optionTsds1){
+            System.out.println(each.getCodeName());
+        }
+
+
+}
 
 }
