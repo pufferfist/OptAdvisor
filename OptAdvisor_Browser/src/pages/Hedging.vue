@@ -18,11 +18,11 @@
 </template>
 
 <script>
-  import collect_info from "../components/Hedging/CollectInfo";
-  import display_result from "../components/Hedging/DisplayResult"
-  import no_input from "../components/Hedging/NoInput"
+  import collect_info from "../components/hedging/CollectInfo";
+  import display_result from "../components/hedging/DisplayResult"
+  import no_input from "../components/hedging/NoInput"
     export default {
-        name: "Hedging",
+        name: "hedging",
       components:{collect_info, display_result, no_input},
       data () {
         return {

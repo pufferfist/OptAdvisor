@@ -14,7 +14,7 @@ import InfoCollect from '../pages/InfoCollect'
 import DIY from '../pages/DIY'
 import MyPortfolio from '../pages/MyPortfolio'
 import Prompt from '../pages/Prompt'
-import test from '../components/Hedging/DisplayResult'
+import test from '../components/myPortfolio/Option'
 
 
 Vue.use(Router)
