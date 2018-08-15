@@ -1,27 +1,45 @@
 <template>
     <Row>
-      <Col class="box">
-        <al-info-collect class="boxChild"></al-info-collect>
+      <Col span="10" class="middleBorder mh4">
+        <Row>
+          <h1>资产配置</h1>
+        </Row>
+        <Row class="verticalCenterFather nineGrid center">
+          <NineGrid class="verticalCenterChild" v-on:onGrid="handleOnGrid"></NineGrid>
+        </Row>
+      </Col>
+      <Col span="12">
+        <AlForm :price="price" :volatility="volatility"></AlForm>
       </Col>
     </Row>
 </template>
 
 <script>
-    import AlInfoCollect from "../components/allocation/al-infoCollect";
+    import NineGrid from "../components/allocation/infoCollect/NineGrid";
+    import AlForm from "../components/allocation/infoCollect/AlForm";
     export default {
         name: "Allocation",
-      components: {AlInfoCollect}
+      data(){
+        return {
+          price:1,
+          volatility:1
+        }
+      },
+      components: {AlForm, NineGrid},
+      methods:{
+          handleOnGrid:function (event) {
+            this.price=event.price;
+            this.volatility=event.volatility;
+          }
+      }
     }
 </script>
 
 <style scoped>
-  .box{
-    display: table;
+  .nineGrid{
     height: 600px;
   }
-
-  .boxChild{
-    display: table-cell;
-    vertical-align: middle;
+  .middleBorder{
+    border-right: 1px solid rgba( 0, 0, 0, .3 );
   }
 </style>

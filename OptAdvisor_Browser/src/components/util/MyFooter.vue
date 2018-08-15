@@ -23,7 +23,7 @@
 <script>
     import LinkGroup from "./LinkGroup";
     export default {
-      name: "myFooter",
+      name: "MyFooter",
       data(){
           return{
             items1:[
