@@ -30,7 +30,7 @@ public class PortfolioController {
         return portfolioService.addPortfolio(username, options, type);
     }
 
-    @PutMapping("portfolio/{id}/track")
+    @PatchMapping("portfolio/{id}/track")
     public ResponseMsg riskTracking(@PathVariable Long id) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         return portfolioService.riskTracking(username, id);
