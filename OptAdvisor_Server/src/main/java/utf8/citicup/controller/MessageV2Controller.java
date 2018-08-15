@@ -13,7 +13,7 @@ public class MessageV2Controller {
     @Autowired
     public MessageService messageService;
 
-    @PutMapping("message/{id}/read")
+    @PatchMapping("message/{id}/read")
     public ResponseMsg setMessageRead(@PathVariable Long id) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         return messageService.setMessageRead(username, id);

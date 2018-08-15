@@ -194,11 +194,6 @@
     }
   }
 
-  .asd-car {
-    height: 190px;
-    overflow: hidden
-  }
-
   .forwardButton{
     color: #f90;
     background: 0 0;
