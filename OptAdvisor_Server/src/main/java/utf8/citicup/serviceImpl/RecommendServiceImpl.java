@@ -20,7 +20,6 @@ public class RecommendServiceImpl implements RecommendService {
 
     /*用户输入数据*/
     private double M0;//托管资金总额
-    private double a;//投资者可接受的最大损失百分比(套期保值里的)
     private String T;//投资者预测价格有效时间
     private char combination;//A-H 八个选项选其一
     private double p1;
@@ -91,13 +90,13 @@ public class RecommendServiceImpl implements RecommendService {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-//        List<int[]> D = new ArrayList<>();
-//        D.add(new int[]{1,2,3,4});
-//        D.add(new int[]{4,5,6});
-//        D.add(new int[]{7,8,9});
-//        D.add(new int[]{0});
-//        List <Integer> array = new ArrayList<>();
-//        re(D, 0, array);
+        List<int[]> D = new ArrayList<>();
+        D.add(new int[]{1,2,3,4});
+        D.add(new int[]{4,5,6});
+        D.add(new int[]{7,8,9});
+        D.add(new int[]{0});
+        List <Integer> array = new ArrayList<>();
+        re(D, 0, array);
     }
 
     private void re(List <int[]> D, int index, List<Integer> array){
@@ -192,7 +191,8 @@ public class RecommendServiceImpl implements RecommendService {
             temp += 0.05;
             i++;
         }
-        this.T = "2018-08";
+        dv = 0;//股票分红率
+        T = "2018-08";
     }
 
     /*从网络获取所需的数据*/
@@ -202,11 +202,7 @@ public class RecommendServiceImpl implements RecommendService {
         S0 = dataSource.get_S0();//实时标的价格
         sigma = dataSource.get_Sigma();//实时波动率
         lastestOptionPrice = dataSource.get_LatestPrice();
-        dv = 0;//股票分红率
         expiredMonths = dataSource.get_T();
-
-
-
         for (String expiredMonth : expiredMonths) {
             //region 根据行权名称得到相关数据
             chigh.put(expiredMonth, new ArrayList<Option>());
@@ -792,7 +788,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     //期权组合第三步，回测
     private void thirdStep(){
-        
+
     }
 
     @Override
