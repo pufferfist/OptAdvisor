@@ -421,7 +421,7 @@ public class RecommendServiceImpl implements RecommendService {
 
         List<structD> D = firstStep(combination);
         structD maxGoalD = new structD();
-        maxGoalD = backTest(D);
+        maxGoalD = secondStep(D);
         return new ResponseMsg(2002, "no match combination", null);
     }
 
@@ -571,7 +571,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     //期权组合第二步，在集合D中寻找goal值最高的组合
-    private structD backTest(List<structD> D){
+    private structD secondStep(List<structD> D){
         /*第二步
          * 1.D中的 optionCombination 是一个期权组合
          * 2.buyAndSell是与上面对应的买卖的个数，买为正，卖为负
@@ -657,8 +657,8 @@ public class RecommendServiceImpl implements RecommendService {
 
         //第三步
         String[][] rtn;
-        if(flag) rtn = thirdStep(0,N,iK,pAsset);
-        else rtn = thirdStep(1,N,iK,pAsset);
+        if(flag) rtn = hedgingBackTest(0,N,iK,pAsset);
+        else rtn = hedgingBackTest(1,N,iK,pAsset);
         RecommendOption2 recommendOption2 = new RecommendOption2(optionI, iK, rtn);
         return new ResponseMsg(0, "Hedging success", recommendOption2);
     }
@@ -700,7 +700,7 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
-    private String[][] thirdStep(int findType, int N, double iK, double pAsset){
+    private String[][] hedgingBackTest(int findType, int N, double iK, double pAsset){
         String[] nowStr = T.split("-");
         int nowYear = Integer.parseInt(nowStr[0]);
         int nowMonth = Integer.parseInt(nowStr[1]);
