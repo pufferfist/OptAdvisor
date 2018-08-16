@@ -14,7 +14,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class GetData {
-    public final String USER_AGENT = "Mozilla/5.0";
+    private final String USER_AGENT = "Mozilla/5.0";
 
     private Logger logger = LoggerFactory.getLogger(GetData.class);
     /*

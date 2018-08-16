@@ -1,9 +1,15 @@
 package utf8.citicup.serviceImpl;
 
 import org.springframework.stereotype.Service;
+import utf8.citicup.dataServiceImpl.historyDataServiceImpl.OptionBasicInfoDataServiceImpl;
+import utf8.citicup.dataServiceImpl.historyDataServiceImpl.OptionTsdDataServiceImpl;
+import utf8.citicup.dataServiceImpl.historyDataServiceImpl.TimeSeriesDataServiceImpl;
 import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.RecommendOption1;
 import utf8.citicup.domain.entity.ResponseMsg;
+import utf8.citicup.domain.historyEntity.OptionBasicInfo;
+import utf8.citicup.domain.historyEntity.OptionTsd;
+import utf8.citicup.domain.historyEntity.TimeSeriesData;
 import utf8.citicup.service.RecommendService;
 import utf8.citicup.service.util.GetData;
 
@@ -377,97 +383,36 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Override
-    public ResponseMsg hedging(int N0, double a, double s_exp, String T) {
+    public ResponseMsg hedging(int N0, double a, double sExp, String T) {
         try {
             upDataFromNet();
-            Option[] plow_T = new Option[plow.get(T).size()];
-            Option[] phigh_T = new Option[phigh.get(T).size()];
-            this.plow.get(T).toArray(plow_T);
-            this.phigh.get(T).toArray(phigh_T);
+            Option[] plowT = new Option[plow.get(T).size()];
+            Option[] phighT = new Option[phigh.get(T).size()];
+            this.plow.get(T).toArray(plowT);
+            this.phigh.get(T).toArray(phighT);
             int N = (int) (N0*a);
-            double p_asset = lastestOptionPrice;
-
+            double pAsset = lastestOptionPrice;
             //第一步
-            Option[] List_D1 = calcute_D(plow_T,s_exp,N,p_asset);
-            Option[] List_D2 = calcute_D(phigh_T,s_exp,N,p_asset);
-
-            System.out.println(Arrays.toString(List_D1));
-            System.out.println(Arrays.toString(List_D2));
+            Option[] ListD1 = calculateD(plowT,sExp,N,pAsset);
+            Option[] ListD2 = calculateD(phighT,sExp,N,pAsset);
 
             //第二步
-            Option i1 = max_loss(List_D1,s_exp,N,p_asset);
-            Option i2 = max_loss(List_D2,s_exp,N,p_asset);
-            double i_k1 = i1.getK();
-            double i_k2 = i2.getK();
-            double i_k;
+            Option i1 = maxLoss(ListD1,sExp,N,pAsset);
+            Option i2 = maxLoss(ListD2,sExp,N,pAsset);
+            double iK1 = i1.getK();
+            double iK2 = i2.getK();
+            double iK;
             Option optionI = new Option();
-
-            if(i_k1>i_k2){ i_k=i_k2; optionI = i2;}
-            else { i_k = i_k1; optionI = i1;}
-
-//            int reaminDays = Integer.parseInt(dataSource.get_expireAndremainder(T)[1]);   tttt
-
-            String[] nowStr = T.split("-");
-            int nowYear = Integer.parseInt(nowStr[0]);
-            int nowMonth = Integer.parseInt(nowStr[1]);
-            Calendar c= Calendar.getInstance();
-            int nowDay = c.get(Calendar.DATE);
-
-
-
-
-
-
+            boolean flag;  //判断是第一种还是第二种情况
+            if(iK1>iK2){ iK=iK2; optionI = i2; flag = false;}
+            else { iK = iK1; optionI = i1; flag = true;}
 
             //第三步
+            String[][] rtn;
+            if(flag) rtn = thirdStep(0,N,iK,pAsset);
+            else rtn = thirdStep(1,N,iK,pAsset);
 
 
-
-            if(flag) {
-                for (String m : month) {
-                    String[] str = m.split("-");
-                    int year = Integer.parseInt(str[0]);                //得到回测年月
-                    int month = Integer.parseInt(str[1]);
-
-                    int difference = caculataDifference(nowYear,nowMonth,nowDay);  //得到今天距离最近的第四个星期三所差的天数
-                    String startDate =caculateDate(year,month,difference);       //得到回测月的起始日期
-                    int stage = caculateFirstFew(T);                            //得到是在第几个阶段
-                    String endDate = caculateBackTestExpiryDate(startDate,stage);//得到回测的终止日期
-
-
-
-                    Option[] bt_plow = get_from_dataBase(m);
-                    for (Option bt_i : bt_plow) {
-                        double bt_i_k = bt_i.getK();
-                        if ((i_k - p_asset) - (bt_i_k - asset_close1) <= eps) {
-                            double total_loss;
-                            double bt_i_delta = bt_i.getDelta();
-                            double bt_i_num = (int) (N / (10000 * Math.abs(bt_i_delta))) + 1;
-                            if (asset_close2 < bt_i_k) {
-                                total_loss = N * bt_i_close1 + (bt_i_num * 10000 - N) * (bt_i_close1 - bt_i_close2) + N * (asset_close1 - bt_i_k);
-                            } else {
-                                total_loss = bt_i_close1 * bt_i_num * 10000 + N * (asset_close1 - asset_close2);
-                            }
-                        }
-                    }
-                }
-            }
-            else {
-                for(String m:month){
-                    Option[] bt_phigh = get_from_dataBase(m);
-                    for(Option bt_i:bt_phigh){
-                        double bt_i_k = bt_i.getK();
-                        if((i_k-p_asset)-(bt_i_k-asset_close1) <= eps){
-                            double total_loss;
-                            double bt_i_delta = bt_i.getDelta();
-                            double bt_i_num = (int) (N / (10000 * Math.abs(bt_i_delta))) + 1;
-                            if (asset_close2 < bt_i_k) {
-                                total_loss = N * bt_i_close1 + (bt_i_num * 10000 - N) * (bt_i_close1 - bt_i_close2) + N * (asset_close1 - bt_i_k);
-                            }
-                        }
-                    }
-                }
-            }
             } catch (IOException e) {
             e.printStackTrace();
         }
@@ -476,15 +421,15 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
 
-    private Option[] calcute_D(Option[] list,double s_exp,int N,double p_asset){
+    private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
         ArrayList<Option> D = new ArrayList<Option>();
         for (Option i : list) {
-            double i_k = i.getK();
-            if (i_k > s_exp) {
-                double i_delta = i.getDelta();
-                double i_price1 = i.getPrice1();
-                int i_num = (int)Math.ceil(N /(10000*Math.abs(i_delta)));
-                if((N * (p_asset - s_exp)) > (((N * p_asset) - (((i_num * 10000) - N) * (i_k - s_exp)) - (N * i_k)) + (i_num * 10000 * i_price1))){
+            double iK = i.getK();
+            if (iK > sExp) {
+                double iDelta = i.getDelta();
+                double iPrice1 = i.getPrice1();
+                int iNum = (int)Math.ceil(N /(10000*Math.abs(iDelta)));
+                if((N * (pAsset - sExp)) > (((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + (iNum * 10000 * iPrice1))){
                     D.add(i);
                 }
             }
@@ -492,23 +437,97 @@ public class RecommendServiceImpl implements RecommendService {
         return (Option[])D.toArray();
     }
 
-    private Option max_loss(Option[] List_D,double s_exp, int N, double p_asset){
+    private Option maxLoss(Option[] ListD,double sExp, int N, double pAsset){
         double cost;
-        double max_loss = Double.MAX_VALUE;
+        double maxLoss = Double.MAX_VALUE;
         Option rtn=null;
-        for(Option i:List_D){
-            double i_k = i.getK();
-            double i_delta = i.getDelta();
-            double i_price1 = i.getPrice1();
-            int i_num = (int)Math.ceil(N /(10000*Math.abs(i_delta)));
-            cost = i_num*10000*i_price1;
-            double temp = ((N * p_asset) - (((i_num * 10000) - N) * (i_k - s_exp)) - (N * i_k)) + cost;
-            if(temp<max_loss){
-                max_loss = temp;
+        for(Option i:ListD){
+            double iK = i.getK();
+            double iDelta = i.getDelta();
+            double iPrice1 = i.getPrice1();
+            int iNum = (int)Math.ceil(N /(10000*Math.abs(iDelta)));
+            cost = iNum*10000*iPrice1;
+            double temp = ((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost;
+            if(temp<maxLoss){
+                maxLoss = temp;
                 rtn = i;
             }
         }
 
+        return rtn;
+    }
+
+    private String[][] thirdStep(int findType, int N, double iK, double pAsset){
+        String[] nowStr = T.split("-");
+        int nowYear = Integer.parseInt(nowStr[0]);
+        int nowMonth = Integer.parseInt(nowStr[1]);
+        Calendar c= Calendar.getInstance();
+        int nowDay = c.get(Calendar.DATE);
+
+
+        String[][] rtn = new String[4][36]; //返回四行的数组
+        int index = 0; //用于计算数组的角标
+        for (String m : month) {
+            String[] str = m.split("-");
+            int year = Integer.parseInt(str[0]);                //得到回测年月
+            int month = Integer.parseInt(str[1]);
+
+            int difference = caculataDifference(nowYear, nowMonth, nowDay);  //得到今天距离最近的第四个星期三所差的天数
+            String startDate = caculateDate(year, month, difference);       //得到回测月的起始日期
+            int stage = caculateFirstFew(T);                            //得到是在第几个阶段
+            String endDate = caculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
+
+            OptionTsdDataServiceImpl search = new OptionTsdDataServiceImpl();
+            List<OptionTsd> backTestOptions = search.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
+
+            TimeSeriesDataServiceImpl ETF50 = new TimeSeriesDataServiceImpl();
+            TimeSeriesData ETF50findByLastTradeDate = ETF50.findByLastTradeDate(startDate);
+            double assetClose1 = ETF50findByLastTradeDate.getClosePrice();    //查询ETF50timeSeries得到起始日和结束日的收盘价
+            ETF50findByLastTradeDate = ETF50.findByLastTradeDate(endDate);
+            double assetClose2 = ETF50findByLastTradeDate.getClosePrice();
+
+            double totalLoss = 0;
+            if (backTestOptions.isEmpty()) {
+                continue;
+            }
+            else{
+                for (OptionTsd backTestI : backTestOptions) {
+                    String backTestoptionCodeName = backTestI.getCodeName();    //得到期权代码
+                    OptionBasicInfoDataServiceImpl secondSearch = new OptionBasicInfoDataServiceImpl();   //第二次查询得到i'_k行权价格
+                    OptionBasicInfo secondSearchByCodeName = secondSearch.findByCodeName(backTestoptionCodeName); //得到这一行信息
+                    double backTestK = secondSearchByCodeName.getPrice();    //得到i'_k
+
+                    double backTestClose1 = backTestI.getClosePrice();      //起始日期权收盘价
+                    OptionTsd endDateMsg = search.findByCodeNameAndLatestDate(backTestoptionCodeName, endDate);
+                    double backTestClose2 = endDateMsg.getClosePrice();    //结束日期权收盘价
+
+
+                    if ((iK - pAsset) - (backTestK - assetClose1) <= eps) {
+                        double backTestIDelta = backTestI.getDelta();
+                        double backTestINum = (int) (N / (10000 * Math.abs(backTestIDelta))) + 1;
+                        if (assetClose2 < backTestK) {
+                            totalLoss = N * backTestClose1 + (backTestINum * 10000 - N) * (backTestClose1 - backTestClose2) + N * (assetClose1 - backTestK);
+                        } else {
+                            totalLoss = backTestClose1 * backTestINum * 10000 + N * (assetClose1 - assetClose2);
+                        }
+                    }
+                }
+            }
+
+            double holdDouble = N*(assetClose1-assetClose2);
+            double unholdDouble = totalLoss;
+            double lossDifferenceDouble = unholdDouble - holdDouble;
+
+            String hold = Double.toString(holdDouble);
+            String unhold = Double.toString(totalLoss);
+            String lossDifference = Double.toString(lossDifferenceDouble);
+
+            rtn[0][index] = m;
+            rtn[1][index] = hold;
+            rtn[2][index] = unhold;
+            rtn[3][index] = lossDifference;
+            index++;
+        }
         return rtn;
     }
 

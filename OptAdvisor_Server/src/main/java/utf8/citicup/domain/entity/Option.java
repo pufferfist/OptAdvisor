@@ -12,7 +12,8 @@ public class Option {
     @GeneratedValue
     private Long persisentId;//存储用主键
 
-    private String id;
+    private String tradeCode; //交易代码
+    private String optionCode; //期权代码
     private String name;//例如:50ETF购8月2600
     private int type;//1为买入0为卖出
     private int cp;//1为看涨 -1为看跌
@@ -38,9 +39,10 @@ public class Option {
 
     public Option(){}
 
-    public Option(String id,String name,int type,int cp,String expireTime,double executionPrice,
-                  double transactionPrice,int quantity,double delta,double gamma,double vega,double theta,double rho,double beta){
-        this.id=id;
+    public Option(String tradeCode, String optionCode, String name, int type, int cp, String expireTime, double executionPrice,
+                  double transactionPrice, int quantity, double delta, double gamma, double vega, double theta, double rho, double beta){
+        this.tradeCode = tradeCode;
+        this.optionCode = optionCode;
         this.name=name;
         this.type=type;
         this.cp=cp;
@@ -58,7 +60,7 @@ public class Option {
 
     @Override
     public String toString() {
-        return "{"+name+","+id+"}";
+        return "{"+name+","+ tradeCode +"}";
     }
 
     public double getK() {
@@ -93,9 +95,9 @@ public class Option {
         this.yclose = yclose;
     }
 
-    public String getId() { return id; }
+    public String getTradeCode() { return tradeCode; }
 
-    public void setId(String id) { this.id = id; }
+    public void setTradeCode(String tradeCode) { this.tradeCode = tradeCode; }
 
     public String getName() { return name; }
 
@@ -163,5 +165,13 @@ public class Option {
 
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
+    }
+
+    public String getOptionCode() {
+        return optionCode;
+    }
+
+    public void setOptionCode(String optionCode) {
+        this.optionCode = optionCode;
     }
 }
