@@ -12,12 +12,14 @@ import Cookies from 'vue-cookie'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
 import echarts from 'echarts'
-
+import contentmenu from 'v-contextmenu'
+import 'v-contextmenu/dist/index.css'
 
 Vue.use(iView);
 Vue.use(Cookies);
 Vue.use(VueAxios,axios);
 Vue.prototype.$echarts = echarts
+Vue.use(contentmenu)
 
 Vue.config.productionTip = false;
 

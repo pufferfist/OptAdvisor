@@ -42,7 +42,7 @@
       this.formInline.user=this.$cookie.get("userName");
     },
     methods: {
-      getUser() {
+      handleSubmit() {
         var validation;
         this.$refs['formInline'].validate((valid) => {
           validation=valid
