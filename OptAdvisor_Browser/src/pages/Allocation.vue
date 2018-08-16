@@ -28,12 +28,17 @@
     </transition>
     <transition name="move-right">
       <div v-if="resultStep">
-        <h1>结果展示</h1>
-        <ResultDisplay></ResultDisplay>
-        <Button size="large" type="warning" @click="lastStep" class="fr forwardButton" ghost>
-          <Icon type="ios-arrow-back"/>
-          上一步
-        </Button>
+        <ResultDisplay class="pt4" :data="data" :date="date" :portfolioProfit="portfolioProfit" :assetsProfit="assetsProfit" ></ResultDisplay>
+        <Row class="pt4">
+          <Button size="large" type="warning" @click="lastStep" class="fl forwardButton" ghost>
+            <Icon type="ios-arrow-back"/>
+            上一步
+          </Button>
+          <Button size="large" type="warning" @click="addPortfolio" class="fr addButton" ghost :loading="addPortfolioLoading">
+            <Icon type="md-add" />
+            加入我的组合
+          </Button>
+        </Row>
       </div>
     </transition>
   </div>
@@ -44,38 +49,108 @@
     import AlForm from "../components/allocation/infoCollect/AlForm";
     import ResultDisplay from "../components/allocation/ResultDisplay";
     export default {
-        name: "Allocation",
-      data(){
+      name: "Allocation",
+      data() {
         return {
-          price:1,
-          volatility:1,
-          infoStep:false,
-          loading:false,
-          resultStep:true,
+          price: 1,
+          volatility: 1,
+          infoStep: false,
+          loading: false,
+          resultStep: true,
+          date: [],
+          portfolioProfit: [],
+          assetsProfit: [],
+          data: {
+            optionList: [
+              {
+                id: '510050C1808M02600',
+                name: "50ETF购8月2600",
+                number: "2",
+                cp: 1,
+                expireTime: "2018-8-22",
+                k: 2.600,
+                price1: 2.2,
+                price2: 2.8,
+                delta: 1,
+                gamma: 2,
+                theta: 3,
+                vega: 4,
+                rho: 5
+              },
+              {
+                id: '510050C1809M02700',
+                name: "50ETF沽9月2700",
+                number: "-1",
+                cp: -1,
+                expireTime: "2018-9-26",
+                k: 2.700,
+                price1: 2.3,
+                price2: 2.9,
+                delta: 5,
+                gamma: 4,
+                theta: 3,
+                vega: 2,
+                rho: 1
+              }
+            ],
+            portfolioInfo: {
+              cost: 10000,
+              securityDeposit: 100,
+              z_delta: 1,
+              z_gamma: 2,
+              z_vega: 3,
+              z_theta: 4,
+              z_rho: 5,
+              expectedRate: 6,
+              risk: 7,
+            },
+            assetsInfo: {
+              expectedRate: '60%',
+              risk: '30%'
+            },
+          },
+          addPortfolioLoading:false,
         }
       },
       components: {ResultDisplay, AlForm, NineGrid},
-      methods:{
-          handleOnGrid:function (event) {
-            this.price=event.price;
-            this.volatility=event.volatility;
-          },
-        handleNextStep:function () {
-          this.loading=true;
-          //异步请求
-          setTimeout(()=>{
-            this.loading=false;
-            this.infoStep=false;
-            setTimeout(()=>{
-              this.resultStep=true;
-            },200);
-          },2000);
+      methods: {
+        handleOnGrid: function (event) {
+          this.price = event.price;
+          this.volatility = event.volatility;
         },
-        lastStep:function () {
-          this.resultStep=false;
-          setTimeout(()=>{
-            this.infoStep=true;
-          },200);
+        handleNextStep: function () {
+          this.loading = true;
+          //异步请求推荐组合
+          setTimeout(() => {
+            this.loading = false;
+            this.infoStep = false;
+            setTimeout(() => {
+              this.resultStep = true;
+            }, 200);
+          }, 2000);
+        },
+        lastStep: function () {
+          this.resultStep = false;
+          setTimeout(() => {
+            this.infoStep = true;
+          }, 200);
+        },
+        addPortfolio: function () {
+          this.addPortfolioLoading=true;
+          //异步请求添加组合并跳转到我的组合界面
+          //理论上来说应该支持自定义组合名
+          this.axios.post("/backend/portfolio", {
+            type: 1,
+            options: this.data.optionList
+          }).then((res) => {
+            this.addPortfolioLoading=false;
+            if (res.data.code === 0) {
+                this.$router.push('/myPortfolio');
+              } else {
+                this.$Message.error('发生了预料之外的错误');
+              }
+            }
+          )
         }
       }
     }
@@ -202,10 +277,22 @@
     border-color: #f90;
   }
 
-  .forwardButton:hover{
+  .forwardButton:hover {
     color: #fff;
     background-color: #f90;
     border-color: #f90;
+  }
+
+  .addButton {
+    color: #4169E1;
+    background: 0 0;
+    border-color: #4169E1;
+  }
+
+  .addButton:hover {
+    color: #fff;
+    background-color: #4169E1;
+    border-color: #4169E1;
   }
 </style>
 

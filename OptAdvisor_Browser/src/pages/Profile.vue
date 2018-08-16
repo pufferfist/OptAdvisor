@@ -7,35 +7,22 @@
       </p>
       <div>
         <Form ref="userForm" :model="userForm" :label-width="100" label-position="right" :rules="inforValidate">
-          <FormItem label="用户名：" prop="name">
-            <div style="display:inline-block;width:300px;">
-              <Input v-model="userForm.username"/>
-            </div>
+          <FormItem label="用户名：">
+            <span>{{userForm.username}}</span>
           </FormItem>
           <FormItem label="登录密码：">
             <Button type="primary" ghost @click="showEditPassword">修改密码</Button>
           </FormItem>
 
           <FormItem label="用户手机：" prop="cellphone">
-            <div style="display:inline-block;width:204px;">
-              <Input v-model="userForm.cellphone" @on-keydown="hasChangePhone"/>
-            </div>
-            <div style="display:inline-block;position:relative;">
-              <Button @click="getIdentifyCode" :disabled="canGetIdentifyCode">{{ gettingIdentifyCodeBtnContent }}
-              </Button>
-              <div class="own-space-input-identifycode-con" v-if="inputCodeVisible">
-                <div style="background-color:white;z-index:110;margin:10px;">
-                  <Input v-model="securityCode" placeholder="请填写短信验证码"/>
-                  <div style="margin-top:10px;text-align:right">
-                    <Button type="ghost" @click="cancelInputCodeBox">取消</Button>
-                    <Button type="primary" @click="submitCode" :loading="checkIdentifyCodeLoading">确定</Button>
-                  </div>
-                </div>
-              </div>
+            <div style="display:inline-block;width:300px;">
+              <Input v-model="userForm.cellphone"/>
             </div>
           </FormItem>
-          <FormItem label="姓名：">
-            <span>{{ userForm.company }}</span>
+          <FormItem label="姓名：" prop="name">
+            <div style="display:inline-block;width:300px;">
+              <Input v-model="userForm.name"/>
+              </div>
           </FormItem>
           <FormItem label="性别：" prop="gender">
             <RadioGroup v-model="userForm.gender">
@@ -43,8 +30,8 @@
               <Radio label="female">女性</Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label="生日：">
-            <span>{{ userForm.department }}</span>
+          <FormItem label="生日：" prop="date">
+            <DatePicker type="date" placeholder="选择生日" v-model="userForm.date"></DatePicker>
           </FormItem>
           <FormItem label="邮箱：" prop="email">
             <div style="display:inline-block;width:300px;">
@@ -106,20 +93,17 @@
           cellphone: '',
           email: '',
           gender:'',
-          birthday: ''
+          birthday: '',
+          w1:0,
+          w2:0,
         },
-        uid: '', // 登录用户的userId
-        securityCode: '', // 验证码
-        phoneHasChanged: false, // 是否编辑了手机
         save_loading: false,
-        identifyError: '', // 验证码错误
         editPasswordModal: false, // 修改密码模态框显示
         savePassLoading: false,
         oldPassError: '',
-        identifyCodeRight: false, // 验证码是否正确
-        hasGetIdentifyCode: false, // 是否点了获取验证码
-        canGetIdentifyCode: false, // 是否可点获取验证码
         checkIdentifyCodeLoading: false,
+        w1:0,
+        w2:0,
         inforValidate: {
           name: [
             { required: true, message: '请输入姓名', trigger: 'blur' }
@@ -158,65 +142,35 @@
             { validator: valideRePassword, trigger: 'blur' }
           ]
         },
-        inputCodeVisible: false, // 显示填写验证码box
         initPhone: '',
-        gettingIdentifyCodeBtnContent: '获取验证码' // “获取验证码”按钮的文字
       };
     },
     methods: {
-      getIdentifyCode () {
-        this.hasGetIdentifyCode = true;
-        this.$refs['userForm'].validate((valid) => {
-          if (valid) {
-            this.canGetIdentifyCode = true;
-            let timeLast = 60;
-            let timer = setInterval(() => {
-              if (timeLast >= 0) {
-                this.gettingIdentifyCodeBtnContent = timeLast + '秒后重试';
-                timeLast -= 1;
-              } else {
-                clearInterval(timer);
-                this.gettingIdentifyCodeBtnContent = '获取验证码';
-                this.canGetIdentifyCode = false;
-              }
-            }, 1000);
-            this.inputCodeVisible = true;
-            // you can write ajax request here
-          }
-        });
-      },
       showEditPassword () {
         this.editPasswordModal = true;
       },
       cancelEditUserInfor () {
-        this.$store.commit('removeTag', 'ownspace_index');
-        localStorage.pageOpenedList = JSON.stringify(this.$store.state.app.pageOpenedList);
-        let lastPageName = '';
-        if (this.$store.state.app.pageOpenedList.length > 1) {
-          lastPageName = this.$store.state.app.pageOpenedList[1].name;
-        } else {
-          lastPageName = this.$store.state.app.pageOpenedList[0].name;
-        }
-        this.$router.push({
-          name: lastPageName
-        });
+        this.$router.push('/50ETF');
       },
       saveEdit () {
         this.$refs['userForm'].validate((valid) => {
           if (valid) {
-            if (this.phoneHasChanged && this.userForm.cellphone !== this.initPhone) { // 手机号码修改过了而且修改之后的手机号和原来的不一样
-              if (this.hasGetIdentifyCode) { // 判断是否点了获取验证码
-                if (this.identifyCodeRight) { // 判断验证码是否正确
-                  this.saveInfoAjax();
-                } else {
-                  this.$Message.error('验证码错误，请重新输入');
+            this.save_loading = true;
+            //异步请求修改信息
+            let tempUser=JSON.parse(JSON.stringify(this.userForm));
+            delete tempUser.birthday;
+            tempUser.birthday=this.userForm.birthday.getTime();
+            delete tempUser.w1;
+            delete tempUser.w2;
+            this.axios.post("/backend/user/modifyInfo",tempUser)
+              .then((res)=>{
+                this.save_loading = false;
+                if(res.data.code===0){
+                  this.$Message.success("个人信息修改成功");
+                }else{
+                  this.$Message.error("出现了不可预料的错误");
                 }
-              } else {
-                this.$Message.warning('请先点击获取验证码');
-              }
-            } else {
-              this.saveInfoAjax();
-            }
+              });
           }
         });
       },
@@ -227,49 +181,33 @@
         this.$refs['editPasswordForm'].validate((valid) => {
           if (valid) {
             this.savePassLoading = true;
-            // you can write ajax request here
+            // 异步请求修改密码
+            this.axios.post("/backend/user/resetPassword",{
+              oldPassword:this.editPasswordForm.oldPass,
+              newPassword:this.editPasswordForm.newPass
+            }).then((res)=>{
+              if(res.data.code===0){
+                this.$Message.success("密码更改成功");
+              }else{
+                this.$Message.error("出现了不可预料的错误");
+              }
+            })
           }
         });
       },
-      init () {
-        this.userForm.name = 'Lison';
-        this.userForm.cellphone = '17712345678';
-        this.initPhone = '17712345678';
-        this.userForm.company = 'TalkingData';
-        this.userForm.department = '可视化部门';
-      },
-      cancelInputCodeBox () {
-        this.inputCodeVisible = false;
-        this.userForm.cellphone = this.initPhone;
-      },
-      submitCode () {
-        let vm = this;
-        vm.checkIdentifyCodeLoading = true;
-        if (this.securityCode.length === 0) {
-          this.$Message.error('请填写短信验证码');
-        } else {
-          setTimeout(() => {
-            this.$Message.success('验证码正确');
-            this.inputCodeVisible = false;
-            this.checkIdentifyCodeLoading = false;
-          }, 1000);
-        }
-      },
-      hasChangePhone () {
-        this.phoneHasChanged = true;
-        this.hasGetIdentifyCode = false;
-        this.identifyCodeRight = false;
-      },
-      saveInfoAjax () {
-        this.save_loading = true;
-        setTimeout(() => {
-          this.$Message.success('保存成功');
-          this.save_loading = false;
-        }, 1000);
-      }
     },
     mounted () {
-      this.init();
+      this.userForm.username='叫我小强';
+      this.userForm.name = '郭玉玲';
+      this.userForm.cellphone = '18888888888';
+      this.initPhone = '18888888888';
+      this.userForm.email = 'xiaoqiang@163.com';
+      this.userForm.gender = 'female';
+      //初始化个人信息
+      this.axios.post("/backend/user/getInfo")
+        .then((res)=>{
+          this.userForm=res.data;
+        })
     }
   };
 </script>
