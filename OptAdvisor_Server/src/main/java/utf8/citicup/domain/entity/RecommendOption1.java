@@ -5,6 +5,8 @@ import utf8.citicup.domain.entity.Option;
 
 public class RecommendOption1 {
     Option[] optionList;
+    int buyAndSell;
+    int num;
     double cost;//成本p1-p2
     double bond;//保证金
     double z_delta;
