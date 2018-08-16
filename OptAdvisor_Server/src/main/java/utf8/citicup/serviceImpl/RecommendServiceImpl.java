@@ -55,12 +55,12 @@ public class RecommendServiceImpl implements RecommendService {
     private double dv;//股票分红率
     private double S[];
     private double eps1;
+    private String[] month={"2015-02"};
 
     /*计算得到的值*/
     private double d_1;
     private double d_2;
     private double M;
-    private String[] month;
     private Logger logger = LoggerFactory.getLogger(RecommendService.class);
 
     /*新用到的结构类型*/
@@ -657,8 +657,8 @@ public class RecommendServiceImpl implements RecommendService {
 
         //第三步
         String[][] rtn;
-        if(flag) rtn = hedgingBackTest(0,N,iK,pAsset);
-        else rtn = hedgingBackTest(1,N,iK,pAsset);
+        if(flag) rtn = hedgingBackTest(0,N,iK,pAsset,T);
+        else rtn = hedgingBackTest(1,N,iK,pAsset,T);
         RecommendOption2 recommendOption2 = new RecommendOption2(optionI, iK, rtn);
         return new ResponseMsg(0, "Hedging success", recommendOption2);
     }
@@ -700,7 +700,7 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
-    private String[][] hedgingBackTest(int findType, int N, double iK, double pAsset){
+    private String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
         String[] nowStr = T.split("-");
         int nowYear = Integer.parseInt(nowStr[0]);
         int nowMonth = Integer.parseInt(nowStr[1]);
