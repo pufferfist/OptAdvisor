@@ -1,6 +1,6 @@
 <template>
     <div>
-      <Row class="mt6">
+      <Row class="mt5">
         <i-input v-model="principal" placeholder="本金" class="w-70 cover">
           <span slot="append" class="f5">元</span>
         </i-input>
@@ -39,7 +39,7 @@
         <p class="pt4">波动率范围:{{volatilityForecast}}~{{currentVolatility}}%</p>
       </Row>
       <Row class="pt5">
-        <Button :size="large" type="warning" class="fr forwardButton" ghost>
+        <Button size="large" type="warning" @click="nextStep" class="fr forwardButton" ghost>
           下一步
           <Icon type="ios-arrow-forward" />
         </Button>
@@ -82,6 +82,20 @@
         },
         priceFormat:function (val) {
           return val+"元"
+        },
+        isInFive: function () {
+          let now=new Date();
+          let year=now.getFullYear();
+          let month=now.getMonth()+1;
+          let day=now.getDate()
+          let WeekDay;
+          let theFourthWed;
+          WeekDay=new Date(year,month-1,1).getDay();
+          theFourthWed = WeekDay <= 3 ? 24 - WeekDay : 31 - WeekDay;
+          return day >= theFourthWed - 4 && day <= theFourthWed + 1;
+        },
+        nextStep:function () {
+          this.$emit("nextStep");
         }
       },
       created:function () {
@@ -103,7 +117,10 @@
               let compare =(obj1, obj2) => {
                 return obj1.differ<obj2.differ?-1:(obj1.differ>obj2.differ?1:0);
               };
-              this.timeList.sort(compare)
+              this.timeList.sort(compare);
+              if(this.isInFive()){
+                this.timeList.slice(0,1)
+              }
             })
           });
         this.axios.get("/sigma", {params: {v: new Date().getTime()}})
@@ -147,5 +164,4 @@
     background-color: #f90;
     border-color: #f90;
   }
-
 </style>
