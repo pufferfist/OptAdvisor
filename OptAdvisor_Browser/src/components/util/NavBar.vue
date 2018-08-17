@@ -86,7 +86,9 @@
   Logo{
     height: 100%;
   }
-
+  .nav{
+    box-shadow: 0 0 16px 1px rgba(0,0,0,.05);
+  }
   .logo:after{
     content: "";
     display: block;

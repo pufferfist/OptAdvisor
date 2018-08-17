@@ -1,4 +1,4 @@
-package utf8.citicup.utils;
+package utf8.citicup.service.util;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -33,5 +33,10 @@ public class JsonParse {
     public static Map objectToMap(Object object) {
         ObjectMapper mapper = new ObjectMapper();
         return mapper.convertValue(object, Map.class);
+    }
+
+    public static <T> T objectToAnyType(Object object, Class<T> toValueType) {
+        ObjectMapper mapper = new ObjectMapper();
+        return mapper.convertValue(object, toValueType);
     }
 }

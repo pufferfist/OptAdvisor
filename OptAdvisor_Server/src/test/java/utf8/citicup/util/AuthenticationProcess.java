@@ -1,4 +1,4 @@
-package utf8.citicup.utils;
+package utf8.citicup.util;
 
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
@@ -7,10 +7,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static utf8.citicup.utils.JsonParse.objectToJsonString;
+import static utf8.citicup.service.util.JsonParse.objectToJsonString;
 
 public class AuthenticationProcess {
     public static MockHttpSession login(MockMvc mockMvc, String username, String password) throws Exception {
@@ -18,7 +19,7 @@ public class AuthenticationProcess {
         map.put("username", username);
         map.put("password", password);
 
-        return (MockHttpSession) mockMvc.perform(post("/login")
+        return (MockHttpSession) mockMvc.perform(post("/session")
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0))
@@ -26,7 +27,7 @@ public class AuthenticationProcess {
     }
 
     public static void logout(MockMvc mockMvc, MockHttpSession httpSession) throws Exception {
-        mockMvc.perform(post("/user/logout").session(httpSession))
+        mockMvc.perform(delete("/session").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
     }

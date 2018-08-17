@@ -2,7 +2,7 @@
   <div id="login">
     <Row class="middle">
       <i-col span="8" offset="8">
-        <div id="form" class="login-form animated  tc">
+        <div id="form" class="login-form animated fadeInLeft tc">
           <Logo class="pb3"></Logo>
           <login-form class="pt3-l pl4 pr4"></login-form>
         </div>
@@ -33,7 +33,7 @@
     background-image: url("../../static/graph/back1.jpg");
     background-size:1920px 1200px;
     background-repeat:no-repeat;
-    height: 100%;
+    height: 1080px;
   }
 
   .login-form {
@@ -43,9 +43,11 @@
     -o-box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
     box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
     background: #ffffff;
+    position: fixed;
   }
 
   #login {position: relative;}
+
   .middle {
     position: absolute;
     top: 0;

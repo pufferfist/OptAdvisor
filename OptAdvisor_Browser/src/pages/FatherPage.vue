@@ -15,7 +15,7 @@
 
 <script>
     import NavBar from "../components/util/NavBar";
-    import MyFooter from "../components/util/myFooter";
+    import MyFooter from "../components/util/MyFooter";
     export default {
       name: "FatherPage",
       components: {MyFooter, NavBar}
@@ -43,6 +43,7 @@
   .content{
     margin: auto;
     width: 65%;
+    min-height: 1000px;
     background-color: #ffffff;
   }
 

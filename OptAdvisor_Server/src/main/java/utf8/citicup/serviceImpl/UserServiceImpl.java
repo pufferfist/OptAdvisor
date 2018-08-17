@@ -1,11 +1,6 @@
 package utf8.citicup.serviceImpl;
 
-import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authc.IncorrectCredentialsException;
-import org.apache.shiro.authc.UnknownAccountException;
-import org.apache.shiro.authc.UsernamePasswordToken;
 import org.apache.shiro.crypto.hash.Sha256Hash;
-import org.apache.shiro.subject.Subject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +9,8 @@ import utf8.citicup.dataService.UserDataService;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
-import utf8.citicup.service.util.StatusMsg;
 import utf8.citicup.service.util.PolySms;
+import utf8.citicup.service.util.StatusMsg;
 
 import java.io.IOException;
 import java.util.Map;
@@ -28,33 +23,6 @@ public class UserServiceImpl implements UserService {
     private Logger logger = LoggerFactory.getLogger(UserService.class);
 
     @Override
-    public ResponseMsg login(String username, String password) {
-        logger.info(username + ": " + password);
-        password = new Sha256Hash(password).toString();
-        UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-        token.setRememberMe(true);
-        Subject subject = SecurityUtils.getSubject();
-        try {
-            subject.login(token);
-        } catch (UnknownAccountException uae) {
-            return StatusMsg.unknownUsername;
-        } catch (IncorrectCredentialsException ice) {
-            return StatusMsg.incorrectPassword;
-        }
-        if (!subject.isAuthenticated()) {
-            token.clear();
-            return StatusMsg.notAuthenticated;
-        }
-        return StatusMsg.loginSuccess;
-    }
-
-    @Override
-    public ResponseMsg logout() {
-        SecurityUtils.getSubject().logout();
-        return StatusMsg.logoutSuccess;
-    }
-
-    @Override
     public ResponseMsg signUp(User user) {
         user.setPassword(new Sha256Hash(user.getPassword()).toString());
         User resultOfFind = userDataService.findById(user.getUsername());
@@ -64,6 +32,12 @@ public class UserServiceImpl implements UserService {
         } else {
             return StatusMsg.usernameExists;
         }
+    }
+
+    @Override
+    public ResponseMsg isUsernameUsed(String username) {
+        User resultOfFind=userDataService.findById(username);
+        return new ResponseMsg(0, "Find if username exists success", null != resultOfFind);
     }
 
     @Override
@@ -143,7 +117,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseMsg getInfo(String username) {
-        return new ResponseMsg(0, "Get user info success", getUser(username));
+        return new ResponseMsg(0, "Get user info success", this.getUser(username));
     }
 
     @Override

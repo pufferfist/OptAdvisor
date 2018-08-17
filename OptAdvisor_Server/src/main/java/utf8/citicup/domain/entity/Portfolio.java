@@ -5,9 +5,14 @@ import javax.persistence.*;
 @Entity
 public class Portfolio {
 
+    public Portfolio(){}
+
     public Portfolio(String username, Option[] options, Enum type, boolean trackingStatus){
         this.username = username;
         this.options = options;
+        for(Option each:options){
+            each.setPortfolio(this);
+        }
         this.type = type;
         this.trackingStatus = trackingStatus;
     }
@@ -39,6 +44,12 @@ public class Portfolio {
     }
 
     public void setOptions(Option[] options) {
+        for(Option each:this.options){
+            each.setPortfolio(null);
+        }
+        for(Option each:options){
+            each.setPortfolio(this);
+        }
         this.options = options;
     }
 

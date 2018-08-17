@@ -1,13 +1,15 @@
 <template>
   <div id="main_part">
     <div id="fill_part" v-bind:style="{position:PO}">
-      <logo></logo><br>
+      <logo></logo>
+      <br>
       <div style="text-align: center">
         <Steps :current="current">
           <Step title="完善信息"></Step>
           <Step title="填写问卷"></Step>
           <Step title="完成注册"></Step>
-        </Steps><br>
+        </Steps>
+        <br>
       </div>
 
       <div id="page1" v-bind:style="{display:ispage01}">
@@ -23,14 +25,9 @@
       <div style="text-align: center" v-bind:style="{display:isLastPage}">
         <Button type="primary" @click="next">下一步</Button>
       </div>
+    </div>
 
-      <button @click="handleSubmit(1,2)">CC</button>
-     </div>
-
-   </div>
-
-
-
+  </div>
 </template>
 
 <script>
@@ -57,7 +54,6 @@
           if(this.current==0){
             this.$refs.information.$refs.formValidate.validate((valid) => {
               if (valid) {
-                //提交信息
                 //换页
                 this.ispage01="none"
                 this.ispage02=""
@@ -73,40 +69,53 @@
               if (valid) {
                 //计算
                 var points=this.calculateMarks();
-                //提交
+                var w1;
+                var w2;
                 if(points<=10){
-                  this.handleSubmit()
+                  w1=0.1
+                  w2=0.9
                   this.$refs.results.type="C1（安逸型）"
                   this.$refs.results.text1="在投资时会以降低风险承受度为前提，风险承受能力低，对收益要求不高，但追求资金本金的绝对安全。预期报酬率优于中长期存款利率，并确保本金在通货膨胀中发挥保值功能。"
                   this.$refs.results.text2="R1（低风险）"
                 }
                 else if(points<=20){
+                  w1=0.3
+                  w2=0.7
                   this.$refs.results.type="C2（保守型）"
                   this.$refs.results.text1="风险承受能力较低，能容忍一定程度的本金损失，止损意识强。资产配置以低风险品种为主，少量参与股票投资。"
                   this.$refs.results.text2="R2（中低风险）"
                 }
                 else if(points<=30){
+                  w1=0.5
+                  w2=0.5
                   this.$refs.results.type="C3（稳健型）"
                   this.$refs.results.text1="从总体投资来看，在风险较小的情况下获得一定的收益是您主要的投资目的。您通常愿意使本金面临一定的风险，但在做投资决定时，对风险总是客观存在的道理有清楚的认识，会仔细地对将要面临的风险进行认真的分析。总体来看，愿意承受市场的平均风险。"
                   this.$refs.results.text2="R3（中等风险）"
                 }
                 else if(points<=40){
+                  w1=0.7
+                  w2=0.3
                   this.$refs.results.type="C4（积极型）"
                   this.$refs.results.text1="偏向于激进的资产配置，对风险有较高的承受能力，投资收益预期相对较高，资产配置以股票等高风险的品种为主，资产市直波动相对较大，除获取资本利得之外，也寻求投资差价收益。"
                   this.$refs.results.text2="R4（中高风险）"
                 }
                 else if(points<=50){
+                  w1=0.9
+                  w2=0.1
                   this.$refs.results.type="C5（激进型）"
                   this.$refs.results.text1="具有较强的主观风险承受意愿。并试图尝试较高收益的投资，乐意承担一定的风险，希望获得比一般人更高的收益。"
                   this.$refs.results.text2="R5（高风险）"
                 }
-                //设置
-                this.ispage02="none";
+                //上传
+                var user=this.getUser(w1,w2);
+                this.axios.post('/backend/signUp', user);
+                this.ispage02="none"
                 this.ispage03=""
-
                 this.current+=1
                 this.PO="absolute"
                 this.isLastPage="none"
+                this.$refs.results.username=user.username
+                this.$refs.results.password=user.password
               } else {
                 this.$Message.error('问卷题目未答全');
               }
@@ -116,9 +125,6 @@
           else {
             this.current += 1;
           }
-        },
-        handleReset () {
-          this.$refs.information.$refs.formValidate.resetFields();
         },
         calculateMarks(){
           var total=0;
@@ -210,7 +216,7 @@
 
           return total;
         },
-        handleSubmit(w1,w2){
+        getUser(w1, w2){
           var array=this.$refs.information.$refs.formValidate.fields
           var name=array[0].fieldValue
           var gender=array[1].fieldValue
@@ -220,18 +226,7 @@
           var birth=array[5].fieldValue
           var email=array[6].fieldValue
           var phone=array[7].fieldValue
-          // //console.log(name,gender,username,password,passcheck,birth,email,phone )
-          //user={}
-          // user.username=username
-          // user.password=password
-          // user.name=name
-          // user.birthday=birth
-          // user.telephone=phone
-          // user.email=email
-          // user.gender=gender
-          // user.avatarPath=""
-          // user.w1=w1
-          // user.w2=w2
+
           var user={}
           user.username=username
           user.password=password
@@ -244,23 +239,9 @@
           user.w1=w1
           user.w2=w2
 
-          // this.axios.post('http://localhost:8088/signUp', {
-          //   name:array[0].fieldValue,
-          //   gender:array[1].fieldValue,
-          //   username:array[2].fieldValue,
-          //   password:array[3].fieldValue,
-          //   passcheck:array[4].fieldValue,
-          //   birth:array[5].fieldValue,
-          //   email:array[6].fieldValue,
-          //   phone:array[7].fieldValue,
-          //   avatarPath:"",
-          //   w1:w1,
-          //   w2:w2,
-          // }).then((res)=>{
-          //   console.log(res.data.code)
-          // })
+          return user;
+        },
 
-        }
       }
 
     }
@@ -270,7 +251,7 @@
   #main_part{
     background-image: url("../../static/graph/back1.jpg");
     background-repeat:no-repeat;
-    min-height: 100%;
+    min-height: 1080px;
   }
   #fill_part{
     position: absolute;

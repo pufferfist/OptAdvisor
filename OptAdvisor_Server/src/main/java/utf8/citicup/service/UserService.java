@@ -4,11 +4,10 @@ import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.domain.entity.User;
 
 public interface UserService {
-    ResponseMsg login(String username, String password);
-
-    ResponseMsg logout();
 
     ResponseMsg signUp(User user);
+
+    ResponseMsg isUsernameUsed(String username);
 
     ResponseMsg sendVerifyCode(String username, String verifyCode);
 

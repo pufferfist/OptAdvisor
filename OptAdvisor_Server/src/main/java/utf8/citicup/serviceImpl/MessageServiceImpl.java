@@ -26,8 +26,8 @@ public class MessageServiceImpl implements MessageService {
             return StatusMsg.messageNotMatchUser;
     }
 
-    public ResponseMsg putMessage(Message message) {
-        message.setReadStatus(false);
+    public ResponseMsg putMessage(Message sourceMessage) {
+        Message message = new Message(sourceMessage.getUsername(), sourceMessage.getMessage(), sourceMessage.getTitle());
         messageDataService.save(message);
         return StatusMsg.putMessageSuccess;
     }
