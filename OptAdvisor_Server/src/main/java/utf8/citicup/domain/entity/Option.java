@@ -32,7 +32,7 @@ public class Option {
     private double rho;
     private double beta;
 
-    @ManyToOne
+    @ManyToOne(cascade={CascadeType.MERGE,CascadeType.REFRESH},optional = false)
     @JoinColumn(name = "portfolio_id")
     private Portfolio portfolio;
 
