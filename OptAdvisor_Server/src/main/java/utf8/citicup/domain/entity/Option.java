@@ -61,7 +61,7 @@ public class Option {
 
     @Override
     public String toString() {
-        return "{"+name+","+ tradeCode +"}";
+        return "{"+name+","+ tradeCode + "," + expireTime +"}";
     }
 
     public double getK() {
