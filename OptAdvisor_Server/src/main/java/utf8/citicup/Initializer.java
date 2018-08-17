@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
 
+
 @Component
 public class Initializer implements CommandLineRunner {
     @Autowired
@@ -42,3 +43,4 @@ public class Initializer implements CommandLineRunner {
         }
     }
 }
+

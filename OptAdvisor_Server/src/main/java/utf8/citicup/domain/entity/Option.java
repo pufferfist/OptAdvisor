@@ -20,7 +20,6 @@ public class Option {
     private int type;//1为买入0为卖出
     private int cp;//1为看涨 -1为看跌
     private String expireTime;//到期时间
-    private double executionPrice;//执行价格
     private double transactionPrice;//成交价
     private int quantity;//在组合中的份数,单独存在无意义
     private double yclose;//期权前一天收盘价
@@ -50,7 +49,6 @@ public class Option {
         this.type=type;
         this.cp=cp;
         this.expireTime=expireTime;
-        this.executionPrice=executionPrice;
         this.transactionPrice=transactionPrice;
         this.quantity=quantity;
         this.delta=delta;
@@ -63,7 +61,7 @@ public class Option {
 
     @Override
     public String toString() {
-        return "{"+name+","+ tradeCode +"}";
+        return "{"+name+","+ tradeCode + "," + expireTime +"}";
     }
 
     public double getK() {
@@ -121,10 +119,6 @@ public class Option {
     public String getExpireTime() { return expireTime; }
 
     public void setExpireTime(String expireTime) { this.expireTime = expireTime; }
-
-    public double getExecutionPrice() { return executionPrice; }
-
-    public void setExecutionPrice(double executionPrice) { this.executionPrice = executionPrice; }
 
     public double getTransactionPrice() { return transactionPrice; }
 
