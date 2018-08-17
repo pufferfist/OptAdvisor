@@ -219,8 +219,6 @@ public class RecommendServiceImpl implements RecommendService {
         return String.valueOf(year)+"/"+String.valueOf(month)+"/"+String.valueOf(expiryDay);
     }
 
-
-
     public RecommendServiceImpl(){
         dataSource = new GetData();
         S = new double[21];
@@ -482,12 +480,6 @@ public class RecommendServiceImpl implements RecommendService {
 
     //期权组合第一步，计算出集合D及其相关内容
     private List<structD> firstStep(char choose){
-        int buy = 0;//买入期权的个数为正,当为负数时，表示卖
-        int sell = 0;//卖出期权的数 为负，当为正数时，表示买
-        Option[] buyOptions = new Option[0];
-        Option[] buyOptions1 = new Option[0];//对于D,E第一步有两种构建方式
-        Option[] sellOptions = new Option[0];
-        Option[] sellOptions1 = new Option[0];//对于D,E第一步有两种构建方式
         List<Option[]> buyAndSellOptions = new ArrayList<>();
         List<Integer> buyAndSell = new ArrayList<>();
         //region 选择买入及卖出的期权及其个数
@@ -523,8 +515,7 @@ public class RecommendServiceImpl implements RecommendService {
                 break;
 
             //卖出一个低价看跌期权，买入两个高价看跌期权
-            case 'F':buy = 2;sell = -1;
-                buyAndSell.add(2);buyAndSell.add(-1);
+            case 'F':buyAndSell.add(2);buyAndSell.add(-1);
                 buyAndSellOptions.add(phigh.get(T).toArray(new Option[0]));
                 buyAndSellOptions.add(plow.get(T).toArray(new Option[0]));
                 break;
@@ -534,7 +525,6 @@ public class RecommendServiceImpl implements RecommendService {
                 buyAndSellOptions.add(cpar.toArray(new Option[0]));
                 buyAndSellOptions.add(ppar.toArray(new Option[0]));
                 break;
-
 
             //卖出两个高价看涨期权，买入一个低价看涨期权
             case 'H':buyAndSell.add(1);buyAndSell.add(-2);
@@ -829,7 +819,75 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     //期权组合第三步，回测
-    private void thirdStep(){
+    private void thirdStep(structD goalD, char choose){
+        //先根据choose和goalD判断cp 和 low, high
+        //看涨为true，看跌为false
+        List <Boolean> cOrP = new ArrayList<>();
+        //0为low，1为high，2为par，3为highShallow，4为lowShallow，5为highDeep，6为lowDeep
+        List <Integer> lowOrHigh = new ArrayList<>();
+        switch (choose){
+            case 'A':cOrP.add(true);cOrP.add(true);
+                lowOrHigh.add(1);lowOrHigh.add(0);
+                break;
+
+            case 'B':
+                switch (goalD.rank){
+                    case 1:cOrP.add(true);cOrP.add(false);
+                        lowOrHigh.add(2);lowOrHigh.add(2);
+                        break;
+                    case 2:cOrP.add(true);cOrP.add(false);
+                        lowOrHigh.add(1);lowOrHigh.add(0);
+                }
+                break;
+
+
+            case 'C':cOrP.add(false);cOrP.add(false);
+                lowOrHigh.add(0);lowOrHigh.add(1);
+                break;
+
+            case 'D':switch (goalD.rank){
+                case 1:cOrP.add(true);cOrP.add(true);
+                    lowOrHigh.add(0);lowOrHigh.add(1);
+                    break;
+                case 2:cOrP.add(false);cOrP.add(false);
+                    lowOrHigh.add(0);lowOrHigh.add(1);
+            }
+                break;
+
+            case 'E':switch (goalD.rank){
+                case 1:cOrP.add(false);cOrP.add(false);
+                    lowOrHigh.add(1);lowOrHigh.add(0);
+                    break;
+                case 2:cOrP.add(true);cOrP.add(true);
+                    lowOrHigh.add(1);lowOrHigh.add(0);
+            }
+                break;
+
+            case 'F':cOrP.add(false);cOrP.add(false);
+                lowOrHigh.add(1);lowOrHigh.add(0);
+                break;
+                
+            case 'G':switch (goalD.rank){
+                case 1:cOrP.add(true);cOrP.add(false);
+                    lowOrHigh.add(2);lowOrHigh.add(2);
+                    break;
+                case 2:cOrP.add(true);cOrP.add(false);
+                    lowOrHigh.add(1);lowOrHigh.add(0);
+                    break;
+                case 3:cOrP.add(true);cOrP.add(false);cOrP.add(true);cOrP.add(false);
+                    lowOrHigh.add(2);lowOrHigh.add(2);lowOrHigh.add(1);lowOrHigh.add(0);
+                    break;
+                    //0为low，1为high，2为par，3为highShallow，4为lowShallow，5为highDeep，6为lowDeep
+                case 4:cOrP.add(true);cOrP.add(false);cOrP.add(true);cOrP.add(false);
+                    lowOrHigh.add(3);lowOrHigh.add(4);lowOrHigh.add(5);lowOrHigh.add(6);
+                    break;
+
+            }
+                break;
+            case 'H':break;
+            default:break;
+        }
+
 
     }
 
@@ -869,7 +927,6 @@ public class RecommendServiceImpl implements RecommendService {
         RecommendOption2 recommendOption2 = new RecommendOption2(optionI, iK, rtn);
         return new ResponseMsg(0, "Hedging success", recommendOption2);
     }
-
 
     private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
         ArrayList<Option> D = new ArrayList<>();
