@@ -677,7 +677,7 @@ public class RecommendServiceImpl implements RecommendService {
                 }
             }
         }
-        return (Option[])D.toArray();
+        return D.toArray(new Option[0]);
     }
 
     private Option maxLoss(Option[] ListD,double sExp, int N, double pAsset){
@@ -701,10 +701,9 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
-        String[] nowStr = T.split("-");
-        int nowYear = Integer.parseInt(nowStr[0]);
-        int nowMonth = Integer.parseInt(nowStr[1]);
         Calendar c= Calendar.getInstance();
+        int nowYear = c.get(Calendar.YEAR);
+        int nowMonth = c.get(Calendar.MONTH)+1;
         int nowDay = c.get(Calendar.DATE);
 
 
