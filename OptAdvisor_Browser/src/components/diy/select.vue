@@ -1,6 +1,6 @@
 <template>
     <div>
-      <div style="text-align: left;padding-bottom: 5px">
+      <div style="text-align: left;padding-bottom: 5px;padding-left: 40px">
         <p>
           上交所 &nbsp;&nbsp;
           50ETF  &nbsp;&nbsp;
@@ -10,7 +10,7 @@
         </p>
       </div>
       <div style="width: 100%;text-align: center">
-        <table>
+        <table style="margin: auto">
           <tr>
             <th colspan="9" style="background-color: #f16643">看涨合约</th>
             <th style="background-color: #f2f2f2"></th>
