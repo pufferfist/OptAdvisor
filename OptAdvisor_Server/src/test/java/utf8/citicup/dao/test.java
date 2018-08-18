@@ -20,12 +20,12 @@ public class test {
 
     @Test
     public void test(){
-        Option o1=new Option();
-        Option o2=new Option();
-        ArrayList<Option> options=new ArrayList<>();
-        options.add(o1);
-        options.add(o2);
-        Portfolio portfolio=new Portfolio("123",options,Type.DIY,false);
-        portfolioRepository.saveAndFlush(portfolio);
+//        Option o1=new Option();
+//        Option o2=new Option();
+//        ArrayList<Option> options=new ArrayList<>();
+//        options.add(o1);
+//        options.add(o2);
+//        Portfolio portfolio=new Portfolio("123",options,Type.DIY,false);
+//        portfolioRepository.saveAndFlush(portfolio);
     }
 }
