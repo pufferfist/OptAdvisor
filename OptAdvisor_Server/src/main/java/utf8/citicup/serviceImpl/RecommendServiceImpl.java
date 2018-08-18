@@ -64,7 +64,7 @@ public class RecommendServiceImpl implements RecommendService {
     private double dv;//股票分红率
     private double S[];
     private double eps1;
-    private String[] month={"2015-02"};
+    private String[] month={"2015-2","2015-3","2015-4","2015-5","2015-6","2015-7","2015-8","2015-9","2015-10","2015-11","2015-12","2016-1","2016-2","2016-3","2016-4","2016-5","2016-6","2016-7","2016-8","2016-9","2016-10","2016-11","2016-12","2017-1","2017-2","2017-3","2017-4","2017-5","2017-6","2017-7","2017-8","2017-9","2017-10","2017-11","2017-12","2018-1","2018-2","2018-3","2018-4"};
 
     /*计算得到的值*/
     private double d_1;
@@ -129,7 +129,6 @@ public class RecommendServiceImpl implements RecommendService {
 //        int stage = calculateFirstFew(T);                            //得到是在第几个阶段
 //        System.out.println(stage);
 //        String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
-//        endDate = "2015/4/22";
 //        System.out.println(startDate);
 //        System.out.println(endDate);
 //        List<OptionTsd> one = new ArrayList<>();

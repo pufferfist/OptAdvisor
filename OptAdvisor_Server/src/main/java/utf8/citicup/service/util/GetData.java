@@ -246,6 +246,7 @@ public class GetData {
 
         double ExercisePrice = Double.valueOf(output[7]);
         double Price1 = Double.valueOf(output[1]);
+        double latestPrice = Double.valueOf(output[2]);
         double Price2 = Double.valueOf(output[3]);
         double y_close = Double.valueOf(output[8]);
 
@@ -264,7 +265,7 @@ public class GetData {
         double theta = Double.valueOf(output[7]);
         double vega = Double.valueOf(output[8]);
 
-        return new double[]{ExercisePrice, Price1, Price2, y_close,delta,gamma,theta,vega};
+        return new double[]{ExercisePrice, Price1, Price2, y_close,delta,gamma,theta,vega,latestPrice};
 
     }
 
