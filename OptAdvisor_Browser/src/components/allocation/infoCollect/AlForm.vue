@@ -131,7 +131,7 @@
           });
         this.axios.get("/sinaOption/list=f_510050")
           .then((res) => {
-            this.currentPrice = parseFloat(res.data.split(',')[1]);
+            this.currentPrice = parseFloat(res.data.split(',')[3]);
             this.priceForecast = this.currentPrice;
           });
       },

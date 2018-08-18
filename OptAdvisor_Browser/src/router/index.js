@@ -53,15 +53,15 @@ export default new Router({
       component: ForgetPassword
     },
     {
+      path: '/home',
+      component: Home
+    },
+    {
       path: '/',
       redirect: '/home',
       name: 'Father',
       component: FatherPage,
       children :[
-        {
-          path: 'home',
-          component: Home
-        },
         {
           path:'50ETF',
           component:Display50ETF
