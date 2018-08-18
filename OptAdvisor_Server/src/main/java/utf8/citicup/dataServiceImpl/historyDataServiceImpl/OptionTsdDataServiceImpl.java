@@ -29,4 +29,9 @@ public class OptionTsdDataServiceImpl implements OptionTsdDataService{
         }
         return null;
     }
+
+    @Override
+    public List<OptionTsd> complexFindRange(String startDate, String endDate, boolean type, double low, double high) {
+        return optionTsdRepository.complexFindRange(startDate,endDate,type,low,high);
+    }
 }
