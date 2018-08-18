@@ -231,11 +231,13 @@ public class RecommendServiceImpl implements RecommendService {
         if(day >= thirdWednesday){
             year += (month+1)/13;
             month = (month+1)%13;
+            if(month == 0) month++;
         }
         //不清楚第四个星期三当天是什么情况，先暂时定第四个星期三当天的第一个阶段是下个月的第四个星期三
         if(firstFew<=2){
-            year += (month+firstFew) /13;
-            month = (month+firstFew) %13;
+            year += (month+firstFew-1) /13;
+            month = (month+firstFew-1) %13;
+            if(month==0) month++;
         }else {                                                 //找季月
             month+=2;
             int temp = firstFew-2;      //找接下来的几个季月
@@ -1104,13 +1106,12 @@ public class RecommendServiceImpl implements RecommendService {
             int stage = calculateFirstFew(T);                            //得到是在第几个阶段
             String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
 
-            OptionTsdDataServiceImpl search = new OptionTsdDataServiceImpl();
-            List<OptionTsd> backTestOptions = search.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
+            List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
 
-            TimeSeriesDataServiceImpl ETF50 = new TimeSeriesDataServiceImpl();
-            TimeSeriesData ETF50findByLastTradeDate = ETF50.findByLastTradeDate(startDate);
+
+            TimeSeriesData ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(startDate);
             double assetClose1 = ETF50findByLastTradeDate.getClosePrice();    //查询ETF50timeSeries得到起始日和结束日的收盘价
-            ETF50findByLastTradeDate = ETF50.findByLastTradeDate(endDate);
+            ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
             double assetClose2 = ETF50findByLastTradeDate.getClosePrice();
 
             double totalLoss = 0;
@@ -1120,12 +1121,11 @@ public class RecommendServiceImpl implements RecommendService {
             else{
                 for (OptionTsd backTestI : backTestOptions) {
                     String backTestOptionCodeName = backTestI.getCodeName();    //得到期权代码
-                    OptionBasicInfoDataServiceImpl secondSearch = new OptionBasicInfoDataServiceImpl();   //第二次查询得到i'_k行权价格
-                    OptionBasicInfo secondSearchByCodeName = secondSearch.findByCodeName(backTestOptionCodeName); //得到这一行信息
+                    OptionBasicInfo secondSearchByCodeName = optionBasicInfoDataService.findByCodeName(backTestOptionCodeName); //第二次查询得到i'_k行权价格,得到这一行信息
                     double backTestK = secondSearchByCodeName.getPrice();    //得到i'_k
 
                     double backTestClose1 = backTestI.getClosePrice();      //起始日期权收盘价
-                    OptionTsd endDateMsg = search.findByCodeNameAndLatestDate(backTestOptionCodeName, endDate);
+                    OptionTsd endDateMsg = optionTsdDataService.findByCodeNameAndLatestDate(backTestOptionCodeName, endDate);
                     double backTestClose2 = endDateMsg.getClosePrice();    //结束日期权收盘价
 
 
