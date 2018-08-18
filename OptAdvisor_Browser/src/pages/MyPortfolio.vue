@@ -12,7 +12,7 @@
       </v-contextmenu>
 
       <div style="float: left;width: 25%;min-height: 500px">
-        <Menu  :open-names="['资产配置']" accordion @on-select="click_left">
+        <Menu  :open-names="['资产配置']" accordion @on-select="click_left" style="float: left">
           <Submenu name="资产配置" id="ZiChan">
             <template slot="title">
               <Icon type="logo-bitcoin" />
@@ -41,6 +41,7 @@
             </div>
           </Submenu>
         </Menu>
+        <div style="float: left;width: 1px;height: 800px;background-color: #E7E8EB"></div>
       </div>
       <div style="float: left;width: 75%;min-height: 500px;">
         <Right></Right>
