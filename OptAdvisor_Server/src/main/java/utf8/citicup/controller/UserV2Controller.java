@@ -61,7 +61,7 @@ public class UserV2Controller {
 
     @GetMapping("code")
     public ResponseMsg sendVerifyCode(String username) {
-        String verifyCode = Integer.toString((int) (Math.random() * 9999));
+        String verifyCode = String.format("%04d", (int) (Math.random() * 9999));
         ResponseMsg ret = userService.sendVerifyCode(username, verifyCode);
         if (StatusMsg.sendVerifyCodeSuccess == ret) {
             Session session = SecurityUtils.getSubject().getSession();
