@@ -271,9 +271,10 @@ public class RecommendServiceImpl implements RecommendService {
     private void upDataFromNet() throws IOException {
         r = dataSource.get_r();
         t = Integer.parseInt(dataSource.get_expireAndremainder(T)[1]);
-        S0 = dataSource.get_S0();//实时标的价格
+//        S0 = dataSource.get_S0();//实时标的价格
         sigma = dataSource.get_Sigma();//实时波动率
         lastestOptionPrice = dataSource.get_LatestPrice();
+        S0 = lastestOptionPrice;
         expiredMonths = dataSource.get_T();
         for (String expiredMonth : expiredMonths) {
             //region 根据行权名称得到相关数据
@@ -1010,6 +1011,22 @@ public class RecommendServiceImpl implements RecommendService {
                 array.remove(index);
             }
         }
+    }
+
+    //期权组合第四步，警报
+    private void fourthStep(structD goal, double k){
+        double loss = 0;
+        for(int i = 0; i < goal.optionCombination.length;i++){
+            double price;
+            if(goal.buyAndSell[i] < 0)
+                price = goal.optionCombination[i].getPrice2();
+            else
+                price = goal.optionCombination[i].getPrice1();
+            loss += -1 * (goal.optionCombination[i].getRealTimePrice() - price) * goal.buyAndSell[i];
+        }
+        if(loss / M > k)
+            return;
+            //报警！
     }
 
     @Override

@@ -26,6 +26,7 @@ public class Option {
     private double price1;//期权实时买入价格
     private double price2;//期权实时卖出价格
     private double k;//期权行权价格
+    private double realTimePrice;//期权实时价
     private double delta;
     private double gamma;
     private double vega;
@@ -41,22 +42,27 @@ public class Option {
 
     public Option(){}
 
-    public Option(String tradeCode, String optionCode, String name, int type, int cp, String expireTime, double executionPrice,
-                  double transactionPrice, int quantity, double delta, double gamma, double vega, double theta, double rho, double beta){
+    public Option(String tradeCode, String optionCode, String name, int type, int cp, String expireTime, double transactionPrice, int quantity, double yclose, double price1, double price2, double k, double realTimePrice, double delta, double gamma, double vega, double theta, double rho, double beta, Portfolio portfolio) {
         this.tradeCode = tradeCode;
         this.optionCode = optionCode;
-        this.name=name;
-        this.type=type;
-        this.cp=cp;
-        this.expireTime=expireTime;
-        this.transactionPrice=transactionPrice;
-        this.quantity=quantity;
-        this.delta=delta;
-        this.gamma=gamma;
-        this.vega=vega;
-        this.theta=theta;
-        this.rho=rho;
-        this.beta=beta;
+        this.name = name;
+        this.type = type;
+        this.cp = cp;
+        this.expireTime = expireTime;
+        this.transactionPrice = transactionPrice;
+        this.quantity = quantity;
+        this.yclose = yclose;
+        this.price1 = price1;
+        this.price2 = price2;
+        this.k = k;
+        this.realTimePrice = realTimePrice;
+        this.delta = delta;
+        this.gamma = gamma;
+        this.vega = vega;
+        this.theta = theta;
+        this.rho = rho;
+        this.beta = beta;
+        this.portfolio = portfolio;
     }
 
     @Override
@@ -170,5 +176,13 @@ public class Option {
 
     public void setOptionCode(String optionCode) {
         this.optionCode = optionCode;
+    }
+
+    public double getRealTimePrice() {
+        return realTimePrice;
+    }
+
+    public void setRealTimePrice(double realTimePrice) {
+        this.realTimePrice = realTimePrice;
     }
 }
