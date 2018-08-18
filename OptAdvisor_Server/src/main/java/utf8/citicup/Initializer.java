@@ -7,24 +7,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-import utf8.citicup.dataService.MessageDataService;
-import utf8.citicup.dataService.OptionDataService;
-import utf8.citicup.dataService.PortfolioDataService;
-import utf8.citicup.dataService.UserDataService;
-import utf8.citicup.dataService.historyDataService.OptionBasicInfoDataService;
-import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
-import utf8.citicup.dataService.historyDataService.TimeSeriesDataSerice;
-import utf8.citicup.domain.common.Type;
-import utf8.citicup.domain.entity.Option;
-import utf8.citicup.domain.entity.Portfolio;
-import utf8.citicup.domain.entity.User;
-import utf8.citicup.domain.historyEntity.OptionTsd;
-
-import java.util.List;
 
 @Component
 public class Initializer implements CommandLineRunner {
@@ -59,21 +41,4 @@ public class Initializer implements CommandLineRunner {
             this.logger.info("Administrator user information posted");
         }
     }
-
-
-    public void test(){
-//        List<OptionTsd> optionTsds=optionTsdDataService.complexFind("2015/2/9","2015/3/25",true,0);
-//        List<OptionTsd> optionTsds1=optionTsdDataService.complexFind("2015/2/9","2015/3/25",true,1);
-//
-//        for(OptionTsd each:optionTsds){
-//            System.out.println(each.getCodeName());
-//        }
-//        System.out.println("-------------");
-//        for(OptionTsd each:optionTsds1){
-//            System.out.println(each.getCodeName());
-//        }
-
-
-}
-
 }
