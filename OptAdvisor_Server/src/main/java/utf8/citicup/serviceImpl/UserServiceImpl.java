@@ -106,10 +106,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseMsg modifyInfo(String currentUsername, User user) {
-        user.setPassword(new Sha256Hash(user.getPassword()).toString());
         if (!currentUsername.equals(user.getUsername()))
             return StatusMsg.usernameNotMatchSession;
-        else if (userDataService.updateUser(user))
+        User srcUser = getUser(currentUsername);
+        user.setW1(srcUser.getW1());
+        user.setW2(srcUser.getW2());
+        user.setPassword(srcUser.getPassword());
+        if (userDataService.updateUser(user))
             return StatusMsg.modifyInfoSuccess;
         else
             return StatusMsg.unknownUsername;

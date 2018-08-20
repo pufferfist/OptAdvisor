@@ -1,25 +1,20 @@
 <template>
-  <div>
-    <p class="xx">XXX</p>
-    <button onclick="test">XXX</button>
-  </div>
+  <p id="test">A</p>
 </template>
 
 <script>
-    export default {
-        name: "test",
-      data () {
-
-      },
-      methods: {
-
+  export default {
+    name:'test',
+    mounted() {
+      this.getElevatorList();
+      setInterval(this.getElevatorList, 5000);
+    },
+    methods:{
+      getElevatorList(){
+        document.getElementById("test").innerHTML+=1;
       }
-
     }
-
-
+  };
 </script>
-
-<style scoped>
-
+<style>
 </style>

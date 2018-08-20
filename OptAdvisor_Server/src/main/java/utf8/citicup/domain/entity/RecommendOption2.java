@@ -1,10 +1,25 @@
 package utf8.citicup.domain.entity;
 
-import utf8.citicup.domain.entity.Option;
-
 public class RecommendOption2 {
-    Option[] optionList;
-    double maxLoss;//到达预期最大亏损
-    double derogationValue;//减损值
-    double[][] Graph;
+    private Option option;
+    private double iK;
+    private String[][] graph;
+
+    public RecommendOption2(Option option, double iK, String[][] graph) {
+        this.option = option;
+        this.iK = iK;
+        this.graph = graph;
+    }
+
+    public Option getOption() {
+        return option;
+    }
+
+    public double getIK() {
+        return iK;
+    }
+
+    public String[][] getGraph() {
+        return graph;
+    }
 }
