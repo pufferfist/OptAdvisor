@@ -4,8 +4,7 @@
       <div style="text-align: left">
         <div>
           <p style="font-size: 20px;font-weight: bold">展示期权：</p>
-          <Table border :columns="columns1" :data="data1"></Table><br>
-          <Table border :columns="columns2" :data="data2"></Table>
+          <optionGroup></optionGroup>
         </div>
         <br>
         <div>
@@ -21,87 +20,15 @@
 </template>
 
 <script>
+  import optionGroup from "../hedging/OptionTable"
     export default {
         name: "display_result",
+      components:{optionGroup},
       data () {
         return {
-          columns1: [
-            {
-              title: 'ID',
-              key: 'id'
-            },
-            {
-              title: '名称',
-              key: 'name'
-            },
-            {
-              title: '买入\卖出',
-              key: 'type'
-            },
-            {
-              title: '看涨\看跌',
-              key: 'property'
-            },
-            {
-              title: '到期时间',
-              key: 'expireTime'
-            },
-            {
-              title: '执行价格',
-              key: 'executionPrice'
-            },
-          ],
-          columns2:[
-            {
-              title: '成交价格',
-              key: 'transactionPrice'
-            },
-            {
-              title: '比例',
-              key: 'quantity'
-            },
-            {
-              title: 'delta',
-              key: 'delta'
-            },
-            {
-              title: 'gamma',
-              key: 'gamma'
-            },
-            {
-              title: 'theta',
-              key: 'theta'
-            },
-            {
-              title: 'vega',
-              key: 'vega'
-            },
-            {
-              title: 'rho',
-              key: 'rho'
-            }
-          ],
-          data1: [
-            {
-              id:'xx',
-              name:'',
-              type:'',
-              property:'',
-              expireTime:'',
-              executionPrice:'',
-            }
-          ],
-          data2:[
-            {
-              transactionPrice:'',
-              quantity:'',
-              delta:'',
-              gamma:'',
-              theta:'',
-              vega:'',
-              rho:''
-            }
-          ]
+          graph:{
+            
+          }
         }
       },
       mounted(){
@@ -113,53 +40,41 @@
           let myChart = this.$echarts.init(document.getElementById('myChart'))
           // 绘制图表
           myChart.setOption({
-            legend: {
-              data:['最高气温','最低气温','ppp']
+            tooltip: {
+              trigger: 'axis'
             },
-
-            xAxis:  {
+            toolbox: {
+              show: true,
+              feature: {
+                dataZoom: {
+                  yAxisIndex: 'none'
+                },
+                dataView: {readOnly: false},
+                magicType: {type: ['line', 'bar']},
+                restore: {},
+                saveAsImage: {}
+              }
+            },
+            legend: {
+              data:['最高气温','最低气温']
+            },
+            xAxis: {
               type: 'category',
-              boundaryGap: false,
-              data: ['周一','周二','周三','周四','周五','周六','周日']
+              data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
             },
             yAxis: {
-              type: 'value',
-              axisLabel: {
-                formatter: '{value} °C'
-              }
+              type: 'value'
             },
-            series: [
-              {
-                name:'最高气温',
-                type:'line',
-                data:[11, 11, 15, 13, 12, 13, 10],
-                markLine: {
-                  data: [
-                    {type: 'average', name: '平均值'}
-                  ]
-                }
-              },
+            series: [{
+              name:'最高气温',
+              data: [820, 932, 901, 934, 1290, 1330, 1320],
+              type: 'line'
+            },
               {
                 name:'最低气温',
-                type:'line',
-                data:[1, -2, 2, 5, 3, 2, 0],
-                markLine: {
-                  data: [
-                    {type: 'average', name: '平均值'},
-                  ]
-                }
-              },
-              {
-                name:'ppp',
-                type:'line',
-                data:[9, -12, 12, 15, 31, 20,10],
-                markLine: {
-                  data: [
-                    {type: 'average', name: '平均值'},
-                  ]
-                }
-              }
-            ]
+                data: [82, 92, 91, 94, 129, 130, 120],
+                type: 'line'
+              }]
           });
         }
       }
