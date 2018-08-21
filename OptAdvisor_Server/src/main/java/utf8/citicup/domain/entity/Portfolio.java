@@ -31,6 +31,12 @@ public class Portfolio {
 
     private boolean trackingStatus;
 
+    //套期保值需要的量
+    private double N;//套期保值中的N
+    private double iK;//套期保值中的iK
+    private double pAsset;//套期保值中的pAsset
+
+
     public String getUsername() {
         return username;
     }
