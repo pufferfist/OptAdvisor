@@ -4,6 +4,7 @@ package utf8.citicup.serviceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import utf8.citicup.dataService.PortfolioDataService;
 import utf8.citicup.domain.common.Type;
@@ -26,7 +27,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     @Override
     public ResponseMsg addPortfolio(String username, Option[] options, Type type) {
         Portfolio portfolio = new Portfolio(username, options, type, false);
-        logger.info(String.valueOf(portfolio.getOptions().length));
+//        logger.info(String.valueOf(portfolio.getOptions().length));
         dataService.save(portfolio);
         return StatusMsg.addPortfolioSuccess;
     }
@@ -37,7 +38,7 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (null == portfolio) {
             return StatusMsg.portfolioNotExists;
         } else if (portfolio.getUsername().equals(username)) {
-            logger.info(String.valueOf(portfolio.isTrackingStatus()));
+//            logger.info(String.valueOf(portfolio.isTrackingStatus()));
             dataService.updateTrackingStatus(portfolioId, !portfolio.isTrackingStatus());
             return StatusMsg.updateRiskTrackingSuccess;
         } else {
@@ -73,5 +74,10 @@ public class PortfolioServiceImpl implements PortfolioService {
             return new ResponseMsg(0, "Get portfolio information success", portfolio);
         else
             return StatusMsg.portfolioNotMatchUser;
+    }
+
+    @Scheduled(initialDelay = 1000, fixedRate = 5 * 1000)
+    public void task() {
+//        logger.info("task running");
     }
 }

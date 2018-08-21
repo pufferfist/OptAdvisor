@@ -36,7 +36,13 @@
       methods:{
           login(){
             this.$cookie.set("userName",this.username,"1d");
-            this.$router.push("/home")
+            this.axios.post('/backend/login',{
+              username:this.username,
+              password:this.password
+            }).then((response)=>{
+              this.$router.push("/home")
+            })
+
           }
       }
     }

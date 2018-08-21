@@ -14,12 +14,12 @@ public class Option {
     @GeneratedValue
     private Long persisentId;//存储用主键
 
-    private String id;
+    private String tradeCode; //交易代码
+    private String optionCode; //期权代码
     private String name;//例如:50ETF购8月2600
     private int type;//1为买入0为卖出
     private int cp;//1为看涨 -1为看跌
     private String expireTime;//到期时间
-    private double executionPrice;//执行价格
     private double transactionPrice;//成交价
     private int quantity;//在组合中的份数,单独存在无意义
     private double yclose;//期权前一天收盘价
@@ -41,14 +41,14 @@ public class Option {
 
     public Option(){}
 
-    public Option(String id,String name,int type,int cp,String expireTime,double executionPrice,
-                  double transactionPrice,int quantity,double delta,double gamma,double vega,double theta,double rho,double beta){
-        this.id=id;
+    public Option(String tradeCode, String optionCode, String name, int type, int cp, String expireTime, double executionPrice,
+                  double transactionPrice, int quantity, double delta, double gamma, double vega, double theta, double rho, double beta){
+        this.tradeCode = tradeCode;
+        this.optionCode = optionCode;
         this.name=name;
         this.type=type;
         this.cp=cp;
         this.expireTime=expireTime;
-        this.executionPrice=executionPrice;
         this.transactionPrice=transactionPrice;
         this.quantity=quantity;
         this.delta=delta;
@@ -61,7 +61,7 @@ public class Option {
 
     @Override
     public String toString() {
-        return "{"+name+",id:"+id+",delta:"+delta + ",expireTime:"+expireTime + ",k:"+ k + ",price1:"+ price1 + ",price2:" + price2 + "}";
+        return "{"+name+","+ tradeCode + "," + expireTime +"}";
     }
 
     public double getK() {
@@ -96,9 +96,9 @@ public class Option {
         this.yclose = yclose;
     }
 
-    public String getId() { return id; }
+    public String getTradeCode() { return tradeCode; }
 
-    public void setId(String id) { this.id = id; }
+    public void setTradeCode(String tradeCode) { this.tradeCode = tradeCode; }
 
     public String getName() { return name; }
 
@@ -119,10 +119,6 @@ public class Option {
     public String getExpireTime() { return expireTime; }
 
     public void setExpireTime(String expireTime) { this.expireTime = expireTime; }
-
-    public double getExecutionPrice() { return executionPrice; }
-
-    public void setExecutionPrice(double executionPrice) { this.executionPrice = executionPrice; }
 
     public double getTransactionPrice() { return transactionPrice; }
 
@@ -166,5 +162,13 @@ public class Option {
 
     public void setPortfolio(Portfolio portfolio) {
         this.portfolio = portfolio;
+    }
+
+    public String getOptionCode() {
+        return optionCode;
+    }
+
+    public void setOptionCode(String optionCode) {
+        this.optionCode = optionCode;
     }
 }
