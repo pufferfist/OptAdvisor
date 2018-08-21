@@ -12,6 +12,7 @@ import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.Portfolio;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.PortfolioService;
+import utf8.citicup.service.RecommendService;
 import utf8.citicup.service.util.StatusMsg;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Autowired
     private PortfolioDataService dataService;
+
 
     private Logger logger = LoggerFactory.getLogger(PortfolioServiceImpl.class);
 
@@ -70,8 +72,10 @@ public class PortfolioServiceImpl implements PortfolioService {
         Portfolio portfolio = dataService.findById(portfolioId);
         if (null == portfolio)
             return StatusMsg.portfolioNotExists;
-        else if (portfolio.getUsername().equals(username))
+        else if (portfolio.getUsername().equals(username)){
             return new ResponseMsg(0, "Get portfolio information success", portfolio);
+        }
+
         else
             return StatusMsg.portfolioNotMatchUser;
     }
