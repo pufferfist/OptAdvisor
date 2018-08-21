@@ -35,7 +35,7 @@ Vue.use(Router)
 
  */
 export default new Router({
-  mode: 'history',
+  base:'/',
   routes: [
     {
       path: '/login',
