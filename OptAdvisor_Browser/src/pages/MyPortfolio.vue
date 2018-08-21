@@ -54,6 +54,12 @@
     export default {
         name: "MyPortfolio",
       components:{Right},
+      created:function(){
+        this.axios.get('/backend/portfolio')
+          .then(re=>{
+            console.log(re)
+          })
+      },
       data () {
         return{
           zichan:[

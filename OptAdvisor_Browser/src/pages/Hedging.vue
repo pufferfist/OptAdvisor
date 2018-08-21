@@ -45,22 +45,59 @@
             }
             else{
               this.warn_color="#ffffff"
-              this.ispage1="none"
-              this.ispage2=""
-              this.demo_spilt_height="700px"
               var deadline_value=this.$refs.info.formItem.month[deadline.substr(5)-1]
 
               //写入数据
-              this.axios.post('/backend/recommend/hedging',{
-                NO:OpenInterest,
-                a:rate,
-                s_exp:min_price,
-                T:deadline_value
-              }).then((response)=>{
+              var param={NO:OpenInterest,a:rate/100,s_exp:min_price,T:deadline_value}
+              this.axios.post('/backend/recommend/hedging',param).then((response)=>{
                 var data=response.data
-                /************************还没添加内容***************************/
-                this.$refs.result.data1[0].id=data.id
+                /**************************************************
+                *
+                *
+                *
+                * 待修改
+                *
+                *
+                *
+                *
+                ***************************************************/
+                //1.填充表格
+                this.$refs.result.$refs.option_group.TData={
+                  persisentId:'1111111111111111111111',
+                  tradeCode:'12345', //交易代码
+                  optionCode:'12345', //期权代码
+                  name:'12345',//例如:50ETF购8月2600
+                  type:'12345',//1为买入0为卖出
+                  cp:'12345',//1为看涨 -1为看跌
+                  expireTime:'12345',//到期时间
+                  transactionPrice:'12345',//成交价
+                  quantity:'12345',//在组合中的份数,单独存在无意义
+                  yclose:'12345',//期权前一天收盘价
+                  price1:'12345',//期权实时买入价格
+                  price2:'12345',//期权实时卖出价格
+                  k:'12345',//期权行权价格
+                  delta:'12345',
+                  gamma:'12345',
+                  vega:'12345',
+                  theta:'12345',
+                  rho:'12345',
+                  beta:'12345',
+                };
+
+                //2.填充预期最大亏损值
+                this.$refs.result.expectedLoss='123456'
+
+                //3.填充折线图
+                this.$refs.result.graph=[
+                  ['2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08'],
+                  [15,24,36,58,95,36,45,47,63],
+                  [51,24,89,45,77,86,23,58,61],
+                  [25,75,92,38,46,91,78,62,70]]
+                this.$refs.result.drawLine()
               })
+              this.ispage1="none"
+              this.ispage2=""
+              this.demo_spilt_height="700px"
             }
           }
       }
