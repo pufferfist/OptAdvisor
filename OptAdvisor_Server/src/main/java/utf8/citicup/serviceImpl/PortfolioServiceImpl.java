@@ -16,6 +16,9 @@ import utf8.citicup.service.util.StatusMsg;
 
 import java.util.List;
 
+import static utf8.citicup.domain.common.Type.DIY;
+import static utf8.citicup.domain.common.Type.RECOMMMEND_PORTFOLIO;
+
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
 
@@ -70,8 +73,24 @@ public class PortfolioServiceImpl implements PortfolioService {
         Portfolio portfolio = dataService.findById(portfolioId);
         if (null == portfolio)
             return StatusMsg.portfolioNotExists;
-        else if (portfolio.getUsername().equals(username))
+        else if (portfolio.getUsername().equals(username)) {
+            RecommendServiceImpl recommendService = new RecommendServiceImpl();
+            if(portfolio.getType() == RECOMMMEND_PORTFOLIO){
+                recommendService.setP1(portfolio.getP1());
+                recommendService.setP2(portfolio.getP2());
+                recommendService.setSigma1(portfolio.getSigma1());
+                recommendService.setSigma2(portfolio.getSigma2());
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainTwoCustomPortfolio(portfolio.getOptions()),RECOMMMEND_PORTFOLIO,false);
+                Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
+                return new ResponseMsg(0, "Get portfolio information success", rnt);
+            }
+            else if(portfolio.getType() == DIY){
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainOneCustomPortfolio(portfolio.getOptions()),DIY, false);
+                Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
+                return new ResponseMsg(0, "Get portfolio information success", rnt);
+            }
             return new ResponseMsg(0, "Get portfolio information success", portfolio);
+        }
         else
             return StatusMsg.portfolioNotMatchUser;
     }

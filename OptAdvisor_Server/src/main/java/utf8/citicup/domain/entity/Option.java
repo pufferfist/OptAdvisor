@@ -21,7 +21,6 @@ public class Option {
     private int cp;//1为看涨 -1为看跌
     private String expireTime;//到期时间
     private double transactionPrice;//成交价
-    private int quantity;//在组合中的份数,单独存在无意义
     private double yclose;//期权前一天收盘价
     private double price1;//期权实时买入价格
     private double price2;//期权实时卖出价格
@@ -39,10 +38,16 @@ public class Option {
     @JsonIgnore
     private Portfolio portfolio;
 
-
     public Option(){}
 
-    public Option(String tradeCode, String optionCode, String name, int type, int cp, String expireTime, double transactionPrice, int quantity, double yclose, double price1, double price2, double k, double realTimePrice, double delta, double gamma, double vega, double theta, double rho, double beta, Portfolio portfolio) {
+    public Option(String optionCode, int type, int cp, String expireTime) {
+        this.optionCode = optionCode;
+        this.type = type;
+        this.cp = cp;
+        this.expireTime = expireTime;
+    }
+
+    public Option(String tradeCode, String optionCode, String name, int type, int cp, String expireTime, double transactionPrice, double yclose, double price1, double price2, double k, double realTimePrice, double delta, double gamma, double vega, double theta, double rho, double beta, Portfolio portfolio) {
         this.tradeCode = tradeCode;
         this.optionCode = optionCode;
         this.name = name;
@@ -50,7 +55,6 @@ public class Option {
         this.cp = cp;
         this.expireTime = expireTime;
         this.transactionPrice = transactionPrice;
-        this.quantity = quantity;
         this.yclose = yclose;
         this.price1 = price1;
         this.price2 = price2;
@@ -129,10 +133,6 @@ public class Option {
     public double getTransactionPrice() { return transactionPrice; }
 
     public void setTransactionPrice(double transactionPrice) { this.transactionPrice = transactionPrice; }
-
-    public int getQuantity() { return quantity; }
-
-    public void setQuantity(int quantity) { this.quantity = quantity; }
 
     public double getDelta() { return delta; }
 
