@@ -6,7 +6,7 @@
     <groupId>utf8</groupId>
     <artifactId>citicup</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>citicup</name>
     <description>Demo project for Spring Boot</description>
