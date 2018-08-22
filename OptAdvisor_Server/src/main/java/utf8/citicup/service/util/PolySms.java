@@ -15,16 +15,17 @@ public class PolySms {
     private static final int DEF_CONN_TIMEOUT = 30000;
     private static final int DEF_READ_TIMEOUT = 30000;
     //配置您申请的KEY
-    private static final String modelId = "92682";
+    private static final String codeModelId = "92682";
+    private static final String warnModelId = "94987";
     private static final String APP_KEY = "369ec5c8ef83bdfde7190381c0898fd3";
+    private static final String url = "http://v.juhe.cn/sms/send";//请求接口地址
 
     //2.发送短信
     public static Map<String, Object> sendSms(String phoneNumber, String verifyCode) throws IOException {
         String result;
-        String url = "http://v.juhe.cn/sms/send";//请求接口地址
         Map<String, Object> params = new HashMap<>();//请求参数
         params.put("mobile", phoneNumber);//接收短信的手机号码
-        params.put("tpl_id", modelId);//短信模板ID，请参考个人中心短信模板设置
+        params.put("tpl_id", codeModelId);//短信模板ID，请参考个人中心短信模板设置
         params.put("tpl_value", "#code#=" + verifyCode + "&#m#=5");//变量名和变量值对。如果你的变量名或者变量值中带有#&=中的任意一个特殊符号，请先分别进行urlencode编码后再传递，<a href="http://www.juhe.cn/news/index/id/50" target="_blank">详细说明></a>
         params.put("key", APP_KEY);//应用App (应用详细页查询)
         params.put("dtype", "");//返回数据的格式,xml或json，默认json
@@ -33,6 +34,16 @@ public class PolySms {
 //        Gson gson = new Gson();
 //        Map<String, Object> map = new HashMap<>();
 //        return (Map<String, Object>) gson.fromJson(result, map.getClass());
+        return new JSONObject(result).toMap();
+    }
+
+    public static Map<String, Object> sendWarningSms(String phoneNumber) throws IOException {
+        Map<String, Object> params = new HashMap<>();
+        params.put("mobile", phoneNumber);
+        params.put("tpl_id", warnModelId);
+        params.put("key", APP_KEY);
+        params.put("dtype", "");
+        String result = net(url, params);
         return new JSONObject(result).toMap();
     }
 

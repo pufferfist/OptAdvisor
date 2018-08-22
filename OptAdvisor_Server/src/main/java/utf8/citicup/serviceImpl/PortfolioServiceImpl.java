@@ -10,12 +10,15 @@ import utf8.citicup.dataService.PortfolioDataService;
 import utf8.citicup.domain.common.Type;
 import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.Portfolio;
+import utf8.citicup.domain.entity.RecommendOption2;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.PortfolioService;
-import utf8.citicup.service.RecommendService;
 import utf8.citicup.service.util.StatusMsg;
 
+import java.io.IOException;
 import java.util.List;
+
+import static utf8.citicup.domain.common.Type.*;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
@@ -68,14 +71,50 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public ResponseMsg getPortfolioInfo(String username, Long portfolioId) {
+    public ResponseMsg getPortfolioInfo(String username, Long portfolioId) throws IOException {
         Portfolio portfolio = dataService.findById(portfolioId);
         if (null == portfolio)
             return StatusMsg.portfolioNotExists;
-        else if (portfolio.getUsername().equals(username)){
+        else if (portfolio.getUsername().equals(username)) {
+            RecommendServiceImpl recommendService = new RecommendServiceImpl();
+            if(portfolio.getType() == RECOMMMEND_PORTFOLIO){
+                recommendService.setP1(portfolio.getP1());
+                recommendService.setP2(portfolio.getP2());
+                recommendService.setSigma1(portfolio.getSigma1());
+                recommendService.setSigma2(portfolio.getSigma2());
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainTwoCustomPortfolio(portfolio.getOptions()),RECOMMMEND_PORTFOLIO,false);
+                Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
+                return new ResponseMsg(0, "Get portfolio information success", rnt);
+            }
+            else if(portfolio.getType() == DIY){
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainOneCustomPortfolio(portfolio.getOptions()),DIY, false);
+                Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
+                return new ResponseMsg(0, "Get portfolio information success", rnt);
+            }
+            else if(portfolio.getType() == HEDGE){
+                Option newOption = new Option();
+                newOption = portfolio.getOptions()[0];
+
+                recommendService.setOptionAttributes(newOption);
+                double iK = newOption.getK();
+                int findType;
+                if(portfolio.isFlag()) findType=0;
+                else findType=1;
+
+
+                String[] T1 = newOption.getExpireTime().split("-");
+                String T = T1[0]+'-'+T1[1];
+                String[][] newRtn = recommendService.hedgingBackTest(findType,portfolio.getN(),portfolio.getiK(),portfolio.getpAsset(),T);
+
+                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, newRtn);
+
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(),portfolio.isFlag(),HEDGE);
+
+                Portfolio[] rtn = new Portfolio[]{portfolio,showPortfolio};
+                return new ResponseMsg(0, "Get portfolio information success", rtn);
+            }
             return new ResponseMsg(0, "Get portfolio information success", portfolio);
         }
-
         else
             return StatusMsg.portfolioNotMatchUser;
     }
