@@ -102,19 +102,19 @@ public class RecommendServiceImpl implements RecommendService {
         double goal;
     }
 
-    public void setP1(double p1) {
+    void setP1(double p1) {
         this.p1 = p1;
     }
 
-    public void setP2(double p2) {
+    void setP2(double p2) {
         this.p2 = p2;
     }
 
-    public void setSigma1(double sigma1) {
+    void setSigma1(double sigma1) {
         this.sigma1 = sigma1;
     }
 
-    public void setSigma2(double sigma2) {
+    void setSigma2(double sigma2) {
         this.sigma2 = sigma2;
     }
 
@@ -488,7 +488,7 @@ public class RecommendServiceImpl implements RecommendService {
         return new ResponseMsg(2000, "recommend Portfolio finished", recommendOption1);
     }
 
-    public RecommendOption1 mainRecommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) throws IOException {
+    private RecommendOption1 mainRecommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) throws IOException {
         //参数都是由用户输入的
         /*用户输入数据*/
         this.T = T;
@@ -969,7 +969,7 @@ public class RecommendServiceImpl implements RecommendService {
         return new ResponseMsg(0, "Hedging success", recommendOption2);
     }
 
-    public RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
+    private RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
         upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
         Option[] phighT = new Option[phigh.get(T).size()];
@@ -1119,7 +1119,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     //sigma1 2 and p1 2 没有初始化
-    public RecommendOption1 mainTwoCustomPortfolio(Option[] list) throws IOException {
+    RecommendOption1 mainTwoCustomPortfolio(Option[] list) throws IOException {
 
         r = dataSource.get_r();
         t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
@@ -1149,12 +1149,11 @@ public class RecommendServiceImpl implements RecommendService {
             StringProfits[i] = Double.toString(profits.get(i));
         }
         String[][] graph = new String[][]{month, StringProfits};
-        RecommendOption1 recommendOption1 = new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
+        return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho, maxGoalD.E / M, maxGoalD.beta,graph ,10, 0.5);
-        return recommendOption1;
     }
 
-    public RecommendOption1 mainOneCustomPortfolio(Option[] list) throws IOException {
+    RecommendOption1 mainOneCustomPortfolio(Option[] list) throws IOException {
         sigma1 = sigma2 = dataSource.get_Sigma();
         p1 = p2 = dataSource.get_LatestPrice();
 
@@ -1168,7 +1167,7 @@ public class RecommendServiceImpl implements RecommendService {
             if (anAllPortfolio.isTrackingStatus() && anAllPortfolio.getType() == RECOMMMEND_PORTFOLIO) {
                 double M0 = anAllPortfolio.getM0();
                 double k = anAllPortfolio.getK();
-                double t = 0;
+                double t;
                 Date now = new Date();
                 Date end = null;
                 try {
@@ -1199,7 +1198,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     @Scheduled(initialDelay = 1000, fixedRate = 3 * 1000)
-    public void task() throws ParseException, IOException {
+    public void task() throws IOException {
         warning();
 //        test();
     }

@@ -14,6 +14,7 @@ import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.PortfolioService;
 import utf8.citicup.service.util.StatusMsg;
 
+import java.io.IOException;
 import java.util.List;
 
 import static utf8.citicup.domain.common.Type.DIY;
@@ -69,7 +70,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public ResponseMsg getPortfolioInfo(String username, Long portfolioId) {
+    public ResponseMsg getPortfolioInfo(String username, Long portfolioId) throws IOException {
         Portfolio portfolio = dataService.findById(portfolioId);
         if (null == portfolio)
             return StatusMsg.portfolioNotExists;
@@ -80,12 +81,14 @@ public class PortfolioServiceImpl implements PortfolioService {
                 recommendService.setP2(portfolio.getP2());
                 recommendService.setSigma1(portfolio.getSigma1());
                 recommendService.setSigma2(portfolio.getSigma2());
-                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainTwoCustomPortfolio(portfolio.getOptions()),RECOMMMEND_PORTFOLIO,false);
+                Option[] optionList = portfolio.getOptions().clone();
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainTwoCustomPortfolio(optionList).getOptionList() ,RECOMMMEND_PORTFOLIO,false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
                 return new ResponseMsg(0, "Get portfolio information success", rnt);
             }
             else if(portfolio.getType() == DIY){
-                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainOneCustomPortfolio(portfolio.getOptions()),DIY, false);
+                Option[] optionList = portfolio.getOptions().clone();
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainOneCustomPortfolio(optionList).getOptionList(),DIY, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
                 return new ResponseMsg(0, "Get portfolio information success", rnt);
             }

@@ -19,7 +19,8 @@ public class Portfolio {
         this.trackingStatus = trackingStatus;
     }
 
-    public Portfolio(String username, RecommendOption1 recommendOption1, Enum type, boolean trackingStatus){
+    public Portfolio(String portfolioName, String username, RecommendOption1 recommendOption1, Enum type, boolean trackingStatus){
+        this.portfolioName = portfolioName;
         this.username = username;
         this.type = type;
         options = new Option[recommendOption1.getOptionList().length];
@@ -121,119 +122,59 @@ public class Portfolio {
         return M0;
     }
 
-    public void setM0(double m0) {
-        M0 = m0;
-    }
-
     public double getK() {
         return k;
-    }
-
-    public void setK(double k) {
-        this.k = k;
     }
 
     public double getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
-        this.cost = cost;
-    }
-
     public double getBond() {
         return bond;
-    }
-
-    public void setBond(double bond) {
-        this.bond = bond;
     }
 
     public double getZ_delta() {
         return z_delta;
     }
 
-    public void setZ_delta(double z_delta) {
-        this.z_delta = z_delta;
-    }
-
     public double getZ_gamma() {
         return z_gamma;
-    }
-
-    public void setZ_gamma(double z_gamma) {
-        this.z_gamma = z_gamma;
     }
 
     public double getZ_vega() {
         return z_vega;
     }
 
-    public void setZ_vega(double z_vega) {
-        this.z_vega = z_vega;
-    }
-
     public double getZ_theta() {
         return z_theta;
-    }
-
-    public void setZ_theta(double z_theta) {
-        this.z_theta = z_theta;
     }
 
     public double getZ_rho() {
         return z_rho;
     }
 
-    public void setZ_rho(double z_rho) {
-        this.z_rho = z_rho;
-    }
-
     public double getEM() {
         return EM;
-    }
-
-    public void setEM(double EM) {
-        this.EM = EM;
     }
 
     public double getBeta() {
         return beta;
     }
 
-    public void setBeta(double beta) {
-        this.beta = beta;
-    }
-
     public double getSigma1() {
         return sigma1;
-    }
-
-    public void setSigma1(double sigma1) {
-        this.sigma1 = sigma1;
     }
 
     public double getSigma2() {
         return sigma2;
     }
 
-    public void setSigma2(double sigma2) {
-        this.sigma2 = sigma2;
-    }
-
     public double getP1() {
         return p1;
     }
 
-    public void setP1(double p1) {
-        this.p1 = p1;
-    }
-
     public double getP2() {
         return p2;
-    }
-
-    public void setP2(double p2) {
-        this.p2 = p2;
     }
 }
