@@ -71,7 +71,7 @@ public class PortfolioServiceImpl implements PortfolioService {
     }
 
     @Override
-    public ResponseMsg getPortfolioInfo(String username, Long portfolioId) throws IOException {
+    public ResponseMsg getPortfolioInfo(String username, Long portfolioId) {
         Portfolio portfolio = dataService.findById(portfolioId);
         if (null == portfolio)
             return StatusMsg.portfolioNotExists;
@@ -97,7 +97,11 @@ public class PortfolioServiceImpl implements PortfolioService {
                 Option newOption = new Option();
                 newOption = portfolio.getOptions()[0];
 
-                recommendService.setOptionAttributes(newOption);
+                try {
+                    recommendService.setOptionAttributes(newOption);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 double iK = newOption.getK();
                 int findType;
                 if(portfolio.isFlag()) findType=0;

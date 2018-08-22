@@ -1108,21 +1108,19 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg customPortfolio(Option[] list)  {
         //传入的Option列表只有期权代码、到期时间、买入卖出、cp属性
-        try {
-            return new ResponseMsg(2000, "custom portfolio finished",mainOneCustomPortfolio(list));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return StatusMsg.IOExceptionOccurs;
-        }
+        return new ResponseMsg(2000, "custom portfolio finished",mainOneCustomPortfolio(list));
     }
 
     //sigma1 2 and p1 2 没有初始化
-    RecommendOption1 mainTwoCustomPortfolio(Option[] list) throws IOException {
-
-        r = dataSource.get_r();
-        t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
-        sigma = dataSource.get_Sigma();//实时波动率
-        S0 = dataSource.get_LatestPrice();
+    RecommendOption1 mainTwoCustomPortfolio(Option[] list){
+        try {
+            r = dataSource.get_r();
+            t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
+            sigma = dataSource.get_Sigma();//实时波动率
+            S0 = dataSource.get_LatestPrice();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         for (Option each :list) {
             try {
@@ -1151,10 +1149,13 @@ public class RecommendServiceImpl implements RecommendService {
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho, maxGoalD.E / M, maxGoalD.beta,graph ,10, 0.5);
     }
 
-    RecommendOption1 mainOneCustomPortfolio(Option[] list) throws IOException {
-        sigma1 = sigma2 = dataSource.get_Sigma();
-        p1 = p2 = dataSource.get_LatestPrice();
-
+    RecommendOption1 mainOneCustomPortfolio(Option[] list) {
+        try {
+            sigma1 = sigma2 = dataSource.get_Sigma();
+            p1 = p2 = dataSource.get_LatestPrice();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return mainTwoCustomPortfolio(list);
     }
 

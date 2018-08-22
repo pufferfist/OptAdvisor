@@ -12,5 +12,5 @@ public interface PortfolioService {
     ResponseMsg riskTracking(String username, Long portfolioId);
     ResponseMsg getPortfolio(String username);
     ResponseMsg deletePortfolio(String username, Long portfolioId);
-    ResponseMsg getPortfolioInfo(String username, Long portfolioId) throws IOException;
+    ResponseMsg getPortfolioInfo(String username, Long portfolioId);
 }
