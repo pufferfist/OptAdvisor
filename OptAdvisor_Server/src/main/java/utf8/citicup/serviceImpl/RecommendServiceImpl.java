@@ -320,7 +320,7 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
-    private void setOptionAttributes(Option newOption) throws IOException {
+    void setOptionAttributes(Option newOption) throws IOException {
         double[] attributes = dataSource.get_Attributes(newOption.getOptionCode());
         double k = attributes[0];
         double price1 = attributes[1];
@@ -479,7 +479,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     public ResponseMsg recommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) {
-        RecommendOption1 recommendOption1 = null;
+        RecommendOption1 recommendOption1;
         try {
             recommendOption1 = mainRecommendPortfolio(M0, k, T, combination, p1, p2, sigma1, sigma2, w1, w2);
         } catch (IOException e) {
@@ -519,9 +519,8 @@ public class RecommendServiceImpl implements RecommendService {
             StringProfits[i] = Double.toString(profits.get(i));
         }
         String[][] graph = new String[][]{month, StringProfits};
-        RecommendOption1 recommendOption1 = new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
+        return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho, maxGoalD.E / M, maxGoalD.beta,graph, M0, k, sigma1, sigma2, p1, p2);
-        return recommendOption1;
     }
 
     //期权组合第一步，计算出集合D及其相关内容
@@ -958,7 +957,7 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg hedging(int N0, double a, double sExp, String T) {
 
-        RecommendOption2 recommendOption2 = null;
+        RecommendOption2 recommendOption2;
         try {
             recommendOption2 = mainHedging(N0, a, sExp, T);
         } catch (IOException e) {
@@ -996,8 +995,7 @@ public class RecommendServiceImpl implements RecommendService {
         String[][] rtn;
         if(flag) rtn = hedgingBackTest(0,N,iK,pAsset,T);
         else rtn = hedgingBackTest(1,N,iK,pAsset,T);
-        RecommendOption2 recommendOption2 = new RecommendOption2(optionI, iK, rtn);
-        return recommendOption2;
+        return new RecommendOption2(optionI, iK, rtn);
     }
 
     private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
@@ -1036,7 +1034,7 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
-    private String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
+    String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
         Calendar c= Calendar.getInstance();
         int nowYear = c.get(Calendar.YEAR);
         int nowMonth = c.get(Calendar.MONTH)+1;

@@ -10,6 +10,7 @@ import utf8.citicup.dataService.PortfolioDataService;
 import utf8.citicup.domain.common.Type;
 import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.Portfolio;
+import utf8.citicup.domain.entity.RecommendOption2;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.PortfolioService;
 import utf8.citicup.service.util.StatusMsg;
@@ -17,14 +18,14 @@ import utf8.citicup.service.util.StatusMsg;
 import java.io.IOException;
 import java.util.List;
 
-import static utf8.citicup.domain.common.Type.DIY;
-import static utf8.citicup.domain.common.Type.RECOMMMEND_PORTFOLIO;
+import static utf8.citicup.domain.common.Type.*;
 
 @Service
 public class PortfolioServiceImpl implements PortfolioService {
 
     @Autowired
     private PortfolioDataService dataService;
+
 
     private Logger logger = LoggerFactory.getLogger(PortfolioServiceImpl.class);
 
@@ -91,6 +92,28 @@ public class PortfolioServiceImpl implements PortfolioService {
                 Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainOneCustomPortfolio(optionList).getOptionList(),DIY, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
                 return new ResponseMsg(0, "Get portfolio information success", rnt);
+            }
+            else if(portfolio.getType() == HEDGE){
+                Option newOption = new Option();
+                newOption = portfolio.getOptions()[0];
+
+                recommendService.setOptionAttributes(newOption);
+                double iK = newOption.getK();
+                int findType;
+                if(portfolio.isFlag()) findType=0;
+                else findType=1;
+
+
+                String[] T1 = newOption.getExpireTime().split("-");
+                String T = T1[0]+'-'+T1[1];
+                String[][] newRtn = recommendService.hedgingBackTest(findType,portfolio.getN(),portfolio.getiK(),portfolio.getpAsset(),T);
+
+                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, newRtn);
+
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(),portfolio.isFlag(),HEDGE);
+
+                Portfolio[] rtn = new Portfolio[]{portfolio,showPortfolio};
+                return new ResponseMsg(0, "Get portfolio information success", rtn);
             }
             return new ResponseMsg(0, "Get portfolio information success", portfolio);
         }

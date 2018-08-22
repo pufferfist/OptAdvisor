@@ -19,6 +19,21 @@ public class Portfolio {
         this.trackingStatus = trackingStatus;
     }
 
+    public Portfolio(String username,RecommendOption2 recommendOption2,int n, double pAsset, double sExp,boolean flag, Enum type) {
+            this.username = username;
+            this.type = type;
+
+            N = n;
+            this.iK = recommendOption2.getiK();
+            this.pAsset = pAsset;
+            this.sExp = sExp;
+            this.flag = flag;
+
+            options = new Option[1];
+            options[0] = recommendOption2.getOption();
+            this.rtn = recommendOption2.getGraph();
+
+        }
     public Portfolio(String portfolioName, String username, RecommendOption1 recommendOption1, Enum type, boolean trackingStatus){
         this.portfolioName = portfolioName;
         this.username = username;
@@ -70,6 +85,38 @@ public class Portfolio {
     private double EM;//组合的期望收益率
     private double beta;//组合风险值
 
+
+
+    //套期保值需要的量
+    private int N;//套期保值中的N
+    private double iK;//套期保值中的iK
+    private double pAsset;//套期保值中的pAsset
+    private double sExp;
+    private boolean flag;
+    private String[][] rtn;
+
+    public int getN() {
+        return N;
+    }
+
+    public double getiK() {
+        return iK;
+    }
+
+    public double getpAsset() {
+        return pAsset;
+    }
+
+    public double getsExp() {
+        return sExp;
+    }
+
+    public boolean isFlag() {
+        return flag;
+    }
+
+
+
     @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL,mappedBy = "portfolio")
     @OrderColumn
     private Option[] options;
@@ -77,6 +124,9 @@ public class Portfolio {
     private Enum type; //type指1：资产配置组合 2：套期保值组合 3：DIY组合
 
     private boolean trackingStatus;
+
+
+
 
     public String getUsername() {
         return username;
