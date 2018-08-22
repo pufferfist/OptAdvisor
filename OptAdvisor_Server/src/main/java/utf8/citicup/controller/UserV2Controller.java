@@ -37,7 +37,7 @@ public class UserV2Controller {
         logger.info(username + ": " + password);
         password = new Sha256Hash(password).toString();
         UsernamePasswordToken token = new UsernamePasswordToken(username, password);
-        token.setRememberMe(true);
+//        token.setRememberMe(true);
         Subject subject = SecurityUtils.getSubject();
         try {
             subject.login(token);

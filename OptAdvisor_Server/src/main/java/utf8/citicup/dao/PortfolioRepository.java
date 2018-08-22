@@ -17,4 +17,9 @@ public interface PortfolioRepository extends JpaRepository<Portfolio,Long>{
     @Transactional(rollbackOn = Exception.class)
     @Query("update Portfolio i set i.trackingStatus = ?2 where i.id =?1")
     public void updateReadStatus(Long id,boolean trackingStatus);
+
+    @Modifying
+    @Transactional(rollbackOn = Exception.class)
+    @Query("update Portfolio i set i.name = ?2 where  i.id = ?1")
+    void updatePortfolioName(Long id, String name);
 }
