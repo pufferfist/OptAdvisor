@@ -37,7 +37,7 @@ public class PolySms {
         return new JSONObject(result).toMap();
     }
 
-    public static Map<String, Object> serdWarningSms(String phoneNumber) throws IOException {
+    public static Map<String, Object> sendWarningSms(String phoneNumber) throws IOException {
         Map<String, Object> params = new HashMap<>();
         params.put("mobile", phoneNumber);
         params.put("tpl_id", warnModelId);

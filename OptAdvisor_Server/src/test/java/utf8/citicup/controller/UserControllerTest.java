@@ -23,7 +23,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static utf8.citicup.service.util.JsonParse.*;
@@ -61,17 +60,78 @@ public class UserControllerTest {
         map.put("w1", 70);
         map.put("w2", 30);
 
-        MvcResult mvcResult = this.mockMvc.perform(post("/user")
+        this.mockMvc.perform(post("/user")
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
-                .andReturn();
-        logger.info(mvcResult.getResponse().getContentAsString());
+                .andExpect(jsonPath("$.code").value(0));
+    }
+
+    @Test
+    public void test01SignUp1004() throws Exception {
+        Map<String, Object> map = new HashMap<>();
+        map.put("username", username);
+        map.put("password", password);
+        map.put("birthday", "2000/7/9");
+        map.put("name", oldName);
+        map.put("telephone", "17602529171");
+        map.put("gender", "male");
+        map.put("w1", 70);
+        map.put("w2", 30);
+        this.mockMvc.perform(post("/user")
+                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1004));
+    }
+
+    @Test
+    public void test01zIsUsernameExists() throws Exception {
+        this.mockMvc.perform(get("/user/username?search=" + username))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").value(true));
+        this.mockMvc.perform(get("/user/username?search=1" + username))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data").value(false));
+    }
+
+    @Test
+    public void test020Auth() throws Exception {
+        this.mockMvc.perform(get("/session"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1008));
+    }
+
+    @Test
+    public void test020Login1001() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("username", username + "1");
+        map.put("password", password);
+        this.mockMvc.perform(post("/session")
+                .content(objectToJsonString(map)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1001));
+    }
+
+    @Test
+    public void test020Login1002() throws Exception {
+        Map<String, String> map = new HashMap<>();
+        map.put("username", username);
+        map.put("password", password + " ");
+        this.mockMvc.perform(post("/session")
+                .content(objectToJsonString(map)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1002));
     }
 
     @Test
     public void test02Login() throws Exception {
         httpSession = AuthenticationProcess.login(mockMvc, username, password);
+    }
+
+    @Test
+    public void test02zAuth() throws Exception {
+        this.mockMvc.perform(get("/session").session(httpSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0));
     }
 
     @Test
@@ -116,16 +176,33 @@ public class UserControllerTest {
         map.put("oldPassword", password);
         map.put("newPassword", newPassword);
 
+//        this.mockMvc.perform(put("/user/password")
+//                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.code").value(1001));
+
         this.mockMvc.perform(put("/user/password").session(httpSession)
                 .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.code").value(0))
-                .andDo(print());
+                .andExpect(jsonPath("$.code").value(0));
+
+        this.mockMvc.perform(put("/user/password").session(httpSession)
+                .content(objectToJsonString(map)).contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1002));
     }
 
     @Test
     public void test07LogoutAndTestAuth() throws Exception {
+        this.mockMvc.perform(get("/session").session(httpSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(0));
+
         AuthenticationProcess.logout(mockMvc, httpSession);
+
+        this.mockMvc.perform(get("/session").session(httpSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(1008));
 
         this.mockMvc.perform(get("/user").session(httpSession))
                 .andExpect(status().isOk())

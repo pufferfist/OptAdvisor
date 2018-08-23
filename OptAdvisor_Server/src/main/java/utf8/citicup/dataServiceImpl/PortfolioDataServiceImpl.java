@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import utf8.citicup.dao.OptionRepository;
 import utf8.citicup.dao.PortfolioRepository;
 import utf8.citicup.dataService.PortfolioDataService;
-import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.Portfolio;
 
 import java.util.List;
@@ -51,17 +50,18 @@ public class PortfolioDataServiceImpl implements PortfolioDataService{
 
     @Override
     public List<Portfolio> findByUsername(String username) {
-        List<Portfolio> portfolioList= portfolioRepository.findByUsername(username);
-        return portfolioList;
+        return portfolioRepository.findByUsername(username);
     }
 
     @Override
     @CacheEvict(value = "portfolio")
-    public boolean updateTrackingStatus(long id, boolean trackingStatus) {
-        if(portfolioRepository.findById(id).isPresent()){
-            portfolioRepository.updateReadStatus(id,trackingStatus);
-            return true;
-        }
-        return false;
+    public void updateTrackingStatus(long id, boolean trackingStatus) {
+        portfolioRepository.updateReadStatus(id,trackingStatus);
+    }
+
+    @Override
+    @CacheEvict(value = "portfolio")
+    public void updateName(long id, String name) {
+        portfolioRepository.updatePortfolioName(id, name);
     }
 }

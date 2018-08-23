@@ -3,24 +3,531 @@
       <p style="font-size: 30px;font-weight: bold;text-align: left">DIY</p>
       <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4">构建DIY组合</h3>
       <div style="width: 100%;height: 2px;background-color: #2b85e4"></div>
-      <myGroup></myGroup>
+      <div>
+        <div style="text-align: left;padding-bottom: 5px;padding-left: 40px">
+          <p>
+            上交所 &nbsp;&nbsp;
+            50ETF  &nbsp;&nbsp;
+            <Select v-model="selectMonth" style="width: 100px" @on-change="changeMonth">
+              <Option v-for="item in deadlineMonths" :value="item" :key="item">{{ item }}</Option>
+            </Select>
+          </p>
+        </div>
+        <div style="width: 100%;text-align: center">
+          <table style="margin: auto" class="table1">
+            <tr>
+              <th colspan="9" style="background-color: #f16643">看涨合约</th>
+              <th style="background-color: #f8f8f9"></th>
+              <th colspan="9" style="background-color: #19be6b">看跌合约</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td>买量</td>
+              <td>买价</td>
+              <td>最新价</td>
+              <td>卖价</td>
+              <td>卖量</td>
+              <td>持仓量</td>
+              <td>振幅</td>
+              <td>涨跌幅</td>
+              <td>行权价</td>
+              <td>买量</td>
+              <td>买价</td>
+              <td>最新价</td>
+              <td>卖价</td>
+              <td>卖量</td>
+              <td>持仓量</td>
+              <td>振幅</td>
+              <td>涨跌幅</td>
+              <td></td>
+            </tr>
+            <tr v-for="(item,index) in value">
+              <td :class="getClassName(index,'up')" :id="getClassName(index,'checkbox_up_')" @click="refreshId"><Checkbox @on-change="changeColor"></Checkbox></td>
+              <td @click="checkout('up',index)" v-for="up in item[0]" :class="getClassName(index,'up')">{{up}}</td>
+              <td @click="checkout('up',index)" v-for="upRate in item[1]" :class="getClassName(index,'up')" v-if="upRate>0" style="-webkit-text-fill-color: #f16643">{{upRate}}%</td>
+              <td @click="checkout('up',index)" v-for="upRate in item[1]" :class="getClassName(index,'up')" v-if="upRate<0" style="-webkit-text-fill-color: #19be6b">{{upRate}}%</td>
+              <td @click="checkout('up',index)" v-for="upRate in item[1]" :class="getClassName(index,'up')" v-if="upRate==0">{{upRate}}%</td>
+              <td v-for="middle in item[2]">{{middle}}</td>
+              <td @click="checkout('down',index)" v-for="down in item[3]" :class="getClassName(index,'down')">{{down}}</td>
+              <td @click="checkout('down',index)" v-for="downRate in item[4]" :class="getClassName(index,'down')" v-if="downRate>0" style="-webkit-text-fill-color: #f16643">{{downRate}}%</td>
+              <td @click="checkout('down',index)"v-for="downRate in item[4]" :class="getClassName(index,'down')" v-if="downRate<0" style="-webkit-text-fill-color: #19be6b">{{downRate}}%</td>
+              <td @click="checkout('down',index)"v-for="downRate in item[4]" :class="getClassName(index,'down')" v-if="downRate==0">{{downRate}}%</td>
+              <td style="padding-left: 20px" :class="getClassName(index,'down')" :id="getClassName(index,'checkbox_down_')" @click="refreshId"><Checkbox @on-change="changeColor"></Checkbox></td>
+            </tr>
+            <tr>
+              <th colspan="19" style="background-color: #2db7f5">我的组合（请在上表中勾选自己的DIY项目）</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td colspan="8" style="vertical-align: top">
+                <li v-for="(l,index) in leftValue">
+                  {{l}}&nbsp&nbsp
+                  <input type="number" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')">份
+                </li>
+              </td>
+              <td></td>
+              <td colspan="8" style="vertical-align: top">
+                <li v-for="(r,index) in rightValue">
+                  {{r}}&nbsp&nbsp
+                  <input type="number" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')">份
+
+                </li>
+              </td>
+              <td></td>
+            </tr>
+            <tr>
+              <td colspan="19">&nbsp;</td>
+            </tr>
+            <tr>
+              <td colspan="19"><Button type="primary" style="width: 250px" @click="confirm">确认</Button></td>
+            </tr>
+            <tr>
+              <td colspan="19">&nbsp;</td>
+            </tr>
+          </table>
+        </div>
+      </div>
       <br>
       <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4">合约分析</h3>
       <div style="width: 100%;height: 2px;background-color: #2b85e4"></div>
-      <myAnalysis></myAnalysis>
+      <div>
+        <div style="width: 30%;float: left;padding-top: 30px;padding-left: 30px">
+          <div style="width: 200px">
+            <h3>期权及相关信息</h3>
+            <table class="table2">
+              <tr>
+                <th>合约简称</th>
+                <td>{{text1}}</td>
+              </tr>
+              <tr>
+                <th>交易代码</th>
+                <td>{{text2}}</td>
+              </tr>
+              <tr>
+                <th>理论价值</th>
+                <td>{{text3}}</td>
+              </tr>
+              <tr>
+                <th>价值状态</th>
+                <td style="-webkit-text-fill-color: red">{{text4}}</td>
+              </tr>
+              <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp内在价值</th>
+                <td style="-webkit-text-fill-color: red">{{text5}}</td>
+              </tr>
+              <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp时间价值</th>
+                <td style="-webkit-text-fill-color: red">{{text6}}</td>
+              </tr>
+              <tr>
+                <th>成交量</th>
+                <td>{{text7}}</td>
+              </tr>
+              <tr>
+                <th>Delta</th>
+                <td>{{text8}}</td>
+              </tr>
+              <tr>
+                <th>Gamma</th>
+                <td>{{text9}}</td>
+              </tr>
+              <tr>
+                <th>Theta</th>
+                <td>{{text10}}</td>
+              </tr>
+              <tr>
+                <th>Vega</th>
+                <td>{{text11}}</td>
+              </tr>
+              <tr>
+                <th>隐含波动率</th>
+                <td>{{text12}}</td>
+              </tr>
+              <tr>
+                <th>最高价</th>
+                <td>{{text13}}</td>
+              </tr>
+              <tr>
+                <th>最低价</th>
+                <td>{{text14}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div style="width: 70%;float: left;padding: 30px;text-align: center">
+          <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="drawLine">预览</Button> </h3>
+          <span>组合的期望收益率E/M：XXX &nbsp&nbsp 组合的风险值β：123</span>
+          <div id="myChart" style="width: 100%;height: 325px">
+          </div>
+        </div>
+      </div>
 
     </div>
 </template>
 
 <script>
-  import myGroup from "../components/diy/select"
-  import myAnalysis from "../components/myPortfolio/displayResult"
     export default {
         name: "diy",
-      components:{myGroup,myAnalysis}
+      data () {
+        return {
+          value1:5,
+          deadlineMonths: [],
+          upValue:[],
+          downValue:[],
+          value:[],
+          leftValue:[],
+          rightValue:[],
+          currentSelectedId:'',
+          selectMonth:'',
+          currentCodeLeft:[],
+          currentCodeRight:[],
+          lastSelectedLineIndex:0,
+          lastSelectedLineType:'up',
+          text1:'',
+          text2:'',
+          text3:'',
+          text4:'',
+          text5:'',
+          text6:'',
+          text7:'',
+          text8:'',
+          text9:'',
+          text10:'',
+          text11:'',
+          text12:'',
+          text13:'',
+          text14:'',
+          lineName:['data1','data2','data3']
+        }
+      },
+      mounted() {
+        this.axios.get('/sinaTime/StockOptionService.getStockName')
+          .then(re=>{
+            var months=re.data.result.data.contractMonth
+            this.setSelectedMonth(months);
+            this.getValue(months[1]);
+          })
+        this.drawLine()
+        setInterval(this.circle, 5000);
+
+      },
+      methods: {
+        setSelectedMonth(months){
+          this.selectMonth=months[1]
+          var result=[]
+          for(var i=1;i<months.length;i++){
+            result.push(months[i])
+          }
+          this.deadlineMonths=result;
+        },
+        async getValue(month){
+          this.upValue=[]
+          this.downValue=[]
+          var date=month.substr(2,2)+month.substr(5)
+          var address='/sinaOption/list=OP_UP_510050'+date+","+"OP_DOWN_510050"+date
+          var subAddress
+          await this.axios.get(address)
+            .then(re=>{
+              var parts=re.data.split(";")
+              parts[0]=parts[0].substr(parts[0].indexOf("=")+2)
+              parts[1]=parts[1].substr(parts[1].indexOf("=")+2)
+              parts[0]=parts[0].substr(0,parts[0].length-1)
+              parts[1]=parts[1].substr(0,parts[1].length-1)
+              this.currentCodeLeft=parts[0].split(",")
+              this.currentCodeRight=parts[1].split(",")
+              subAddress='sinaOption/list='+parts[0]+parts[1]
+            })
+          await  this.axios.get(subAddress)
+            .then(re=>{
+              var datas=re.data.split("var")
+              var arrayLength=(datas.length-1)/2
+              var result=[]
+              for(var i=1;i<=arrayLength;i++){
+                var temp1=datas[i].substr(datas[i].indexOf("=")+2).split(",")
+                this.upValue.push(temp1)
+                var single1=[temp1[0],temp1[1],temp1[2],temp1[3],temp1[4],temp1[5],temp1[38]+"%"]
+                var single2=[temp1[6]]
+                var single3=[temp1[7]]
+
+                var temp2=datas[i+arrayLength].substr(datas[i+arrayLength].indexOf("=")+2).split(",")
+                this.downValue.push(temp2)
+                var single4=[temp2[0],temp2[1],temp2[2],temp2[3],temp2[4],temp2[5],temp2[38]+"%"]
+                var single5=[temp2[6]]
+                result.push([single1,single2,single3,single4,single5])
+              }
+              this.value=result;
+            })
+          this.checkout(this.lastSelectedLineType,this.lastSelectedLineIndex)
+        },
+        getClassName(index,upOrDown){
+          return upOrDown+index
+        },
+        changeColor(){
+          var id=this.currentSelectedId
+          var parts=id.split("_")
+          var classname=this.getClassName(parts[2],parts[1])
+          var doms=document.getElementsByClassName(classname)
+          //取消点击
+          if(doms[0].style.backgroundColor=='rgb(255, 238, 238)'){
+            for(var i=0;i<doms.length;i++){
+              doms[i].style.backgroundColor="#f8f8f9"
+            }
+          }
+          //点击
+          else{
+            for(var i=0;i<doms.length;i++){
+              doms[i].style.backgroundColor="#FFEEEE"
+            }
+          }
+          this.setLeftOrRightValue()
+        },
+        refreshId(){
+          this.currentSelectedId=event.currentTarget.id
+        },
+        setLeftOrRightValue(){
+          this.leftValue=[]
+          this.rightValue=[]
+          for(var i=0;i<this.value.length;i++){
+            var colorl=document.getElementById("checkbox_up_"+i).style.backgroundColor
+            if(colorl=='rgb(255, 238, 238)'){
+              this.leftValue.push(this.upValue[i][37])
+            }
+            var colorr=document.getElementById("checkbox_down_"+i).style.backgroundColor
+            if(colorr=='rgb(255, 238, 238)'){
+              this.rightValue.push(this.downValue[i][37])
+            }
+          }
+        },
+        circle(){
+          if(this.deadlineMonths.length==0){
+
+          }
+          else{
+            this.getValue(this.selectMonth)
+          }
+        },
+        changeMonth(){
+          this.value=[]
+          this.lastSelectedLineType='up'
+          this.lastSelectedLineIndex=0
+          this.getValue(this.selectMonth)
+          this.setLeftOrRightValue()
+        },
+        checkout(upOrDown,index){
+          //1.先复原
+          if(this.lastSelectedLineIndex!=''){
+            var ups=document.getElementsByClassName('up'+this.lastSelectedLineIndex)
+            for(var i=0;i<ups.length;i++){
+              ups[i].style.border='none'
+            }
+            var downs=document.getElementsByClassName('down'+this.lastSelectedLineIndex)
+            for(var i=0;i<downs.length;i++){
+              downs[i].style.border='none'
+            }
+          }
+          else{
+            var ups=document.getElementsByClassName('up0')
+            for(var i=0;i<ups.length;i++){
+              ups[i].style.border='none'
+            }
+            var downs=document.getElementsByClassName('down0')
+            for(var i=0;i<downs.length;i++){
+              downs[i].style.border='none'
+            }
+          }
+
+          //2.选中
+          var tds=document.getElementsByClassName(upOrDown+index)
+          if(upOrDown=='up'){
+            for(var i=1;i<tds.length;i++){
+              tds[i].style.borderBottom='1px solid #2db7f5'
+              tds[i].style.borderTop='1px solid #2db7f5'
+            }
+            tds[1].style.borderLeft='1px solid #2db7f5'
+            tds[tds.length-1].style.borderRight='1px solid #2db7f5'
+          }
+          else{
+            for(var i=0;i<tds.length-1;i++){
+              tds[i].style.borderBottom='1px solid #2db7f5'
+              tds[i].style.borderTop='1px solid #2db7f5'
+            }
+            tds[0].style.borderLeft='1px solid #2db7f5'
+            tds[tds.length-2].style.borderRight='1px solid #2db7f5'
+          }
+
+          //3.赋值
+          this.lastSelectedLineIndex=index;
+          this.lastSelectedLineType=upOrDown
+
+          //4.获取数据
+          this.getSingleInfo(upOrDown)
+
+        },
+        getSingleInfo(upOrDown){
+          var index=this.lastSelectedLineIndex
+          if(upOrDown=='up'){
+            var suffix=this.currentCodeLeft[index].substr(7)
+            this.axios.get('/sinaOption/list=CON_SO_'+suffix)
+              .then(re=>{
+                var parts=re.data.substr(re.data.indexOf("=")+2).split(",")
+                this.text1=parts[0]
+                this.text2=parts[12]
+                this.text3=parts[15]
+                var price_mark=(parts[14]-parts[13]).toFixed(4)
+                if(price_mark>0){
+                  this.text4='实值'
+                  this.text5=price_mark
+                }
+                else if(price_mark<0){
+                  this.text4='虚值'
+                  this.text5=0
+                }
+                else if(price_mark==0){
+                  this.text4='平值'
+                  this.text5=0
+                }
+                if(parts[14]-this.text5<=0){
+                  this.text6=0.00
+                }
+                else{
+                  this.text6=(parts[14]-this.text5).toFixed(4)
+                }
+                this.text7=parts[4]
+                this.text8=parts[5]
+                this.text9=parts[6]
+                this.text10=parts[7]
+                this.text11=parts[8]
+                this.text12=parts[9]
+                this.text13=parts[10]
+                this.text14=parts[11]
+              })
+          }
+          else if(upOrDown=='down'){
+            var suffix=this.currentCodeRight[index].substr(7)
+            this.axios.get('/sinaOption/list=CON_SO_'+suffix)
+              .then(re=>{
+                var parts=re.data.substr(re.data.indexOf("=")+2).split(",")
+                this.text1=parts[0]
+                this.text2=parts[12]
+                this.text3=parts[15]
+                var price_mark=(parts[14]-parts[13]).toFixed(4)
+                if(price_mark<0){
+                  this.text4='实值'
+                  this.text5=0-price_mark
+                }
+                else if(price_mark>0){
+                  this.text4='虚值'
+                  this.text5=0
+                }
+                else if(price_mark==0){
+                  this.text4='平值'
+                  this.text5=0
+                }
+                this.text6=(parts[14]-this.text5).toFixed(4)
+                this.text7=parts[4]
+                this.text8=parts[5]
+                this.text9=parts[6]
+                this.text10=parts[7]
+                this.text11=parts[8]
+                this.text12=parts[9]
+                this.text13=parts[10]
+                this.text14=parts[11]
+              })
+          }
+
+        },
+
+        //这三个方法需要集成
+        drawLine(){
+          // 基于准备好的dom，初始化echarts实例
+          let myChart = this.$echarts.init(document.getElementById('myChart'))
+          // 绘制图表
+          myChart.setOption({
+            tooltip: {
+              trigger: 'axis'
+            },
+            legend: {
+              data:this.lineName
+            },
+            xAxis: {
+              type: 'category',
+              data: ['2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08']
+            },
+            yAxis: {
+              type: 'value'
+            },
+            series: [{
+              name:this.lineName[0],
+              data: [15,24,36,58,95,36,45,47,63],
+              type: 'line'
+            },
+              {
+                name:this.lineName[1],
+                data:  [51,24,89,45,77,86,23,58,61],
+                type: 'line'
+              },
+              {
+                name:this.lineName[2],
+                data: [25,75,92,38,46,91,78,62,70],
+                type: 'line'
+              }]
+          });
+        },
+        preview(){
+          //1.传值获取数据，并更新数据
+
+
+
+
+          //2.画图
+          this.drawLine()
+        },
+        confirm(){
+          //确认组合，提交至后台
+        }
+      }
     }
 </script>
 
 <style scoped>
+  .table1{
+    border-collapse: collapse;
+  }
+  .table1 th{
+    font-size: 13px;
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .table1 td{
+    font-size: 13px;
+    padding-left: 5px;
+    padding-right: 5px;
+    background-color: #f8f8f9;
+  }
+  .table2{
+    border-collapse: collapse;
+  }
+  .table2 td{
+    text-align: left;
+  }
+  .table2 th{
+    text-align: left;
+    min-width: 130px;
+    -webkit-text-fill-color: #808695;
+    font-weight: normal;
+  }
+
+  li{
+    padding: 5px;
+  }
+
+  .numberInput{
+    background-color: #f8f8f9;
+    border-width: 1px;
+    border-color: #dcdee2;
+    width: 40px;
+  }
+
+
 
 </style>

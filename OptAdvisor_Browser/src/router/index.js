@@ -14,7 +14,7 @@ import InfoCollect from '../pages/InfoCollect'
 import DIY from '../pages/DIY'
 import MyPortfolio from '../pages/MyPortfolio'
 import Prompt from '../pages/Prompt'
-import test from '../components/myPortfolio/Option'
+import test from '../pages/test'
 
 
 Vue.use(Router)
@@ -35,6 +35,7 @@ Vue.use(Router)
 
  */
 export default new Router({
+  mode:'history',
   base:'/',
   routes: [
     {

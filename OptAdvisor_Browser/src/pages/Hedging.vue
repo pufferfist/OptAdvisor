@@ -45,22 +45,57 @@
             }
             else{
               this.warn_color="#ffffff"
-              this.ispage1="none"
-              this.ispage2=""
-              this.demo_spilt_height="700px"
               var deadline_value=this.$refs.info.formItem.month[deadline.substr(5)-1]
 
               //写入数据
-              this.axios.post('/backend/recommend/hedging',{
-                NO:OpenInterest,
-                a:rate,
-                s_exp:min_price,
-                T:deadline_value
-              }).then((response)=>{
+              var param={NO:OpenInterest,a:rate/100,s_exp:min_price,T:deadline_value}
+              this.axios.post('/backend/recommend/hedging',param).then((response)=>{
+                /**********************************查看data是否合规**************************************/
                 var data=response.data
-                /************************还没添加内容***************************/
-                this.$refs.result.data1[0].id=data.id
+                //1.填充表格
+                var forms={
+                    persisentId:data.option.persisentId,
+                    tradeCode:data.option.tradeCode, //交易代码
+                    optionCode:data.option.optionCode, //期权代码
+                    name:data.option.name,//例如:50ETF购8月2600
+                    expireTime:data.option.expireTime,//到期时间
+                    transactionPrice:data.option.transactionPrice,//成交价
+                    quantity:data.option.quantity,//在组合中的份数,单独存在无意义
+                    yclose:data.option.yclose,//期权前一天收盘价
+                    price1:data.option.price1,//期权实时买入价格
+                    price2:data.option.price2,//期权实时卖出价格
+                    k:data.option.k,//期权行权价格
+                    delta:data.option.delta,
+                    gamma:data.option.gamma,
+                    vega:data.option.vega,
+                    theta:data.option.theta,
+                    rho:data.option.rho,
+                    beta:data.option.beta,
+                  }
+                  if(data.option.type=='1'){
+                    forms.type='买入'
+                  }
+                  else if(data.option.type=='0'){
+                    forms.type='卖出'
+                  }
+                  if(data.option.cp=='1'){
+                    forms.cp='看涨'
+                  }
+                  else if(data.option.cp=='-1'){
+                    forms.cp='看跌'
+                  }
+                this.$refs.result.$refs.option_group.TData=forms
+
+                //2.填充预期最大亏损值
+                this.$refs.result.expectedLoss=data.ik
+
+                //3.填充折线图
+                this.$refs.result.graph=data.graph
+                this.$refs.result.drawLine()
               })
+              this.ispage1="none"
+              this.ispage2=""
+              this.demo_spilt_height="700px"
             }
           }
       }

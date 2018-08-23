@@ -15,11 +15,13 @@ public class RecommendOption2 {
         return option;
     }
 
-    public double getIK() {
-        return iK;
-    }
 
     public String[][] getGraph() {
         return graph;
     }
+
+    public double getiK() {
+        return iK;
+    }
+
 }
