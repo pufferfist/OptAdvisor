@@ -1,4 +1,4 @@
-package utf8.citicup.util;
+package utf8.citicup.controller.util;
 
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;

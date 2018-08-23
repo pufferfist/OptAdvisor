@@ -22,7 +22,9 @@ public class RecommendOption1 {
     private double p1;
     private double p2;
 
-    public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta, double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta, String[][] graph, double m0, double k) {
+    public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta,
+                            double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta,
+                            String[][] graph, double m0, double k) {
         this.optionList = optionList;
         this.buyAndSell = buyAndSell;
         this.num = num;
@@ -40,7 +42,9 @@ public class RecommendOption1 {
         this.k = k;
     }
 
-    public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta, double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta, String[][] graph, double m0, double k, double sigma1, double sigma2, double p1, double p2) {
+    public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta,
+                            double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta,
+                            String[][] graph, double m0, double k, double sigma1, double sigma2, double p1, double p2) {
         this.optionList = optionList;
         this.buyAndSell = buyAndSell;
         this.num = num;
