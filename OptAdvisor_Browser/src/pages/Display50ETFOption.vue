@@ -1,8 +1,5 @@
 <template>
   <div id="page">
-    <div id="mainContract">
-      <Button>aa</Button>
-    </div>
       <month-selecter v-on:selectedTime = "selectedTime"></month-selecter>
       <Row style="margin: 19px 0 10px 0">
         <Col span="11">
@@ -145,9 +142,9 @@
             <p>标注★的合约为主力合约</p>
           </Row>
         </Col>
+        <Spin size="large" fix v-if="isLoading"></Spin>
       </Row>
-
-      <div style="text-align:left ;margin: 50px 0" id="Contracting">
+      <div style="text-align:left ;margin: 50px 0" ref="Contracting" id="Contracting">
         <div id="title" style="padding-bottom:10px;border-bottom: 3px solid black">
           <h2 style="display:inline-block; margin-right: 50px;">合约分析</h2><span >{{selectedItem.name}}</span>
         </div>
@@ -165,7 +162,7 @@
                 </tr>
                 <tr>
                   <td>理论价值</td>
-                  <td>{{parseInt(SO.value) === 0 ? SO.value : '--'}}</td>
+                  <td>{{parseFloat(SO.value) !== 0 ? SO.value : '--'}}</td>
                 </tr>
                 <tr>
                   <td>价值状态</td>
@@ -221,6 +218,238 @@
               </div>
           </Col>
         </Row>
+      </div>
+      <div style="text-align:left ;margin: 50px 0">
+        <div id="title" style="padding-bottom:10px;border-bottom: 3px solid black">
+          <h2 style="display:inline-block; margin-right: 50px;">主力合约</h2>
+        </div>
+        <div>
+          <Row style="margin:30px 0; text-align:center; ">
+            <Col span="12">
+              <h3>主力看涨合约</h3>
+              <div>
+                <table style="width:100%; margin:20px 0;border-right: 1px solid black;">
+                  <thead>
+                    <th style="width:50%;"></th>
+                    <th style="width:50%;"></th>
+                  </thead>
+                  <tbody style="line-height:30px;">
+                    <tr>
+                      <td>交易代码</td>
+                      <td>{{mainUpOption.code}}</td>
+                    </tr>
+                    <tr>
+                      <td>理论价值</td>
+                      <td>{{parseFloat(mainUpOption.value) !== 0 ? mainUpOption.value : '--'}}</td>
+                    </tr>
+                    <tr>
+                      <td>价值状态</td>
+                      <td>{{mainUpOptionActual.priceMark}}</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: right; padding-right:40px; ">内在价值</td>
+                      <td>{{mainUpOptionActual.innerPrice}}</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: right; padding-right:40px; ">时间价值</td>
+                      <td>{{mainUpOptionActual.timeP}}</td>
+                    </tr>
+                    <tr>
+                      <td>持仓量 / 占　比</td>
+                      <td>{{mainUpOption.openInterest}} / {{mainUpOption.openInterestRate}}</td>
+                    </tr>
+                    <tr>
+                      <td>最新价 / 涨　幅</td>
+                      <td>{{mainUpOption.new}} / {{mainUpOption.increase}}</td>
+                    </tr>
+                    <tr>
+                      <td>买　价 / 卖　价</td>
+                      <td>{{mainUpOption.buyPrice}} / {{mainUpOption.salePrice}}</td>
+                    </tr>
+                    <tr>
+                      <td>最高价 / 最低价</td>
+                      <td>{{mainUpOption.low}}</td>
+                    </tr>
+                    <tr>
+                      <td>成交量</td>
+                      <td>{{mainUpOption.volume}}</td>
+                    </tr>
+                    <tr>
+                      <td>Delta</td>
+                      <td>{{mainUpOption.delta}}</td>
+                    </tr>
+                    <tr>
+                      <td>Gamma</td>
+                      <td>{{mainUpOption.gamma}}</td>
+                    </tr>
+                    <tr>
+                      <td>Theta</td>
+                      <td>{{mainUpOption.theta}}</td>
+                    </tr>
+                    <tr>
+                      <td>Vega</td>
+                      <td>{{mainUpOption.vega}}</td>
+                    </tr>
+                    <tr>
+                      <td>隐含波动率</td>
+                      <td>{{mainUpOption.volatility}}</td>
+                    </tr>
+                    <tr>
+                      <td>最高价</td>
+                      <td>{{mainUpOption.high}}</td>
+                    </tr>
+                    <tr>
+                      <td>最低价</td>
+                      <td>{{mainUpOption.low}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </Col>
+            <Col span="12">
+              <h3>主力看跌合约</h3>
+              <table style="width:100%; margin:20px 0;">
+                  <thead>
+                    <th style="width:50%;"></th>
+                    <th style="width:50%;"></th>
+                  </thead>
+                  <tbody style="line-height:30px;">
+                    <tr>
+                      <td>交易代码</td>
+                      <td>{{mainDownOption.code}}</td>
+                    </tr>
+                    <tr>
+                      <td>理论价值</td>
+                      <td>{{parseFloat(mainDownOption.value) !== 0 ? mainDownOption.value : '--'}}</td>
+                    </tr>
+                    <tr>
+                      <td>价值状态</td>
+                      <td>{{mainDownOptionActual.priceMark}}</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: right; padding-right:40px; ">内在价值</td>
+                      <td>{{mainDownOptionActual.innerPrice}}</td>
+                    </tr>
+                    <tr>
+                      <td style="text-align: right; padding-right:40px; ">时间价值</td>
+                      <td>{{mainDownOptionActual.timeP}}</td>
+                    </tr>
+                    <tr>
+                      <td>持仓量 / 占　比</td>
+                      <td>{{mainDownOption.openInterest}} / {{mainDownOption.openInterestRate}}</td>
+                    </tr>
+                    <tr>
+                      <td>最新价 / 涨　幅</td>
+                      <td>{{mainDownOption.new}} / {{mainDownOption.increase}}</td>
+                    </tr>
+                    <tr>
+                      <td>买　价 / 卖　价</td>
+                      <td>{{mainDownOption.buyPrice}} / {{mainDownOption.salePrice}}</td>
+                    </tr>
+                    <tr>
+                      <td>最高价 / 最低价</td>
+                      <td>{{mainDownOption.low}}</td>
+                    </tr>
+                    <tr>
+                      <td>成交量</td>
+                      <td>{{mainDownOption.volume}}</td>
+                    </tr>
+                    <tr>
+                      <td>Delta</td>
+                      <td>{{mainDownOption.delta}}</td>
+                    </tr>
+                    <tr>
+                      <td>Gamma</td>
+                      <td>{{mainDownOption.gamma}}</td>
+                    </tr>
+                    <tr>
+                      <td>Theta</td>
+                      <td>{{mainDownOption.theta}}</td>
+                    </tr>
+                    <tr>
+                      <td>Vega</td>
+                      <td>{{mainDownOption.vega}}</td>
+                    </tr>
+                    <tr>
+                      <td>隐含波动率</td>
+                      <td>{{mainDownOption.volatility}}</td>
+                    </tr>
+                    <tr>
+                      <td>最高价</td>
+                      <td>{{mainDownOption.high}}</td>
+                    </tr>
+                    <tr>
+                      <td>最低价</td>
+                      <td>{{mainDownOption.low}}</td>
+                    </tr>
+                  </tbody>
+                </table>
+            </Col>
+          </Row>
+        </div>
+        <div>
+          <Row>
+            <div id="title" style="padding-bottom:10px;border-bottom: 3px solid black">
+            <h2 style="display:inline-block; margin-right: 50px;">五档盘口</h2>
+          </div>
+          </Row>
+          <Row style="margin:30px 0;">
+            <Col offset="1" span="10">
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 买5</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 买4</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 买3</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 买2</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 买1</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+            </Col>
+            <Col offset="3" span="9">
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 卖5</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 卖4</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 卖3</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 卖2</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+              <Row class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 卖1</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+              </Row>
+            </Col>
+          </Row>
+        </div>
       </div>
   </div>
 </template>
@@ -334,12 +563,17 @@
             myChart: Object,
             lineData: [],
             dayKData: [],
-            a: 1
+            timeout: 1,
+            isLoading: true,
+            mainDownOption: {code: '0'},
+            mainUpOption: {code: '0'}
           }
         },
 
         computed: {
           SOActual: function() {
+            console.log(this.SO.price,3333333);
+            
             const POC  = this.SO.code[6];
             if(POC === 'C') {
               const priceMark =  this.time.ETFPrice - parseFloat(this.SO.price);
@@ -347,8 +581,8 @@
               const timeP = parseFloat(this.SO.timeP) - innerPrice > 0 ?( parseFloat(this.SO.timeP) - innerPrice).toFixed(4) : 0; 
               return {
                 priceMark: priceMark > 0? '实值' : priceMark <0 ? '虚值' : '平值',
-                innerPrice,
-                timeP,
+                innerPrice: innerPrice == 0? '-' : innerPrice,
+                timeP : timeP == 0 ? '-' : timeP,
               }
             } else {
               const priceMark =  this.time.ETFPrice - parseFloat(this.SO.price);
@@ -356,17 +590,66 @@
               const timeP = (parseFloat(this.SO.timeP) - innerPrice).toFixed(4); 
               return {
                 priceMark: priceMark < 0? '实值' : priceMark >0 ? '虚值' : '平值',
-                innerPrice,
-                timeP,
+                innerPrice: innerPrice == 0? '-' : innerPrice,
+                timeP : timeP == 0 ? '-' : timeP,
               }
             }
-          }
+          },
+          mainUpOptionActual: function() {
+            const POC  = this.mainUpOption.code[6];
+            if(POC === 'C') {
+              const priceMark =  this.time.ETFPrice - parseFloat(this.mainUpOption.price);
+              const innerPrice = priceMark > 0 ? (priceMark).toFixed(4) : 0;
+              const timeP = parseFloat(this.mainUpOption.new) - innerPrice > 0 ?( parseFloat(this.mainUpOption.new) - innerPrice).toFixed(4) : 0; 
+              return {
+                priceMark: priceMark > 0? '实值' : priceMark <0 ? '虚值' : '平值',
+                innerPrice: innerPrice == 0? '-' : innerPrice,
+                timeP : timeP == 0 ? '-' : timeP,
+              }
+            } else {
+              const priceMark =  this.time.ETFPrice - parseFloat(this.mainUpOption.price);
+              const innerPrice = priceMark < 0 ? -priceMark.toFixed(4) : 0
+
+              const timeP = (parseFloat(this.mainUpOption.new) - innerPrice).toFixed(4); 
+              return {
+                priceMark: priceMark < 0? '实值' : priceMark >0 ? '虚值' : '平值',
+                innerPrice: innerPrice == 0? '-' : innerPrice,
+                timeP : timeP == 0 ? '-' : timeP,
+              }
+            }
+          },
+          mainDownOptionActual: function() {
+            console.log(this.mainDownOption.price,444444444444);
+            
+            const POC  = this.mainDownOption.code[6];
+            if(POC === 'C') {
+              const priceMark =  this.time.ETFPrice - parseFloat(this.mainDownOption.price);
+              const innerPrice = parseFloat(priceMark > 0 ? (priceMark).toFixed(4) : 0);
+              const timeP = parseFloat(this.mainDownOption.new) - innerPrice > 0 ?( parseFloat(this.mainDownOption.new) - innerPrice).toFixed(4) : 0; 
+              
+              return {
+                priceMark: priceMark > 0? '实值' : priceMark <0 ? '虚值' : '平值',
+                innerPrice: innerPrice == 0? '-' : innerPrice,
+                timeP : timeP == 0 ? '-' : timeP,
+              }
+            } else {
+              const priceMark =  this.time.ETFPrice - parseFloat(this.mainDownOption.price);
+              const innerPrice = priceMark < 0 ? -priceMark.toFixed(4) : 0
+              const timeP = (parseFloat(this.mainDownOption.new) - innerPrice).toFixed(4); 
+              return {
+                priceMark: priceMark < 0? '实值' : priceMark >0 ? '虚值' : '平值',
+                innerPrice: innerPrice == 0? '-' : innerPrice,
+                timeP : timeP == 0 ? '-' : timeP,
+              }
+            }
+          },
         },
         methods: {
           selectedTime(e) {
             this.time = e;
             this.getOptionsList(e.date);
-            this.selectedItem = { name: ''}
+            this.selectedItem = { name: ''};
+            this.isLoading = true;
           },
           getOptionsList(time) {
             const Ptime =  '510050'+time.slice(2,7).replace('-','');
@@ -388,6 +671,7 @@
                 clearInterval(this.Interval);
                 this.getOptionListBaseData();
                 this.Interval = setInterval(this.getOptionListBaseData, 5000);
+                this.isLoading = false;
               });
           },
           getOptionListBaseData() {
@@ -571,11 +855,38 @@
               this.OptionsDownList = tempOptionsDownList;
               if(this.selectedItem.name === '') {
                 this.selectedItem = tempOptionsUpList[0];
+                this.handleClick('line');
               }
               this.getOptionData(this.selectedItem.id);
+              this.getMainOptionData();
               this.getChartData();
               }
             );
+          },
+          getMainOptionData() {
+            const  tempmainUpOption = this.OptionsUpList.find(item => {
+                return item.isMain!=='0';
+            });
+            const tempmainDownOption = this.OptionsDownList.find(item => {
+                return item.isMain!=='0';
+            });
+            console.log(tempmainUpOption, 11, tempmainDownOption);
+            
+            this.axios.get('/sinaOption/list='+ tempmainUpOption.id.replace('hq_str_CON_OP','CON_ZL'))
+                .then(res => {
+                  console.log(res.data.split(','));
+                  const tempOption = {};
+                  [, , , ,tempOption.openInterest,tempOption.openInterestRate, tempOption.new, tempOption.increase, tempOption.buyPrice, tempOption.salePrice, tempOption.high, tempOption.low, tempOption.volume, tempOption.delta , tempOption.gamma ,tempOption.theta, tempOption.vega, tempOption.volatility, tempOption.code, tempOption.price, tempOption.value] = res.data.split(',');
+                  this.mainUpOption = tempOption;
+                });
+            this.axios.get('/sinaOption/list='+ tempmainDownOption.id.replace('hq_str_CON_OP','CON_ZL'))
+                .then(res => {
+                  const tempOption = {};
+                  console.log(res.data.split(','));
+                  
+                  [, , , ,tempOption.openInterest,tempOption.openInterestRate, tempOption.new, tempOption.increase, tempOption.buyPrice, tempOption.salePrice, tempOption.high, tempOption.low, tempOption.volume, tempOption.delta , tempOption.gamma ,tempOption.theta, tempOption.vega, tempOption.volatility, tempOption.code, tempOption.price, tempOption.value] = res.data.split(',');
+                  this.mainDownOption = tempOption;
+                })
           },
           getOptionData(id) {
             this.axios
@@ -592,21 +903,37 @@
               this.axios.get('/sinaTime/StockOptionDaylineService.getOptionMinline', {
               params: {
                 symbol: name,
+                random: new Date().getTime(),
               }
               }).then(res => {
-                this.lineData = res.data.result.data;
-                this.chartFresh();              
+                let data = res.data.result.data;
+                let count = 0;
+                data.find((item) => {
+                  if(parseFloat(item.a) === 0) {
+                    count++;
+                    return false;
+                  } else {
+                    console.log(count);
+                    return true
+                  }
+                })
+                console.log(data);
+                data.splice(0, count);
+                this.lineData =data;
+                console.log(this.lineData, 12334444444444444444444);
+                
+                this.chartFresh();       
+
               });
             }
             if(!this.dayKData.length || needDay) {
               this.axios.get('/sinaTime/StockOptionDaylineService.getSymbolInfo', {
                 params: {
                   symbol: name,
+                  random: new Date().getTime(),
                 }
               }).then(res => {
                 this.dayKData = res.data.result.data;
-                console.log(this.dayKData);
-                
               })
             }
           },
@@ -615,6 +942,19 @@
             this.getOptionData(this.selectedItem.id);
             this.getChartData(true);
             this.handleClick('line');
+            this.scrollInterval = setInterval(()=> {
+              const scrollTop = document.scrollingElement.scrollTop;
+              const offsetTop = this.$refs.Contracting.offsetTop;
+              const clientHeight = this.$refs.Contracting.clientHeight;
+              const innerHeight = window.innerHeight;
+
+              if(scrollTop >= offsetTop + clientHeight - innerHeight) {
+                clearInterval(this.scrollInterval);
+                return ;
+              }
+              const speed = (offsetTop + clientHeight - innerHeight)/6;
+              document.scrollingElement.scrollTop = speed + document.scrollingElement.scrollTop;
+            }, 15);
           },
           handleClick(ms) {
             const that = this;
@@ -622,15 +962,15 @@
             if (ms === "day") {
               this.dayActive = true;
               this.lineActive = false;
-              clearTimeout(this.a);
-              this.a = setTimeout(function(){
+              clearTimeout(this.timeout);
+              this.timeout = setTimeout(function(){
                 that.initDayK();
               },1500);
             } else {
               this.dayActive = false;
               this.lineActive = true;
-              clearTimeout(this.a);
-              this.a = setTimeout(this.initLine, 1000);
+              clearTimeout(this.timeout);
+              this.timeout = setTimeout(this.initLine, 1000);
             }   
           },
           initLine() {
@@ -660,7 +1000,7 @@
                   },
                   extraCssText: "width: 170px",
                   formatter(params, ticket, callback) {
-                    return `2018-8-13<br />${params[0].name}<br/> <span style="color:${
+                    return `${params[0].name}<br/> <span style="color:${
                       params[0].color
                     }">● </span>${params[0].seriesName}:${params[0].value}<br />
                                             <span style="color:${
@@ -711,7 +1051,6 @@
                     position: "left",
                     max: function(value) {
                       if(that.lineMiddle) {
-                        console.log(that.lineMiddle)
                         const max =
                           value.max + value.min >= 2 * that.lineMiddle
                             ? value.max
@@ -848,8 +1187,6 @@
                   },
                   extraCssText: "width: 170px",
                   formatter(params, ticket, callback) {
-                    console.log(params);
-                    
                     let str = '' ;
                     str  += params[0].name;
                     params.map((item)=> {
@@ -866,8 +1203,6 @@
                         str += `<br />${item.marker}${item.seriesName}:${item.value}` 
                       }
                     });
-                    console.log(str);
-                    
                     return str;
                 }
               },
@@ -1122,6 +1457,10 @@
 #myEchart{
     height: 450px;
   }
+.dataList {
+  border-top: 1px dotted grey;
+  line-height: 30px;
+}
 @media screen and (max-width: 1050px) {
   #myEchart{
     height: 300px;
