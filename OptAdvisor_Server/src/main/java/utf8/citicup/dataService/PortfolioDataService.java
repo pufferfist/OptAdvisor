@@ -2,7 +2,6 @@ package utf8.citicup.dataService;
 
 import utf8.citicup.domain.entity.Portfolio;
 
-import javax.sound.sampled.Port;
 import java.util.List;
 
 public interface PortfolioDataService {
@@ -13,5 +12,8 @@ public interface PortfolioDataService {
     public List<Portfolio> findAll();
     //额外操作
     public List<Portfolio> findByUsername(String username);
-    public boolean updateTrackingStatus(long id,boolean trackingStatus);
+
+    public void updateTrackingStatus(long id, boolean trackingStatus);
+
+    public void updateName(long id, String portfolioName);
 }

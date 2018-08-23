@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static utf8.citicup.domain.common.Type.RECOMMMEND_PORTFOLIO;
+import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
@@ -102,34 +102,20 @@ public class RecommendServiceImpl implements RecommendService {
         double goal;
     }
 
-    public void setP1(double p1) {
+    void setP1(double p1) {
         this.p1 = p1;
     }
 
-    public void setP2(double p2) {
+    void setP2(double p2) {
         this.p2 = p2;
     }
 
-    public void setSigma1(double sigma1) {
+    void setSigma1(double sigma1) {
         this.sigma1 = sigma1;
     }
 
-    public void setSigma2(double sigma2) {
+    void setSigma2(double sigma2) {
         this.sigma2 = sigma2;
-    }
-
-    private void test() throws ParseException {
-//        try {
-////            System.out.println("hello");
-//            List <structD> D = new ArrayList<>();
-//            upDataFromNet();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        int[] a = new int[]{1, 2, 3};
-        int[] b = a;
-        a[1] = 10;
-        System.out.println(b[1]);
     }
 
     //回测到某个月返回的日期
@@ -320,7 +306,7 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
-    public void setOptionAttributes(Option newOption) throws IOException {
+    void setOptionAttributes(Option newOption) throws IOException {
         double[] attributes = dataSource.get_Attributes(newOption.getOptionCode());
         double k = attributes[0];
         double price1 = attributes[1];
@@ -396,8 +382,8 @@ public class RecommendServiceImpl implements RecommendService {
 
     /*正态分布概率函数*/
     private double p(double x) {
-        double sita = Math.pow(((sigma1 + sigma2) / 2), 2);
-        return 1 / (Math.sqrt(2 * Math.PI) * sita) * Math.exp(-1 * Math.pow(x, 2) / (2 * Math.pow(sita, 2)));
+        double theta = Math.pow(((sigma1 + sigma2) / 2), 2);
+        return 1 / (Math.sqrt(2 * Math.PI) * theta) * Math.exp(-1 * Math.pow(x, 2) / (2 * Math.pow(theta, 2)));
     }
 
     private double normpdf(double x){
@@ -479,7 +465,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Override
     public ResponseMsg recommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) {
-        RecommendOption1 recommendOption1 = null;
+        RecommendOption1 recommendOption1;
         try {
             recommendOption1 = mainRecommendPortfolio(M0, k, T, combination, p1, p2, sigma1, sigma2, w1, w2);
         } catch (IOException e) {
@@ -488,7 +474,7 @@ public class RecommendServiceImpl implements RecommendService {
         return new ResponseMsg(2000, "recommend Portfolio finished", recommendOption1);
     }
 
-    public RecommendOption1 mainRecommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) throws IOException {
+    private RecommendOption1 mainRecommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) throws IOException {
         //参数都是由用户输入的
         /*用户输入数据*/
         this.T = T;
@@ -519,9 +505,8 @@ public class RecommendServiceImpl implements RecommendService {
             StringProfits[i] = Double.toString(profits.get(i));
         }
         String[][] graph = new String[][]{month, StringProfits};
-        RecommendOption1 recommendOption1 = new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
+        return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho, maxGoalD.E / M, maxGoalD.beta,graph, M0, k, sigma1, sigma2, p1, p2);
-        return recommendOption1;
     }
 
     //期权组合第一步，计算出集合D及其相关内容
@@ -958,7 +943,7 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg hedging(int N0, double a, double sExp, String T) {
 
-        RecommendOption2 recommendOption2 = null;
+        RecommendOption2 recommendOption2;
         try {
             recommendOption2 = mainHedging(N0, a, sExp, T);
         } catch (IOException e) {
@@ -996,8 +981,7 @@ public class RecommendServiceImpl implements RecommendService {
         String[][] rtn;
         if(flag) rtn = hedgingBackTest(0,N,iK,pAsset,T);
         else rtn = hedgingBackTest(1,N,iK,pAsset,T);
-        RecommendOption2 recommendOption2 = new RecommendOption2(optionI, iK, rtn);
-        return recommendOption2;
+        return new RecommendOption2(optionI, iK, rtn);
     }
 
     private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
@@ -1036,7 +1020,7 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
-    public String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
+    String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
         Calendar c= Calendar.getInstance();
         int nowYear = c.get(Calendar.YEAR);
         int nowMonth = c.get(Calendar.MONTH)+1;
@@ -1110,21 +1094,19 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg customPortfolio(Option[] list)  {
         //传入的Option列表只有期权代码、到期时间、买入卖出、cp属性
-        try {
-            return new ResponseMsg(2000, "custom portfolio finished",mainOneCustomPortfolio(list));
-        } catch (IOException e) {
-            e.printStackTrace();
-            return StatusMsg.IOExceptionOccurs;
-        }
+        return new ResponseMsg(2000, "custom portfolio finished",mainOneCustomPortfolio(list));
     }
 
     //sigma1 2 and p1 2 没有初始化
-    RecommendOption1 mainTwoCustomPortfolio(Option[] list) throws IOException {
-
-        r = dataSource.get_r();
-        t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
-        sigma = dataSource.get_Sigma();//实时波动率
-        S0 = dataSource.get_LatestPrice();
+    RecommendOption1 mainTwoCustomPortfolio(Option[] list){
+        try {
+            r = dataSource.get_r();
+            t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
+            sigma = dataSource.get_Sigma();//实时波动率
+            S0 = dataSource.get_LatestPrice();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         for (Option each :list) {
             try {
@@ -1149,15 +1131,17 @@ public class RecommendServiceImpl implements RecommendService {
             StringProfits[i] = Double.toString(profits.get(i));
         }
         String[][] graph = new String[][]{month, StringProfits};
-        RecommendOption1 recommendOption1 = new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
+        return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho, maxGoalD.E / M, maxGoalD.beta,graph ,10, 0.5);
-        return recommendOption1;
     }
 
-    RecommendOption1 mainOneCustomPortfolio(Option[] list) throws IOException {
-        sigma1 = sigma2 = dataSource.get_Sigma();
-        p1 = p2 = dataSource.get_LatestPrice();
-
+    RecommendOption1 mainOneCustomPortfolio(Option[] list) {
+        try {
+            sigma1 = sigma2 = dataSource.get_Sigma();
+            p1 = p2 = dataSource.get_LatestPrice();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return mainTwoCustomPortfolio(list);
     }
 
@@ -1165,10 +1149,10 @@ public class RecommendServiceImpl implements RecommendService {
         double r = dataSource.get_r();
         List <Portfolio> allPortfolio = portfolioDataService.findAll();
         for (Portfolio anAllPortfolio : allPortfolio) {
-            if (anAllPortfolio.isTrackingStatus() && anAllPortfolio.getType() == RECOMMMEND_PORTFOLIO) {
+            if (anAllPortfolio.isTrackingStatus() && anAllPortfolio.getType() == RECOMMEND_PORTFOLIO) {
                 double M0 = anAllPortfolio.getM0();
                 double k = anAllPortfolio.getK();
-                double t = 0;
+                double t;
                 Date now = new Date();
                 Date end = null;
                 try {
@@ -1177,7 +1161,7 @@ public class RecommendServiceImpl implements RecommendService {
                     e.printStackTrace();
                 }
                 assert end != null;
-                t = (end.getTime() - now.getTime()) / 1000 / 60 / 60 / 24;
+                t = (end.getTime() - now.getTime()) * 1.0 / 1000 / 60 / 60 / 24;
                 double M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
 
                 double loss = 0;
@@ -1198,8 +1182,8 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
-    @Scheduled(initialDelay = 1000, fixedRate = 3 * 1000)
-    public void task() throws ParseException, IOException {
+    @Scheduled(initialDelay = 1000, fixedRate = 5 * 60 * 1000)
+    public void task() throws IOException {
         warning();
 //        test();
     }
