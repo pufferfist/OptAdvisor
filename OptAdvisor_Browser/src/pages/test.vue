@@ -1,29 +1,38 @@
 <template>
-<button @click="test">XXXX</button>
+  <div>
+    <span v-show="show" @click="getCode">获取验证码</span>
+    <span v-show="!show" class="count">{{count}} s</span>
+  </div>
 </template>
 
 <script>
   export default {
     name:'test',
-methods:{
-  a(callback) {
-    setTimeout(function () {
-      console.log("aaaaaaaaa");
-      callback()//////////////
-    }, 1000);
-
-  },
-  b() {
-    console.log("bbbbbbbbbb");
-  },
-  test(){
-    console.log("进来了");
-    this.a(function () {////////
-      console.log("ppppppppppp");
-      this.b();
-    });
-  }
-}
+    data(){
+      return {
+        show: true,
+        count: '',
+        timer: null,
+      }
+    },
+    methods:{
+      getCode(){
+        const TIME_COUNT = 6;
+        if (!this.timer) {
+          this.count = TIME_COUNT;
+          this.show = false;
+          this.timer = setInterval(() => {
+            if (this.count > 0 && this.count <= TIME_COUNT) {
+              this.count--;
+            } else {
+              this.show = true;
+              clearInterval(this.timer);
+              this.timer = null;
+            }
+          }, 1000)
+        }
+      }
+    }
   };
 </script>
 <style>

@@ -50,49 +50,47 @@
               //写入数据
               var param={NO:OpenInterest,a:rate/100,s_exp:min_price,T:deadline_value}
               this.axios.post('/backend/recommend/hedging',param).then((response)=>{
+                /**********************************查看data是否合规**************************************/
                 var data=response.data
-                /**************************************************
-                *
-                *
-                *
-                * 待修改
-                *
-                *
-                *
-                *
-                ***************************************************/
                 //1.填充表格
-                this.$refs.result.$refs.option_group.TData={
-                  persisentId:'1111111111111111111111',
-                  tradeCode:'12345', //交易代码
-                  optionCode:'12345', //期权代码
-                  name:'12345',//例如:50ETF购8月2600
-                  type:'12345',//1为买入0为卖出
-                  cp:'12345',//1为看涨 -1为看跌
-                  expireTime:'12345',//到期时间
-                  transactionPrice:'12345',//成交价
-                  quantity:'12345',//在组合中的份数,单独存在无意义
-                  yclose:'12345',//期权前一天收盘价
-                  price1:'12345',//期权实时买入价格
-                  price2:'12345',//期权实时卖出价格
-                  k:'12345',//期权行权价格
-                  delta:'12345',
-                  gamma:'12345',
-                  vega:'12345',
-                  theta:'12345',
-                  rho:'12345',
-                  beta:'12345',
-                };
+                var forms={
+                    persisentId:data.option.persisentId,
+                    tradeCode:data.option.tradeCode, //交易代码
+                    optionCode:data.option.optionCode, //期权代码
+                    name:data.option.name,//例如:50ETF购8月2600
+                    expireTime:data.option.expireTime,//到期时间
+                    transactionPrice:data.option.transactionPrice,//成交价
+                    quantity:data.option.quantity,//在组合中的份数,单独存在无意义
+                    yclose:data.option.yclose,//期权前一天收盘价
+                    price1:data.option.price1,//期权实时买入价格
+                    price2:data.option.price2,//期权实时卖出价格
+                    k:data.option.k,//期权行权价格
+                    delta:data.option.delta,
+                    gamma:data.option.gamma,
+                    vega:data.option.vega,
+                    theta:data.option.theta,
+                    rho:data.option.rho,
+                    beta:data.option.beta,
+                  }
+                  if(data.option.type=='1'){
+                    forms.type='买入'
+                  }
+                  else if(data.option.type=='0'){
+                    forms.type='卖出'
+                  }
+                  if(data.option.cp=='1'){
+                    forms.cp='看涨'
+                  }
+                  else if(data.option.cp=='-1'){
+                    forms.cp='看跌'
+                  }
+                this.$refs.result.$refs.option_group.TData=forms
 
                 //2.填充预期最大亏损值
-                this.$refs.result.expectedLoss='123456'
+                this.$refs.result.expectedLoss=data.ik
 
                 //3.填充折线图
-                this.$refs.result.graph=[
-                  ['2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08'],
-                  [15,24,36,58,95,36,45,47,63],
-                  [51,24,89,45,77,86,23,58,61],
-                  [25,75,92,38,46,91,78,62,70]]
+                this.$refs.result.graph=data.graph
                 this.$refs.result.drawLine()
               })
               this.ispage1="none"

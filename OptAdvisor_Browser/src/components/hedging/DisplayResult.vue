@@ -1,6 +1,6 @@
 <template>
     <div>
-      <p style="font-weight: bold;font-size: 25px">套期保值效果展示</p>
+      <p style="font-weight: bold;font-size: 25px">套期保值效果展示&nbsp&nbsp<Button type="primary" size="small" @click="addToMyGroup">添加至我的组合</Button></p>
       <div style="text-align: left">
         <div>
           <p style="font-size: 20px;font-weight: bold;padding-left: 50px">展示期权：</p>
@@ -28,7 +28,8 @@
         return {
           expectedLoss:'',
           graph:'',
-          lineName:['data1','data2','data3']
+          lineName:['data1','data2','data3'],
+          groupName:''
         }
       },
       methods: {
@@ -65,6 +66,44 @@
                 data: this.graph[3],
                 type: 'line'
               }]
+          });
+        },
+        addToMyGroup(){
+          this.$Modal.confirm({
+            title: '新建组合',
+            okText:'确认',
+            cancelText:'取消',
+            render: (h) => {
+              return h('Input', {
+                props: {
+                  autofocus: true,
+                  placeholder: '请输入组合名'
+                },
+                on: {
+                  input: (val) => {
+                    this.groupName= val;
+                  }
+                }
+              })
+            },
+            onOk: () => {
+              //1.判断可不可以命名
+              //2.向后台添加组合(还未加入名字)
+              var content={type:'1',options:[this.$refs.optionGroup.TData]}
+              this.axios.post('/backend/portfolio',content)
+                .then(re=>{
+                  if(re.msg=='Add portfolio success'){
+                    this.$Message.info('添加成功');
+                  }
+                  else{
+                    this.$Message.error('添加失败');
+                  }
+                })
+
+            },
+            onCancel: () => {
+              this.current_clicked_id=''
+            }
           });
         }
       }

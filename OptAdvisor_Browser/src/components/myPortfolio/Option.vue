@@ -48,6 +48,7 @@
             [123,123,123,123],
             [123,123,123,123]
           ],
+          codes:[],
           lastSelectedLineIndex:0,
           text1:'1111',
           text2:'1111',
@@ -78,12 +79,19 @@
                 return parts[14]
               })
         },
-          initial(name){
-            //1.先根据name在后台拿到相应的数据
-            //2.初始化数据
-            this.name
+          initial(optionData){
+            //1.初始化数据
+            this.name=optionData.name
             this.time
-            this.type
+            if(optionData.type=='0'){
+              this.type='资产配置'
+            }
+            else if(optionData.type=='1'){
+              this.type='套期保值'
+            }
+            else{
+              this.type='DIY'
+            }
             this.earnings
             this.tdata
             this.text1

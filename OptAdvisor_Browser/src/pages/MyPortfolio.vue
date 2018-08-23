@@ -44,7 +44,7 @@
         <div style="float: left;width: 1px;height: 800px;background-color: #E7E8EB"></div>
       </div>
       <div style="float: left;width: 75%;min-height: 500px;">
-        <Right></Right>
+        <Right ref="portfolio" id="right"></Right>
       </div>
     </div>
 </template>
@@ -54,46 +54,44 @@
     export default {
         name: "MyPortfolio",
       components:{Right},
-      created:function(){
-        this.axios.get('/backend/portfolio')
-          .then(re=>{
-            console.log(re)
-          })
+      mounted(){
+          this.initial()
       },
       data () {
         return{
           zichan:[
             {
-              name:'555'
-            },
-            {
-              name:'666'
+              name:'555',
+              id:5
             }
           ],
-          taoqi:[
-            {
-              name:'111'
-            },
-            {
-              name:'222'
-            },
-            {
-              name:'555'
-            },
-            {
-              name:'666'
-            }
-          ],
+          taoqi:[],
           diy:[],
+          allPortfolioData:[],
           current_clicked_id:'',
           newName:''
         }
       },
       methods:{
         click_left(name){
-            alert(name)
-             //alert(this.zichan[name].name)
-           },
+          //alert(name)//1-0
+          var suffix=name.substr(2)
+          var id
+          if(name[0]=='1'){
+            id=this.zichan[suffix].id
+          }
+          else if(name[0]=='2'){
+            id=this.taoqi[suffix].id
+          }
+          else if(name[0]=='3'){
+            id=this.diy[suffix].id
+          }
+          this.axios.get('/backend/portfolio/'+id)
+            .then(re=>{
+              this.$refs.portfolio.initial(re.data)
+              document.getElementById("right").style.display=""
+            })
+        },
         click_right(){
           this.current_clicked_id=event.currentTarget.id;
         },
@@ -109,6 +107,7 @@
         newDiyGroup(){
           this.$router.push("/diy")
         },
+        //重命名还没写后台连接
         renameGroup(){
             //1.获取原来的名称
             var id=this.current_clicked_id
@@ -170,25 +169,67 @@
               newArray=this.diy
             }
 
+            //在界面上删除
             var result=[]
-           var index=id.substr(2)
-           for(var i=0;i<newArray.length;i++){
-             if(i==index){
-               continue;
-             }
-             result.push(newArray[i]);
-           }
+            var index=id.substr(2)
+             for(var i=0;i<newArray.length;i++){
+               if(i==index){
+                continue;
+              }
+               result.push(newArray[i]);
+            }
 
-           if(id[0]=='1'){
-             this.zichan=result
+          //在后台删除并赋值
+          var portfolioID
+          if(id[0]=='1'){
+            portfolioID= this.zichan[index].id
+            this.zichan=result
            }
-           else if(id[0]=='2'){
-             this.taoqi=result
-           }
-           else{
-             this.diy=result
-           }
+          else if(id[0]=='2'){
+            portfolioID= this.taoqi[index].id
+            this.taoqi=result
+          }
+          else{
+            portfolioID= this.diy[index].id
+            this.diy=result
+          }
+          this.axios.delete('/backend/portfolio/'+portfolioID)
+            .then(re=>{
+              if(re.msg !='Delete portfolio success'){
+                alert("删除失败")
+              }
+            })
           },
+        //type不确定
+        initial(){
+          //1.获取所有的组合数据
+          this.axios.get('/backend/portfolio')
+            .then(re=>{
+              this.allPortfolioData=re.data
+              var tempData=re.data
+              var zichan=[]
+              var taoqi=[]
+              var diy=[]
+              for(var i=0;i<tempData.length;i++){
+                var temp=tempData[i]
+                var object={}
+                object.name=temp.name
+                object.id=temp.id
+                if(temp.type=='RECOMMMEND_PORTFOLIO'){
+                  zichan.push(object)
+                }
+                else if(temp.type=='HEDGE'){
+                  taoqi.push(object)
+                }
+                else if(temp.type=='DIY'){
+                  diy.push(object)
+                }
+              }
+              this.zichan=zichan
+              this.taoqi=taoqi
+              this.diy=diy
+            })
+        }
       }
     }
 </script>
