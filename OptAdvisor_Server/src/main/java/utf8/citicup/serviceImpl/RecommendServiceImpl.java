@@ -748,12 +748,6 @@ public class RecommendServiceImpl implements RecommendService {
         double min_beta = Double.MAX_VALUE;
         for (structD z : D) {
             z.num = (int) (M / z.p0);
-            if(max_numE < z.num){
-                max_numE = z.num;
-            }
-            if(min_numE > z.num){
-                min_numE = z.num;
-            }
             List <double[]> C = new ArrayList<>();
             for(int i = 0;i < z.buyAndSell.length;i++){
                 double price = z.optionCombination[i].getPrice1();
@@ -771,6 +765,12 @@ public class RecommendServiceImpl implements RecommendService {
                 }
             }
             z.E = Expected(C_new);
+            if(max_numE < z.num * z.E){
+                max_numE = z.num * z.E;
+            }
+            if(min_numE > z.num * z.E){
+                min_numE = z.num * z.E;
+            }
             z.beta = 0;
             for(int i = 0;i < z.buyAndSell.length; i++){
                 double price = z.optionCombination[i].getPrice1();
@@ -1206,8 +1206,9 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Scheduled(initialDelay = 1000, fixedRate = 3 * 1000)
     public void task() throws IOException {
-        recommendPortfolio(50000, 0.5, "2018-09", 'A', 2.2,
-                3.0, 1, 1, 70, 30);
+//        warning();
+//        recommendPortfolio(50000, 0.5, "2018-09", 'A', 2.2,
+//                3.0, 1, 1, 70, 30);
 //        test();
     }
 }
