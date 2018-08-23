@@ -14,7 +14,7 @@ import InfoCollect from '../pages/InfoCollect'
 import DIY from '../pages/DIY'
 import MyPortfolio from '../pages/MyPortfolio'
 import Prompt from '../pages/Prompt'
-import test from '../components/signUp/register_page03'
+import test from '../pages/test'
 
 
 Vue.use(Router)
@@ -35,7 +35,8 @@ Vue.use(Router)
 
  */
 export default new Router({
-  mode: 'history',
+  mode:'history',
+  base:'/',
   routes: [
     {
       path: '/login',
@@ -53,15 +54,15 @@ export default new Router({
       component: ForgetPassword
     },
     {
+      path: '/home',
+      component: Home
+    },
+    {
       path: '/',
       redirect: '/home',
       name: 'Father',
       component: FatherPage,
       children :[
-        {
-          path: 'home',
-          component: Home
-        },
         {
           path:'50ETF',
           component:Display50ETF
