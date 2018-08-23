@@ -83,13 +83,13 @@ public class PortfolioServiceImpl implements PortfolioService {
                 recommendService.setSigma1(portfolio.getSigma1());
                 recommendService.setSigma2(portfolio.getSigma2());
                 Option[] optionList = portfolio.getOptions().clone();
-                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainTwoCustomPortfolio(optionList).getOptionList() ,RECOMMMEND_PORTFOLIO,false);
+                Portfolio showPortfolio = new Portfolio(portfolio.getPortfolioName(), portfolio.getUsername(),recommendService.mainTwoCustomPortfolio(optionList) ,RECOMMMEND_PORTFOLIO,false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
                 return new ResponseMsg(0, "Get portfolio information success", rnt);
             }
             else if(portfolio.getType() == DIY){
                 Option[] optionList = portfolio.getOptions().clone();
-                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendService.mainOneCustomPortfolio(optionList).getOptionList(),DIY, false);
+                Portfolio showPortfolio = new Portfolio(portfolio.getPortfolioName(), portfolio.getUsername(),recommendService.mainOneCustomPortfolio(optionList),DIY, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
                 return new ResponseMsg(0, "Get portfolio information success", rnt);
             }
