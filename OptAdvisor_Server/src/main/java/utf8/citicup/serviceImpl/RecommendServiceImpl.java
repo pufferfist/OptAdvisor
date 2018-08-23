@@ -25,7 +25,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import static utf8.citicup.domain.common.Type.RECOMMMEND_PORTFOLIO;
+import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
@@ -116,20 +116,6 @@ public class RecommendServiceImpl implements RecommendService {
 
     void setSigma2(double sigma2) {
         this.sigma2 = sigma2;
-    }
-
-    private void test() throws ParseException {
-//        try {
-////            System.out.println("hello");
-//            List <structD> D = new ArrayList<>();
-//            upDataFromNet();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-        int[] a = new int[]{1, 2, 3};
-        int[] b = a;
-        a[1] = 10;
-        System.out.println(b[1]);
     }
 
     //回测到某个月返回的日期
@@ -395,8 +381,8 @@ public class RecommendServiceImpl implements RecommendService {
 
     /*正态分布概率函数*/
     private double p(double x) {
-        double sita = Math.pow(((sigma1 + sigma2) / 2), 2);
-        return 1 / (Math.sqrt(2 * Math.PI) * sita) * Math.exp(-1 * Math.pow(x, 2) / (2 * Math.pow(sita, 2)));
+        double theta = Math.pow(((sigma1 + sigma2) / 2), 2);
+        return 1 / (Math.sqrt(2 * Math.PI) * theta) * Math.exp(-1 * Math.pow(x, 2) / (2 * Math.pow(theta, 2)));
     }
 
     private double normpdf(double x){
@@ -1171,7 +1157,7 @@ public class RecommendServiceImpl implements RecommendService {
         double r = dataSource.get_r();
         List <Portfolio> allPortfolio = portfolioDataService.findAll();
         for (Portfolio anAllPortfolio : allPortfolio) {
-            if (anAllPortfolio.isTrackingStatus() && anAllPortfolio.getType() == RECOMMMEND_PORTFOLIO) {
+            if (anAllPortfolio.isTrackingStatus() && anAllPortfolio.getType() == RECOMMEND_PORTFOLIO) {
                 double M0 = anAllPortfolio.getM0();
                 double k = anAllPortfolio.getK();
                 double t;
@@ -1183,7 +1169,7 @@ public class RecommendServiceImpl implements RecommendService {
                     e.printStackTrace();
                 }
                 assert end != null;
-                t = (end.getTime() - now.getTime()) / 1000 / 60 / 60 / 24;
+                t = (end.getTime() - now.getTime()) * 1.0 / 1000 / 60 / 60 / 24;
                 double M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
 
                 double loss = 0;
@@ -1204,7 +1190,7 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
-    @Scheduled(initialDelay = 1000, fixedRate = 3 * 1000)
+    @Scheduled(initialDelay = 1000, fixedRate = 5 * 60 * 1000)
     public void task() throws IOException {
 //        warning();
 //        recommendPortfolio(50000, 0.5, "2018-09", 'A', 2.2,

@@ -4,19 +4,15 @@
       <h2>华夏上证 50ETF </h2> <h3> (510050)</h3>
       <div id="subtitle">
         <h4>最新估值</h4>
-        <h1 style="position:relative" v-bind:style="{ color:  openPrice  > closingPrice ? 'red' : (openPrice === closingPrice ?  'black' : 'green')}">{{currentPrice}}</h1>
+        <h1 style="position:relative" v-bind:style="{ color:  currentPrice  > closingPrice ? 'rgb(187, 0, 0)' : (currentPrice === closingPrice ?  'black' : 'green')}">{{currentPrice}}</h1>
         <div id="current">
-          <p class="currentItem" v-bind:style="{ color: rate > 0 ? 'red' : (rate === 0 ?  'black' : 'green')}">{{rate}}{{rate===0?'': '%'}}</p>
-          <p class="currentItem" v-bind:style="{ color: rate > 0 ? 'red' : (rate === 0 ?  'black' : 'green')}">{{deta}}</p>
+          <p class="currentItem" v-bind:style="{ color: rate > 0 ? 'rgb(187, 0, 0)' : (rate === 0 ?  'black' : 'green')}">{{rate.toFixed(2)}}{{rate===0?'': '%'}}</p>
+          <p class="currentItem" v-bind:style="{ color: deta > 0 ? 'rgb(187, 0, 0)' : (deta === 0 ?  'black' : 'green')}">{{deta.toFixed(2)}}</p>
         </div>
       </div>
     </div>
-    <div>
       <Row>
-        <Col :xs="0" :sm="2" :md="3" :lg="4">
-          &nbsp;
-        </Col>
-        <Col :xs="24" :sm="20" :md="18" :lg="16">
+        <Col :xs="24" :sm="20" :md="18" :lg="24">
           <Row  :gutter="48">
             <Col  span="6">
               <div class="baseItem">
@@ -45,30 +41,30 @@
             </Col>
             
           </Row>
-          <h3 style="margin-top:20px">实时数据</h3>
+          <br>
           <Row style="margin-bottom:20px">
             <Col :xs="24" :sm="24" :md="24" :lg="11" >
                 <Row class="dataList" >
-                  <Col span="12"><p style="font-size: 12px;"> 昨日收盘价</p></Col>
+                  <Col span="12"><p style="font-size: 12px; text-align: left;"> 昨日收盘价</p></Col>
                   <Col span="12"><p style="text-align: right;font-weight: 700;"  >{{closingPrice}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}" >
                 <Row class="dataList" >
-                  <Col span="12"><p style="font-size: 12px;"> 今日开盘价</p></Col>
-                  <Col span="12"><p style="text-align: right;font-weight: 700;  " v-bind:style="{ color:  openPrice  > closingPrice ? 'red' : (openPrice === closingPrice ?  'black' : 'green')}" >{{openPrice}}</p></Col>
+                  <Col span="12"><p style="font-size: 12px; text-align: left;"> 今日开盘价</p></Col>
+                  <Col span="12"><p style="text-align: right;font-weight: 700;  " v-bind:style="{ color:  openPrice  > closingPrice ? 'rgb(187, 0, 0)' : (openPrice === closingPrice ?  'black' : 'green')}" >{{openPrice}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="11" >
                 <Row class="dataList" >
-                  <Col span="12"><p style="font-size: 12px;"> 最高价</p></Col>
-                  <Col span="12"><p style="text-align: right;font-weight: 700;  " v-bind:style="{ color:  highPrice  > closingPrice ? 'red' : (highPrice === closingPrice ?  'black' : 'green')}" >{{highPrice}}</p></Col>
+                  <Col span="12"><p style="font-size: 12px; text-align: left;"> 最高价</p></Col>
+                  <Col span="12"><p style="text-align: right;font-weight: 700;  " v-bind:style="{ color:  highPrice  > closingPrice ? 'rgb(187, 0, 0)' : (highPrice === closingPrice ?  'black' : 'green')}" >{{highPrice}}</p></Col>
                 </Row>
             </Col> 
             <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}" >
                 <Row class="dataList" >
-                  <Col span="12"><p style="font-size: 12px;"> 最低价</p></Col>
-                  <Col span="12"><p style="text-align: right;font-weight: 700;  " v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{lowPrice}}</p></Col>
+                  <Col span="12"><p style="font-size: 12px; text-align: left;"> 最低价</p></Col>
+                  <Col span="12"><p style="text-align: right;font-weight: 700;  " v-bind:style="{ color:  lowPrice  > closingPrice ? 'rgb(187, 0, 0)' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{lowPrice}}</p></Col>
                 </Row>
             </Col>
           </Row>
@@ -76,71 +72,71 @@
           <Row style="margin-bottom:20px">
             <Col :xs="24" :sm="24" :md="24" :lg="11" >
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 卖5</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{saleList[8]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖5</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[8]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[8] === closingPrice ?  'black' : 'green')}" >{{saleList[8]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[9]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}">
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 卖4</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{saleList[6]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖4</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[6]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[6] === closingPrice ?  'black' : 'green')}" >{{saleList[6]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[7]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="11" >
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 卖3</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{saleList[4]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖3</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[4]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[4] === closingPrice ?  'black' : 'green')}" >{{saleList[4]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[5]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}">
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 卖2</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{saleList[2]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖2</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[2]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[2] === closingPrice ?  'black' : 'green')}" >{{saleList[2]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[3]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="11" >
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 卖1</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{saleList[0]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖1</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[0]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[0] === closingPrice ?  'black' : 'green')}" >{{saleList[0]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[1]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}" >
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 买1</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{buyList[0]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买1</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[0]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[0] === closingPrice ?  'black' : 'green')}" >{{buyList[0]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[1]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24"  :lg="11">
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 买2</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{buyList[2]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买2</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[2]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[2] === closingPrice ?  'black' : 'green')}" >{{buyList[2]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[3]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}">
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 买3</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{buyList[4]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买3</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[4]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[4] === closingPrice ?  'black' : 'green')}" >{{buyList[4]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[5]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="11" >
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 买4</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{buyList[6]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买4</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[6]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[6] === closingPrice ?  'black' : 'green')}" >{{buyList[6]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[7]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}">
                 <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px;"> 买5</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  lowPrice  > closingPrice ? 'red' : (lowPrice === closingPrice ?  'black' : 'green')}" >{{buyList[8]}}</p></Col>
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买5</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[8]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[8] === closingPrice ?  'black' : 'green')}" >{{buyList[8]}}</p></Col>
                   <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[9]}}</p></Col>
                 </Row>
             </Col>
@@ -148,23 +144,20 @@
           </Row>
           <Row>
             <Card style="margin: 50px 0;">
-              <div>
+              <div style="text-align:left">
                 <div id="selecter"> <span  v-on:click="handleClick('line')" v-bind:class="{ active: lineActive }" class="selectItem" >分时线</span> <span  v-on:click="handleClick('day')" v-bind:class="{ active: dayActive }" class="selectItem">日 k 线</span> </div>
-                <div id="myEchart" style="height: 600px;;" ref="myechart"></div>
+                <div id="myEchart" ref="myechart"></div>
               </div>
-            </Card>
+            </Card> 
           </Row>
         </Col>
-        <Col :xs="0" :sm="2" :md="3" :lg="4">
-          &nbsp;
-        </Col>
       </Row>
-    </div>
   </div>
 </template>
 
-<script>
+<script >
 var echarts = require("echarts");
+// import ETFChart from '../components/50ETFChart/50ETFChart';
 export default {
   name: "Display50ETF",
   data() {
@@ -186,11 +179,15 @@ export default {
       lineActive: true,
       dayActive: false,
       status: "收盘",
-      myChart: new Object()
+      myChart: new Object(),
+      Interval: Number,
     };
   },
+  // components: {ETFChart},
   computed: {
     nowTime: function() {
+      console.log(this.dataTime);
+      
       return (this.dataDate+'').slice(0,4) + '-' + (this.dataDate+'').slice(4,6) + '-' + (this.dataDate+'').slice(6,9) + ' ' + (this.dataTime+'').slice(0,2) + ':' + (this.dataTime+'').slice(2,4) + ':' + (this.dataTime+'').slice(4,7)
     }
   },
@@ -199,15 +196,13 @@ export default {
       this.axios
         .get("/sse/snap/510050")
         .then(re => {
-          console.log(re);
-          
           [
             ,
             this.closingPrice,
-            this.currentPrice,
-            this.openPrice,
-            this.lowPrice,
+            this.openPrice, 
             this.highPrice,
+            this.lowPrice,
+            this.currentPrice,
             this.deta,
             this.rate,
             this.volume,
@@ -482,6 +477,7 @@ export default {
           }
         ]
       });
+      this.myChart.hideLoading();
     },
 
     setDayKOptions() {
@@ -714,14 +710,17 @@ export default {
       if (ms === "day") {
         this.dayActive = true;
         this.lineActive = false;
-        setTimeout(function(){
+        clearTimeout(this.waitTimeout)
+        this.waitTimeout = setTimeout(function(){
           that.myChart.setOption(that.dayKOption,true, false, false);
           that.myChart.hideLoading();
         },1500)
       } else {
         this.dayActive = false;
         this.lineActive = true;
-        this.getLineData();
+        clearTimeout(this.waitTimeout);
+        this.myChart.showLoading();
+        this.waitTimeout = setTimeout(this.getLineData, 1000);
       }   
     }
   },
@@ -729,8 +728,11 @@ export default {
     this.myChart = echarts.init(this.$refs.myechart);
     this.getSnapData(true);
     this.getDayKData();
-    setInterval(this.getSnapData, 7000);
-  }
+    this.Interval = setInterval(this.getSnapData, 7000);
+  },
+  destroyed() {
+    clearInterval(this.Interval);
+  },
 };
 </script>
 
@@ -791,10 +793,16 @@ h3 {
 .selectItem:hover {
   background-color: #e1e1e1;
 }
+.baseItem{
+  text-align: left;
+}
 .active {
   background-color: #25258e !important;
   color: white;
 }
+#myEchart{
+    height: 450px;
+  }
 @media screen and (max-width: 1050px) {
   h2 {
     font-size: 1em;
@@ -804,6 +812,9 @@ h3 {
   }
   #title {
     margin-bottom: 20px;
+  }
+  #myEchart{
+    height: 300px;
   }
 }
 </style>
