@@ -41,6 +41,7 @@ public class StatusMsg {
 
     public static ResponseMsg addPortfolioSuccess = new ResponseMsg(0, "Add portfolio success");
     public static ResponseMsg updateRiskTrackingSuccess = new ResponseMsg(0, "Update portfolio risk tracking success");
+    public static ResponseMsg updatePortfolioNameSuccess = new ResponseMsg(0, "Update portfolio name success");
     public static ResponseMsg portfolioNotMatchUser = new ResponseMsg(3001, "Portfolio does not match the user");
 
     public static ResponseMsg portfolioNotExists = new ResponseMsg(3002, "Portfolio does not exists");
