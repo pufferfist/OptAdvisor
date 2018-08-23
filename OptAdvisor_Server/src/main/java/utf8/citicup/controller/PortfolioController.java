@@ -1,12 +1,11 @@
 package utf8.citicup.controller;
 
 import org.apache.shiro.SecurityUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import utf8.citicup.domain.common.Type;
 import utf8.citicup.domain.entity.Option;
+import utf8.citicup.domain.entity.Portfolio;
 import utf8.citicup.domain.entity.ResponseMsg;
 import utf8.citicup.service.PortfolioService;
 import utf8.citicup.service.util.JsonParse;
@@ -20,20 +19,34 @@ public class PortfolioController {
     @Autowired
     private PortfolioService portfolioService;
 
-    private Logger logger = LoggerFactory.getLogger(PortfolioController.class);
+//    private Logger logger = LoggerFactory.getLogger(PortfolioController.class);
 
     @PostMapping("portfolio")
-    public ResponseMsg addPortfolio(@RequestBody Map<String, Object> params) {
-        String username = SecurityUtils.getSubject().getPrincipal().toString();
+    public ResponseMsg addPortfolio(@Valid @RequestBody Map<String, Object> params) {
         Option[] options = JsonParse.objectToAnyType(params.get("options"), Option[].class);
         Type type = JsonParse.objectToAnyType(params.get("type"), Type.class);
-        return portfolioService.addPortfolio(username, options, type);
+        params.remove("options");
+        params.remove("type");
+
+        Portfolio portfolio = JsonParse.objectToAnyType(params, Portfolio.class);
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        portfolio.setUsername(username);
+
+        portfolio.setOptions(options);
+        portfolio.setType(type);
+        return portfolioService.addPortfolio(portfolio);
     }
 
     @PatchMapping("portfolio/{id}/track")
-    public ResponseMsg riskTracking(@PathVariable Long id) {
+    public ResponseMsg riskTracking(@Valid @PathVariable Long id) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         return portfolioService.riskTracking(username, id);
+    }
+
+    @PutMapping("portfolio/{id}/name")
+    public ResponseMsg updatePortfolioName(@Valid @PathVariable Long id, @Valid @RequestBody Map<String, String> params) {
+        String username = SecurityUtils.getSubject().getPrincipal().toString();
+        return portfolioService.updateName(username, id, params.get("name"));
     }
 
     @GetMapping("portfolio")
@@ -43,7 +56,7 @@ public class PortfolioController {
     }
 
     @DeleteMapping("portfolio/{portfolioId}")
-    public ResponseMsg deletePortfolio(@PathVariable Long portfolioId) {
+    public ResponseMsg deletePortfolio(@Valid @PathVariable Long portfolioId) {
         String username = SecurityUtils.getSubject().getPrincipal().toString();
         return portfolioService.deletePortfolio(username, portfolioId);
     }

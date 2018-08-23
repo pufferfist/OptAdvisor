@@ -15,7 +15,14 @@ public class RecommendOption1 {
     private double beta;//组合风险值
     private String[][] Graph;
 
-    public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta, double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta, String[][] graph) {
+    private double M0;
+    private double k;
+    private double sigma1;
+    private double sigma2;
+    private double p1;
+    private double p2;
+
+    public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta, double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta, String[][] graph, double m0, double k) {
         this.optionList = optionList;
         this.buyAndSell = buyAndSell;
         this.num = num;
@@ -29,6 +36,30 @@ public class RecommendOption1 {
         this.EM = EM;
         this.beta = beta;
         Graph = graph;
+        this.M0 = m0;
+        this.k = k;
+    }
+
+    public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta, double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta, String[][] graph, double m0, double k, double sigma1, double sigma2, double p1, double p2) {
+        this.optionList = optionList;
+        this.buyAndSell = buyAndSell;
+        this.num = num;
+        this.cost = cost;
+        this.bond = bond;
+        this.z_delta = z_delta;
+        this.z_gamma = z_gamma;
+        this.z_vega = z_vega;
+        this.z_theta = z_theta;
+        this.z_rho = z_rho;
+        this.EM = EM;
+        this.beta = beta;
+        Graph = graph;
+        M0 = m0;
+        this.k = k;
+        this.sigma1 = sigma1;
+        this.sigma2 = sigma2;
+        this.p1 = p1;
+        this.p2 = p2;
     }
 
     public Option[] getOptionList() {
@@ -81,5 +112,29 @@ public class RecommendOption1 {
 
     public String[][] getGraph() {
         return Graph;
+    }
+
+    public double getM0() {
+        return M0;
+    }
+
+    public double getK() {
+        return k;
+    }
+
+    public double getSigma1() {
+        return sigma1;
+    }
+
+    public double getSigma2() {
+        return sigma2;
+    }
+
+    public double getP1() {
+        return p1;
+    }
+
+    public double getP2() {
+        return p2;
     }
 }

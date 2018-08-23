@@ -95,7 +95,7 @@ public class MessageControllerTest {
     }
 
     @Test
-    public void test03PutSecondMessage() throws Exception {
+    public void test03PostSecondMessage() throws Exception {
         Message message = new Message(username, secondContent, secondTitle);
         message.setTitle(secondTitle);
         this.mockMvc.perform(post("/admin/message").session(httpSession)
@@ -112,12 +112,13 @@ public class MessageControllerTest {
                 .andExpect(jsonPath("$.data").value(2));
 
         Long id = this.getMessage().get("unread").get(0).getId();
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", id);
-        this.mockMvc.perform(put("/message/" + id + "/read").session(httpSession)
-                .contentType(MediaType.APPLICATION_JSON).content(objectToJsonString(map)))
+        this.mockMvc.perform(patch("/message/" + id + "/read").session(httpSession))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
+
+//        this.mockMvc.perform(patch("/message/13/read").session(httpSession))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.code").value(4001));
 
         this.mockMvc.perform(get("/message/count").session(httpSession))
                 .andExpect(status().isOk())
@@ -135,6 +136,15 @@ public class MessageControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.code").value(0));
         }
+
+//        this.mockMvc.perform(delete("/message/13").session(httpSession))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.code").value(4001));
+
+        this.mockMvc.perform(delete("/message/10000").session(httpSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(4002));
+
     }
 
     @Test
