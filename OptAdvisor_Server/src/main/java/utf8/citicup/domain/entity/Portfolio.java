@@ -227,4 +227,8 @@ public class Portfolio {
     public double getP2() {
         return p2;
     }
+
+    public String getPortfolioName() {
+        return portfolioName;
+    }
 }
