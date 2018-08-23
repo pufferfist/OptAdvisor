@@ -1,6 +1,15 @@
 <template>
+
     <div>
       <!-- Header -->
+
+        <router-link to="/login" class="loginButton" v-if="wheel<=600">
+          <Button class="forwardButton">
+            登录
+          </Button>
+        </router-link>
+
+
       <div class="flex masthead">
         <div class="container tc animated fadeIn" style="margin: auto">
           <h1 class="mb1"><span class="logo1">Opt</span><span class="logo2">Advisor</span></h1>
@@ -94,7 +103,6 @@
           </Carousel>
         </div>
       </section>
-
 
       <!-- Services -->
       <section class="content-section bg-primary white tc" id="services">
@@ -202,10 +210,25 @@
 
 <script>
     export default {
-        name: "Home",
-      created:function () {
-
-      }
+      name: "Home",
+      data(){
+        return {
+          wheel:0
+        }
+      },
+      mounted: function () {
+        this.$nextTick(function () {
+          window.addEventListener('scroll', this.onScroll)
+        })
+      },
+      methods:{
+        onScroll:function () {
+          this.wheel = window.pageYOffset;
+        }
+      },
+      destroyed () {
+        window.removeEventListener('scroll', this.onScroll)
+      },
     }
 </script>
 
@@ -589,5 +612,28 @@
 
   .list-inline-item:not(:last-child) {
     margin-right: 0.5rem;
+  }
+  .forwardButton{
+    color: #fff;
+    background: 0 0;
+    border-color: #fff;
+    font-size: 20px;
+    border-radius: 30px;
+    width: 80px;
+    height: 50px;
+    text-align: center;
+  }
+
+  .forwardButton:hover {
+    color: #000;
+    background-color: #fff;
+    border-color: #fff;
+  }
+
+  .loginButton{
+    position: fixed;
+    z-index: 100;
+    top: 3%;
+    left: 92%;
   }
 </style>
