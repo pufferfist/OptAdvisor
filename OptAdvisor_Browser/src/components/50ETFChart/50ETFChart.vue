@@ -87,12 +87,12 @@ export default {
           formatter(params, ticket, callback) {
             return `2018-8-13<br />${params[0].name}<br/> <span style="color:${
               params[0].color
-            }">● </span>${params[0].seriesName}:${params[0].value}元<br />
+            }">● </span>${params[0].seriesName}:${params[0].value}<br />
                                      <span style="color:${
                                        params[1].color
                                      }">● </span>${params[1].seriesName}:${
               params[1].value
-            }手`;
+            }`;
           }
         },
         axisPointer: {
@@ -430,8 +430,8 @@ export default {
                 data: data.values,
                 itemStyle: {
                     normal: {
-                        color: '#06B800',
                         color0: '#FA0000',
+                        color: '#06B800',
                         borderColor: null,
                         borderColor0: null
                     }
