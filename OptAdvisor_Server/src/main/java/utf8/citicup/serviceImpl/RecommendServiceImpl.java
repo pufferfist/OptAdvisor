@@ -19,6 +19,7 @@ import utf8.citicup.service.util.GetData;
 import utf8.citicup.service.util.PolySms;
 import utf8.citicup.service.util.StatusMsg;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -164,13 +165,10 @@ public class RecommendServiceImpl implements RecommendService {
 
     //计算一个月有几天
     private int calculateDaysInMonth(int year, int month){
-        if(month == 2) return isLeapYear(year)? 29:28;
-        else return (int) Math.ceil(Math.abs(month-7.5)%2+30);
-    }
+        Calendar c = Calendar.getInstance();
+        c.set(year,month,0);
+        return c.get(Calendar.DAY_OF_MONTH);
 
-    //计算是否为闰年
-    private boolean isLeapYear(int year){
-        return ((year%4==0 && year%100!=0) || year%400==0);
     }
 
     //计算是第几个阶段的期权
@@ -962,6 +960,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
+        this.T = T;
         upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
         Option[] phighT = new Option[phigh.get(T).size()];
@@ -1032,6 +1031,7 @@ public class RecommendServiceImpl implements RecommendService {
         int nowYear = c.get(Calendar.YEAR);
         int nowMonth = c.get(Calendar.MONTH)+1;
         int nowDay = c.get(Calendar.DATE);
+        int difference = calculateDifference(nowYear, nowMonth, nowDay);  //得到今天距离最近的第四个星期三所差的天数
 
 
         String[][] rtn = new String[4][36]; //返回四行的数组
@@ -1041,15 +1041,25 @@ public class RecommendServiceImpl implements RecommendService {
             int year = Integer.parseInt(str[0]);                //得到回测年月
             int month = Integer.parseInt(str[1]);
 
-            int difference = calculateDifference(nowYear, nowMonth, nowDay);  //得到今天距离最近的第四个星期三所差的天数
+
             String startDate = calculateDate(year, month, difference);       //得到回测月的起始日期
             int stage = calculateFirstFew(T);                            //得到是在第几个阶段
             String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
 
             List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
 
+            String[] parse = startDate.split("/");
+            int comparativeYear = Integer.parseInt(parse[0]);
+            int comparativeMonth = Integer.parseInt(parse[1]);
+            int comparativeDay = Integer.parseInt(parse[2]);
 
+            if((comparativeYear < 2015) || (comparativeYear ==2015 && comparativeMonth<3) || (comparativeYear == 2015 && comparativeMonth==3 && comparativeDay<9)) continue;
+
+
+            logger.info("\n开始时间是"+startDate);
             TimeSeriesData ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(startDate);
+            logger.info(null == ETF50findByLastTradeDate ? "yes" : "no");
+
             double assetClose1 = ETF50findByLastTradeDate.getClosePrice();    //查询ETF50timeSeries得到起始日和结束日的收盘价
             ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
             double assetClose2 = ETF50findByLastTradeDate.getClosePrice();
