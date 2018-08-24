@@ -397,55 +397,55 @@
             <Col offset="1" span="10">
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买5</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[4].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[4].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买4</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[3].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[3].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买3</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[2].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[2].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买2</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[1].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[1].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买1</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[0].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[0].price}}</p></Col>
               </Row>
             </Col>
             <Col offset="3" span="9">
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖5</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[0].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[0].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖4</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[1].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[1].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖3</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[2].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[2].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖2</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[3].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[3].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖1</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >啊啊</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >啊啊</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[4].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[4].price}}</p></Col>
               </Row>
             </Col>
           </Row>
@@ -552,7 +552,61 @@
                   }],
             OptionsDownList: [],
             selectedItem: {
-              name:''
+              name:'',
+              saleList: [
+                      {
+                        id: 'sale5',
+                        price: 0,
+                        volumes: 0,
+                      },
+                      {
+                        id: 0,
+                        price: 0,
+                        volumes: 0,
+                      },
+                      {
+                        id: 0,
+                        price:0,
+                        volumes: 0,
+                      },
+                      {
+                        id: 'sale2',
+                        price: 0,
+                        volumes: 0,
+                      },
+                      {
+                        id: 'sale1',
+                        price: 0,
+                        volumes:0,
+                      },
+                    ],
+                    buyList: [
+                      {
+                        id: 'buy1',
+                        price: 0,
+                        volumes: 0,
+                      },
+                      {
+                        id: 'buy2',
+                        price: 0,
+                        volumes:0,
+                      },
+                      {
+                        id: 'buy3',
+                        price: 0,
+                        volumes: 0,
+                      },
+                      {
+                        id: 'buy4',
+                        price:0,
+                        volumes:0,
+                      },
+                      {
+                        id: 'buy5',
+                        price: 0,
+                        volumes: 0,
+                      },
+                    ],
             },
             SO:{
               code: '0'
@@ -735,7 +789,7 @@
                       {
                         id: 'buy2',
                         price: data[24],
-                        volumes: data[55],
+                        volumes: data[25],
                       },
                       {
                         id: 'buy3',
@@ -939,6 +993,8 @@
           },
           handleOptionChange(e) {
             this.selectedItem = e;
+            console.log(e);
+            
             this.getOptionData(this.selectedItem.id);
             this.getChartData(true);
             this.handleClick('line');

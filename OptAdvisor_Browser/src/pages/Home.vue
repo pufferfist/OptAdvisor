@@ -16,13 +16,13 @@
           <h3 class="mb5">
             <em>让期权投资变得简单</em>
           </h3>
-          <a class="btn btn-primary btn-xl" href="#about">了解更多</a>
+          <a class="btn btn-primary btn-xl" @click="learnMore()">了解更多</a>
           <!--一个button-->
         </div>
       </div>
 
       <!-- About -->
-      <section class="content-section bg-light" id="about">
+      <section class="content-section bg-light" id="about" ref="about">
         <div class="container tc">
           <Row>
             <Col class="center">
@@ -224,6 +224,22 @@
       methods:{
         onScroll:function () {
           this.wheel = window.pageYOffset;
+        },
+        // 点击下滑函数
+        learnMore() {
+          const offsetTop = this.$refs.about.offsetTop; // div离最上方高度
+          if(document.scrollingElement.scrollTop >= offsetTop) {
+            return;
+          }
+          const speed = (offsetTop - document.scrollingElement.scrollTop)/12; // 每次滑动步长
+          this.scroolInterval = setInterval(() => {
+            if(document.scrollingElement.scrollTop >= offsetTop) {
+              clearInterval(this.scroolInterval);
+              return;
+            };
+            document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + speed;
+          },15); // 15为滑动频率
+          
         }
       },
       destroyed () {
