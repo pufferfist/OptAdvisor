@@ -141,6 +141,10 @@ public class PortfolioControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.code").value(0));
 
+        this.mockMvc.perform(patch("/portfolio/10000/track").session(httpSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(3002));
+
         Portfolio portfolio = getAllPortfolio().get(0);
         Assert.assertTrue(portfolio.isTrackingStatus());
     }
