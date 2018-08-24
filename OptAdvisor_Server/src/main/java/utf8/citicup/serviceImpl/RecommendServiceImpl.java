@@ -497,7 +497,6 @@ public class RecommendServiceImpl implements RecommendService {
         System.out.println(D.size());
         structD maxGoalD;
         maxGoalD = secondStep(D);
-        System.out.println(maxGoalD);
         System.out.println("second step is finished");
         for(int i = 0;i < maxGoalD.optionCombination.length;i++){
             maxGoalD.optionCombination[i].setType(maxGoalD.buyAndSell[i]);
