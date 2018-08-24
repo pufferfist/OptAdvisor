@@ -173,7 +173,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     //计算是第几个阶段的期权
     private int calculateFirstFew(String T){
-        return new ArrayList<String>(Arrays.asList(expiredMonths)).indexOf(T);
+        return Arrays.asList(expiredMonths).indexOf(T)+1;
     }
 
     //计算期权回测时到期日
@@ -223,7 +223,6 @@ public class RecommendServiceImpl implements RecommendService {
             i++;
         }
         dv = 0;//股票分红率
-        T = "2018-09";
     }
 
     /*从网络获取所需的数据*/
@@ -1024,6 +1023,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
         int stage = calculateFirstFew(T);                            //得到是在第几个阶段
+        logger.info("stage is " + stage);
         Calendar c= Calendar.getInstance();
         int nowYear = c.get(Calendar.YEAR);
         int nowMonth = c.get(Calendar.MONTH)+1;
@@ -1042,9 +1042,6 @@ public class RecommendServiceImpl implements RecommendService {
             String startDate = calculateDate(year, month, difference);       //得到回测月的起始日期
 
             String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
-            logger.info("\nstartDate is " + startDate);
-            logger.info("\nstage is " + String.valueOf(stage));
-            logger.info("\nthe endDate of backTest is " + endDate);
 
             List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
 
@@ -1067,9 +1064,9 @@ public class RecommendServiceImpl implements RecommendService {
             }
             ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
             if(ETF50findByLastTradeDate != null){
-                logger.info("nullShowUp, assetClose2 is null");
                 assetClose2 = ETF50findByLastTradeDate.getClosePrice();
             }else {
+                logger.info("nullShowUp, assetClose2 is null, the endDate is" + endDate);
                 assetClose2 = 0;
             }
 
@@ -1220,11 +1217,11 @@ public class RecommendServiceImpl implements RecommendService {
     @Scheduled(initialDelay = 1000, fixedRate = 5 * 60 * 1000)
     public void task() throws IOException {
 
-        int N0 = 100000;
-        double a = 0.5;
-        double sExp = 2.1;
-        String T = "2018-10";
-//        warning();
-        hedging(N0,a,sExp,T);
+//        int N0 = 100000;
+//        double a = 0.5;
+//        double sExp = 2.1;
+//        String T = "2018-10";
+////        warning();
+//        hedging(N0,a,sExp,T);
     }
 }
