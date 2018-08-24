@@ -173,7 +173,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     //计算是第几个阶段的期权
     private int calculateFirstFew(String T){
-        return Arrays.binarySearch(expiredMonths,T)+1;
+        return new ArrayList<String>(Arrays.asList(expiredMonths)).indexOf(T);
     }
 
     //计算期权回测时到期日
@@ -874,7 +874,9 @@ public class RecommendServiceImpl implements RecommendService {
             int difference = calculateDifference(nowYear, nowMonth, nowDay);  //得到今天距离最近的第四个星期三所差的天数
             String startDate = calculateDate(year, month, difference);       //得到回测月的起始日期
             int stage = calculateFirstFew(T);                            //得到是在第几个阶段
+
             String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
+
 
             List <OptionTsd[]> backTestData = new ArrayList<>();
             //region根据条件筛选backTestData
@@ -961,6 +963,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     private RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
         this.T = T;
+        expiredMonths = dataSource.get_T();
         upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
         Option[] phighT = new Option[phigh.get(T).size()];
@@ -1027,6 +1030,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
+        int stage = calculateFirstFew(T);                            //得到是在第几个阶段
         Calendar c= Calendar.getInstance();
         int nowYear = c.get(Calendar.YEAR);
         int nowMonth = c.get(Calendar.MONTH)+1;
@@ -1034,7 +1038,7 @@ public class RecommendServiceImpl implements RecommendService {
         int difference = calculateDifference(nowYear, nowMonth, nowDay);  //得到今天距离最近的第四个星期三所差的天数
 
 
-        String[][] rtn = new String[4][36]; //返回四行的数组
+        String[][] rtn = new String[4][50]; //返回四行的数组
         int index = 0; //用于计算数组的角标
         for (String m : month) {
             String[] str = m.split("-");
@@ -1043,8 +1047,11 @@ public class RecommendServiceImpl implements RecommendService {
 
 
             String startDate = calculateDate(year, month, difference);       //得到回测月的起始日期
-            int stage = calculateFirstFew(T);                            //得到是在第几个阶段
+
             String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
+            logger.info("\nstartDate is " + startDate);
+            logger.info("\nstage is " + String.valueOf(stage));
+            logger.info("\nthe endDate of backTest is " + endDate);
 
             List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
 
@@ -1055,14 +1062,23 @@ public class RecommendServiceImpl implements RecommendService {
 
             if((comparativeYear < 2015) || (comparativeYear ==2015 && comparativeMonth<3) || (comparativeYear == 2015 && comparativeMonth==3 && comparativeDay<9)) continue;
 
-
-            logger.info("\n开始时间是"+startDate);
             TimeSeriesData ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(startDate);
-            logger.info(null == ETF50findByLastTradeDate ? "yes" : "no");
 
-            double assetClose1 = ETF50findByLastTradeDate.getClosePrice();    //查询ETF50timeSeries得到起始日和结束日的收盘价
+
+            double assetClose1,assetClose2;
+            if(ETF50findByLastTradeDate != null) {
+                assetClose1 = ETF50findByLastTradeDate.getClosePrice();    //查询ETF50timeSeries得到起始日和结束日的收盘价
+            }else {
+                logger.info("nullShowUp, assetClose1 is null");
+                assetClose1 = 0;
+            }
             ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
-            double assetClose2 = ETF50findByLastTradeDate.getClosePrice();
+            if(ETF50findByLastTradeDate != null){
+                logger.info("nullShowUp, assetClose2 is null");
+                assetClose2 = ETF50findByLastTradeDate.getClosePrice();
+            }else {
+                assetClose2 = 0;
+            }
 
             double totalLoss = 0;
             if (backTestOptions.isEmpty()) {
@@ -1076,7 +1092,14 @@ public class RecommendServiceImpl implements RecommendService {
 
                     double backTestClose1 = backTestI.getClosePrice();      //起始日期权收盘价
                     OptionTsd endDateMsg = optionTsdDataService.findByCodeNameAndLatestDate(backTestOptionCodeName, endDate);
-                    double backTestClose2 = endDateMsg.getClosePrice();    //结束日期权收盘价
+
+
+                    double backTestClose2;
+                    if(endDateMsg != null)  backTestClose2= endDateMsg.getClosePrice();    //结束日期权收盘价
+                    else{
+                        logger.info("nullShowUp, backTestClose2 is null");
+                        backTestClose2=0;
+                    }
 
 
                     if ((iK - pAsset) - (backTestK - assetClose1) <= eps) {
@@ -1105,6 +1128,8 @@ public class RecommendServiceImpl implements RecommendService {
             rtn[3][index] = lossDifference;
             index++;
         }
+
+        logger.info("rtn是:\n" + Arrays.deepToString(rtn));
         return rtn;
     }
 
