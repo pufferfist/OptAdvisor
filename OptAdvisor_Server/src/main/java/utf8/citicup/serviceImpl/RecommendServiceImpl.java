@@ -471,7 +471,7 @@ public class RecommendServiceImpl implements RecommendService {
         } catch (IOException e) {
             return StatusMsg.IOExceptionOccurs;
         }
-        return new ResponseMsg(2000, "recommend Portfolio finished", recommendOption1);
+        return new ResponseMsg(0, "recommend Portfolio finished", recommendOption1);
     }
 
     private RecommendOption1 mainRecommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) throws IOException {
@@ -1094,7 +1094,7 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg customPortfolio(Option[] list)  {
         //传入的Option列表只有期权代码、到期时间、买入卖出、cp属性
-        return new ResponseMsg(2000, "custom portfolio finished",mainOneCustomPortfolio(list));
+        return new ResponseMsg(0, "custom portfolio finished",mainOneCustomPortfolio(list));
     }
 
     //sigma1 2 and p1 2 没有初始化
