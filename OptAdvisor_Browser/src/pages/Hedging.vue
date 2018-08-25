@@ -50,6 +50,7 @@
               //写入数据
               var param={NO:OpenInterest,a:rate/100,s_exp:min_price,T:deadline_value}
               this.axios.post('/backend/recommend/hedging',param).then((response)=>{
+                console.log(response)
                 /**********************************查看data是否合规**************************************/
                 var data=response.data
                 //1.填充表格
