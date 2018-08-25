@@ -30,7 +30,25 @@ public class RecommendPortfolioServiceTest {
 
     @Test
     public void test01() {
-        recommendService.recommendPortfolio(50000, 0.5, "2018-09", 'A', 2.2,
-                3.0, 1, 1, 70, 30);
+        recommendService.recommendPortfolio(50000, 0.5, "2018-09", 'G', 2.2,
+                3.0, 20, 21, 70, 30);
+    }
+
+    @Test
+    public void test02() {
+        recommendService.recommendPortfolio(50000, 0.5, "2018-09", 'B', 2.2,
+                3.0, 20, 21, 70, 30);
+    }
+
+    @Test
+    public void test03() {
+        recommendService.recommendPortfolio(50000, 0.5, "2018-10", 'C', 2.2,
+                3.0, 20, 21, 70, 30);
+    }
+
+    @Test
+    public void test04() {
+        recommendService.recommendPortfolio(50000, 0.5, "2018-10", 'D', 2.2,
+                3.0, 20, 21, 70, 30);
     }
 }
