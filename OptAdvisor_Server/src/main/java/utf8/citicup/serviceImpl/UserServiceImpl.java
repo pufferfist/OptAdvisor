@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseMsg isUsernameUsed(String username) {
-        User resultOfFind=userDataService.findById(username);
+        User resultOfFind = userDataService.findById(username);
         return new ResponseMsg(0, "Find if username exists success", null != resultOfFind);
     }
 
@@ -65,10 +65,12 @@ public class UserServiceImpl implements UserService {
         if (null == srcVerifyCode) {
             return StatusMsg.neverSendCode;
         } else if (srcVerifyCode.equals(verifyCode)) {
-            if (userDataService.updatePassword(username.toString(), newPassword))
-                return StatusMsg.checkCodeAndSetPasswordSuccess;
-            else
+            if (null == userDataService.findById(username.toString())) {
                 return StatusMsg.unknownUsername;
+            } else {
+                userDataService.updatePassword(username.toString(), newPassword);
+                return StatusMsg.checkCodeAndSetPasswordSuccess;
+            }
         } else {
             return StatusMsg.checkVerifyCodeFail;
         }
@@ -97,10 +99,9 @@ public class UserServiceImpl implements UserService {
             return StatusMsg.unknownUsername;
         } else if (!user.getPassword().equals(oldPassword)) {
             return StatusMsg.incorrectPassword;
-        } else if (userDataService.updatePassword(username, newPassword)) {
-            return StatusMsg.updatePasswordSuccess;
         } else {
-            return StatusMsg.unknownUsername;
+            userDataService.updatePassword(username, newPassword);
+            return StatusMsg.updatePasswordSuccess;
         }
     }
 
