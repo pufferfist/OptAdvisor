@@ -35,7 +35,8 @@ Vue.use(Router)
 
  */
 export default new Router({
-  mode: 'history',
+  mode:'history',
+  base:'/',
   routes: [
     {
       path: '/login',
@@ -53,15 +54,15 @@ export default new Router({
       component: ForgetPassword
     },
     {
+      path: '/home',
+      component: Home
+    },
+    {
       path: '/',
       redirect: '/home',
       name: 'Father',
       component: FatherPage,
       children :[
-        {
-          path: 'home',
-          component: Home
-        },
         {
           path:'50ETF',
           component:Display50ETF

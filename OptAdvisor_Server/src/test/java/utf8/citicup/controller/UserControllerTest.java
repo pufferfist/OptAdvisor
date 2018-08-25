@@ -17,7 +17,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import utf8.citicup.CiticupApplication;
-import utf8.citicup.util.AuthenticationProcess;
+import utf8.citicup.controller.util.AuthenticationProcess;
 
 import java.util.HashMap;
 import java.util.Map;
