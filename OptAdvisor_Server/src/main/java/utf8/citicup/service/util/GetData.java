@@ -230,7 +230,18 @@ public class GetData {
         url = url + time;
         String result = getDataFromURL(url);
         String[] output = result.split(",");
-        return Double.valueOf(output[output.length-1]);
+        String regex = ".*?\\..*?";
+        Pattern p=Pattern.compile(regex);
+
+        String s="0";
+        for(int i=output.length-1;i>=0;i--){
+            s = output[i];
+            Matcher m=p.matcher(s);
+            if(m.matches()){
+                break;
+            }
+        }
+        return Double.valueOf(s);
     }
 
 
