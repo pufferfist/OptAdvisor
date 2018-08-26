@@ -28,7 +28,7 @@
     </transition>
     <transition name="move-right">
       <div v-if="resultStep">
-        <ResultDisplay class="pt4" :data="data" :date="date" :portfolioProfit="portfolioProfit" :assetsProfit="assetsProfit" ></ResultDisplay>
+        <ResultDisplay class="pt4" :data="portfolio" :date="date" :portfolioProfit="portfolioProfit" :assetsProfit="assetsProfit" ></ResultDisplay>
         <Row class="pt4">
           <Button size="large" type="warning" @click="lastStep" class="fl forwardButton" ghost>
             <Icon type="ios-arrow-back"/>
@@ -58,7 +58,7 @@
           loading: false,
           resultStep: true,
           date: [],
-          portfolioProfit: [],
+          portfolioProfit: [],//图表
           assetsProfit: [],
           data: {
             optionList: [
@@ -110,6 +110,13 @@
             },
           },
           addPortfolioLoading:false,
+          portfolio:{},
+          myPortfolio:{
+            options:[],
+            name:"temp",
+            type:0,
+            trackingStatus:false
+          }
         }
       },
       components: {ResultDisplay, AlForm, NineGrid},
@@ -120,14 +127,15 @@
         },
         handleNextStep: function () {
           this.loading = true;
-          //异步请求推荐组合
-          setTimeout(() => {
-            this.loading = false;
-            this.infoStep = false;
-            setTimeout(() => {
-              this.resultStep = true;
-            }, 200);
-          }, 2000);
+          this.axios.post("backend/recommend/recommendPortfolio")
+            .then((res)=>{
+              this.portfolio=res.data;
+              this.loading = false;
+              this.infoStep = false;
+              setTimeout(() => {
+                this.resultStep = true;
+              }, 200);
+            });
         },
         lastStep: function () {
           this.resultStep = false;
@@ -139,10 +147,10 @@
           this.addPortfolioLoading=true;
           //异步请求添加组合并跳转到我的组合界面
           //理论上来说应该支持自定义组合名
-          this.axios.post("/backend/portfolio", {
-            type: 1,
-            options: this.data.optionList
-          }).then((res) => {
+          this.myPortfolio.options=this.portfolio.optionList;
+          this.myPortfolio.type='RECOMMEND_PORTFOLIO';
+          this.axios.post("/backend/portfolio", this.myPortfolio)
+            .then((res) => {
             this.addPortfolioLoading=false;
             if (res.data.code === 0) {
                 this.$router.push('/myPortfolio');

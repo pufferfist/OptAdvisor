@@ -38,9 +38,7 @@ public class PortfolioDataServiceImpl implements PortfolioDataService{
     @Cacheable(value = "portfolio")
     public Portfolio findById(long id) {
         Optional<Portfolio> portfolio=portfolioRepository.findById(id);
-        if(!portfolio.isPresent())return null;
-        Portfolio result=portfolio.get();
-        return result;
+        return portfolio.orElse(null);
     }
 
     @Override
@@ -54,14 +52,16 @@ public class PortfolioDataServiceImpl implements PortfolioDataService{
     }
 
     @Override
-    @CacheEvict(value = "portfolio")
-    public void updateTrackingStatus(long id, boolean trackingStatus) {
+    @CachePut(value = "portfolio", key = "#id")
+    public Portfolio updateTrackingStatus(long id, boolean trackingStatus) {
         portfolioRepository.updateReadStatus(id,trackingStatus);
+        return portfolioRepository.findById(id).orElse(null);
     }
 
     @Override
-    @CacheEvict(value = "portfolio")
-    public void updateName(long id, String name) {
+    @CachePut(value = "portfolio", key = "#id")
+    public Portfolio updateName(long id, String name) {
         portfolioRepository.updatePortfolioName(id, name);
+        return portfolioRepository.findById(id).orElse(null);
     }
 }

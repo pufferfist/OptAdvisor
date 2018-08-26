@@ -12,5 +12,5 @@ public interface UserDataService {
     public User findById(String username);
 
     //额外操作
-    public boolean updatePassword(String username,String password);
+    public User updatePassword(String username, String password);
 }

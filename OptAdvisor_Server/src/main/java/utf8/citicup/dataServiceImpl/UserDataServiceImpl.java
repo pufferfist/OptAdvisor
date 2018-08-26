@@ -55,11 +55,10 @@ public class UserDataServiceImpl implements UserDataService{
     }
 
     @Override
-    @CacheEvict(value = "user",key = "#username")
-    public boolean updatePassword(String username, String password) {
-        if(userRepository.findByUsername(username)==null)return false;
+    @CachePut(value = "user",key = "#username")
+    public User updatePassword(String username, String password) {
         userRepository.updatePassword(username,password);
-        return true;
+        return userRepository.findByUsername(username);
     }
 
 }

@@ -53,8 +53,9 @@ public class RestUserServiceImpl implements RestUserService {
         newPassword = new Sha256Hash(newPassword).toString();
         if (!inputCode.equals(verifyCode))
             throw new RestUnauthorizedException("验证码错误");
-        if (!dataService.updatePassword(username, newPassword))
+        if (null == dataService.findById(username))
             throw new RestUnauthorizedException("未知用户名");
+        dataService.updatePassword(username, newPassword);
     }
 
     @Override
