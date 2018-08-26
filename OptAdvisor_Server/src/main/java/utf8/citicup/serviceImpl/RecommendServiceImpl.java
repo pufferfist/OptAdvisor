@@ -958,6 +958,7 @@ public class RecommendServiceImpl implements RecommendService {
         expiredMonths = dataSource.get_T();
         upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
+        logger.info("plowT的长度是" + String.valueOf(plowT.length));
         Option[] phighT = new Option[phigh.get(T).size()];
         this.plow.get(T).toArray(plowT);
         this.phigh.get(T).toArray(phighT);
@@ -1043,7 +1044,6 @@ public class RecommendServiceImpl implements RecommendService {
 
             String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
 
-            List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
 
             String[] parse = startDate.split("/");
             int comparativeYear = Integer.parseInt(parse[0]);
@@ -1056,12 +1056,22 @@ public class RecommendServiceImpl implements RecommendService {
 
 
             double assetClose1,assetClose2;
-            if(ETF50findByLastTradeDate != null) {
-                assetClose1 = ETF50findByLastTradeDate.getClosePrice();    //查询ETF50timeSeries得到起始日和结束日的收盘价
-            }else {
-                logger.info("nullShowUp, assetClose1 is null");
-                assetClose1 = 0;
+            int diff = difference;
+
+            while (ETF50findByLastTradeDate == null){
+                startDate = calculateDate(year, month, diff--);
+                logger.info("nullShowUp, assetClose1 is null, startDate is " + startDate);
+                ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(startDate);
             }
+            assetClose1 = ETF50findByLastTradeDate.getClosePrice();
+
+
+//            if(ETF50findByLastTradeDate != null) {
+//                assetClose1 = ETF50findByLastTradeDate.getClosePrice();    //查询ETF50timeSeries得到起始日和结束日的收盘价
+//            }else {
+//                logger.info("nullShowUp, assetClose1 is null, startDate is " + startDate);
+//                assetClose1 = 0;
+//            }
             ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
             if(ETF50findByLastTradeDate != null){
                 assetClose2 = ETF50findByLastTradeDate.getClosePrice();
@@ -1070,6 +1080,7 @@ public class RecommendServiceImpl implements RecommendService {
                 assetClose2 = 0;
             }
 
+            List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
             double totalLoss = 0;
             if (backTestOptions.isEmpty()) {
                 continue;
