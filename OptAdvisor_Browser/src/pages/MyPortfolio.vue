@@ -107,7 +107,6 @@
         newDiyGroup(){
           this.$router.push("/diy")
         },
-        //重命名还没写后台连接
         renameGroup(){
             //1.获取原来的名称
             var id=this.current_clicked_id
@@ -135,21 +134,43 @@
                 })
               },
               onOk: () => {
-                //1.判断可不可以重命名
-                //2.重命名
                 if(id[0]=='1'){
                   this.zichan[id.substr(2)].name=newName
+                  this.axios.put('/backend/portfolio/'+this.zichan[id.substr(2)].id+'/'+newName)
+                    .then(re=>{
+                      if(re.msg=='Update portfolio name success'){
+                        this.$Message.success("重命名成功")
+                      }
+                      else{
+                        this.$Message.error("重命名失败")
+                      }
+                    })
                 }
                 else if(id[0]=='2'){
                   this.taoqi[id.substr(2)].name=newName
+                  this.axios.put('/backend/portfolio/'+this.taoqi[id.substr(2)].id+'/'+newName)
+                    .then(re=>{
+                      if(re.msg=='Update portfolio name success'){
+                        this.$Message.success("重命名成功")
+                      }
+                      else{
+                        this.$Message.error("重命名失败")
+                      }
+                    })
                 }
                 else if(id[0]=='3'){
                   this.diy[id.substr(2)].name=newName
+                  this.axios.put('/backend/portfolio/'+this.diy[id.substr(2)].id+'/'+newName)
+                    .then(re=>{
+                      if(re.msg=='Update portfolio name success'){
+                        this.$Message.success("重命名成功")
+                      }
+                      else{
+                        this.$Message.error("重命名失败")
+                      }
+                    })
                 }
-                //3.修改后台数据
                 this.current_clicked_id=''
-                /***************************************************/
-                this.$Message.info('重命名成功');
               },
               onCancel: () => {
                 this.current_clicked_id=''
@@ -215,13 +236,13 @@
                 var object={}
                 object.name=temp.name
                 object.id=temp.id
-                if(temp.type=='RECOMMMEND_PORTFOLIO'){
+                if(temp.type=='1'){
                   zichan.push(object)
                 }
-                else if(temp.type=='HEDGE'){
+                else if(temp.type=='2'){
                   taoqi.push(object)
                 }
-                else if(temp.type=='DIY'){
+                else if(temp.type=='3'){
                   diy.push(object)
                 }
               }

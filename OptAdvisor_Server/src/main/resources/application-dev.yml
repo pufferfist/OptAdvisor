@@ -20,7 +20,7 @@ spring:
 
   jpa:
     database: MYSQL
-    show-sql: true
+    show-sql: false
     hibernate:
       dialect: utf8.citicup.dao.mysqlDialect.MySQL5DialectUTF8
       ddl-auto: update

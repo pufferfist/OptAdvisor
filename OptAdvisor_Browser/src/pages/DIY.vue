@@ -79,7 +79,7 @@
               <td colspan="19">&nbsp;</td>
             </tr>
             <tr>
-              <td colspan="19"><Button type="primary" style="width: 250px" @click="confirm">确认</Button></td>
+              <td colspan="19"><Button type="primary" style="width: 250px" @click="newGroupName">确认添加至我的组合</Button></td>
             </tr>
             <tr>
               <td colspan="19">&nbsp;</td>
@@ -156,7 +156,48 @@
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
           <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="drawLine">预览</Button> </h3>
-          <span>组合的期望收益率E/M：{{EM}} &nbsp&nbsp 组合的风险值β：{{beta}}</span>
+          <table class="table3" style="margin: auto">
+            <tr>
+              <th>数量</th>
+              <td>{{this.resultTable.num}}</td>
+              <th>成本</th>
+              <td>{{this.resultTable.cost}}</td>
+              <th>保证金</th>
+              <td>{{this.resultTable.bond}}</td>
+              <th>EM</th>
+              <td>{{this.resultTable.em}}</td>
+            </tr>
+            <tr>
+              <th>beta</th>
+              <td>{{this.resultTable.beta}}</td>
+              <th>z_delta</th>
+              <td>{{this.resultTable.z_delta}}</td>
+              <th>z_gamma</th>
+              <td>{{this.resultTable.z_gamma}}</td>
+              <th>z_vega</th>
+              <td>{{this.resultTable.z_vega}}</td>
+            </tr>
+            <tr>
+              <th>z_theta</th>
+              <td>{{this.resultTable.z_theta}}</td>
+              <th>z_rho</th>
+              <td>{{this.resultTable.z_rho}}</td>
+              <th>M0</th>
+              <td>{{this.resultTable.m0}}</td>
+              <th>k</th>
+              <td>{{this.resultTable.k}}</td>
+            </tr>
+            <tr>
+              <th>sigma1</th>
+              <td>{{this.resultTable.sigma1}}</td>
+              <th>sigma2</th>
+              <td>{{this.resultTable.sigma2}}</td>
+              <th>p1</th>
+              <td>{{this.resultTable.p1}}</td>
+              <th>p2</th>
+              <td>{{this.resultTable.p2}}</td>
+            </tr>
+          </table>
           <div id="myChart" style="width: 100%;height: 325px">
           </div>
         </div>
@@ -199,12 +240,11 @@
           lineName:['data1','data2','data3'],
           resultLeftCode:[],
           resultRightCode:[],
-          EM:'',
-          beta:'',
           line1:[],
           line2:[],
           line3:[],
-          line4:[]
+          line4:[],
+          resultTable:'',
         }
       },
       mounted() {
@@ -482,23 +522,119 @@
               }]
           });
         },
-        confirm(){
-          this.axios.post('/backend/recommend/customPortfolio',this.getOptions())
+        async confirm(name){
+          var type=3
+          var trackingStatus=false
+          var options
+          var m0
+          var k
+          var sigma1
+          var sigma2
+          var p1
+          var p2
+          var cost
+          var bond
+          var z_delta
+          var z_gamma
+          var z_vega
+          var z_theta
+          var z_rho
+          var em
+          var beta
+          await this.axios.get('/backend/recommend/customPortfolio')
             .then(re=>{
-              if(re.data.msg=='custom portfolio finished'){
-                this.$Message.success("已添加至我的组合")
+              options=re.data.options
+              m0=re.data.m0
+              z_delta=re.data.z_delta
+              z_gamma=re.data.z_gamma
+              z_vega=re.data.z_vega
+              z_theta=re.data.z_theta
+              z_rho=re.data.z_rho
+              em=re.data.em
+              beta=re.data.beta
+              k=re.data.k
+              sigma1=re.data.sigma1
+              sigma2=re.data.sigma2
+              p1=re.data.p1
+              p2=re.data.p2
+              cost=re.data.cost
+              bond=re.data.bond
+            })
+          for(var i=0;i<options.length;i++){
+            await this.axios.get('/sinaOption/list=CON_SO_'+options[i].substr(7))
+              .then(re=>{
+                var parts=re.data.substr(re.data.indexOf("=")+2).split(",")
+                options[i].tradeCode=parts[12]
+                options[i].name=parts[0]
+              })
+          }
+
+          var data={
+            options:options,
+            name:name,
+            type:type,
+            trackingStatus:trackingStatus,
+            m0:m0,
+            z_delta:z_delta,
+            z_gamma:z_gamma,
+            z_vega:z_vega,
+            z_theta:z_theta,
+            z_rho:z_rho,
+            em:em,
+            beta:beta,
+            k:k,
+            sigma1:sigma1,
+            sigma2:sigma2,
+            p1:p1,
+            p2:p2,
+            cost:cost,
+            bond:bond
+          }
+
+          await this.axios.post('/backend/portfolio',data)
+            .then(re=>{
+              if(re.msg=='Add portfolio success'){
+                this.$Message.success("添加成功")
               }
               else{
-                this.$Message.error("未能添加至我的组合")
+                this.$Message.error("添加失败")
               }
             })
+
+        },
+        newGroupName(){
+          var name
+          this.$Modal.confirm({
+            title: '添加至我的组合',
+            okText:'确认',
+            cancelText:'取消',
+            render: (h) => {
+              return [h('Input', {
+                props: {
+                  value: '',
+                  autofocus: true,
+                  placeholder: '请输入新的组合名称'
+                },
+                on: {
+                  input: (val) => {
+                    name= val;
+                  }
+                }
+              }),
+
+              ]
+            },
+            onOk: () => {
+              this.confirm(name)
+            },
+          });
         },
         getOptions(){
           var options=[]
           var deadline=this.calculateForthWednesday()
           for(var i=0;i<this.resultLeftCode.length;i++){
             var op={}
-            op.optionCode=this.resultLeftCode[i].substr(7)
+            op.optionCode="CON_OP_"+this.resultLeftCode[i].substr(7)
             op.expireTime=deadline
             op.type=document.getElementById("left_input_number_"+i).value
             op.cp=1
@@ -506,7 +642,7 @@
           }
           for(var i=0;i<this.resultRightCode.length;i++){
             var op={}
-            op.optionCode=this.resultRightCode[i].substr(7)
+            op.optionCode="CON_OP_"+this.resultRightCode[i].substr(7)
             op.expireTime=deadline
             op.type=document.getElementById("right_input_number_"+i).value
             op.cp=-1
@@ -535,18 +671,35 @@
 
         //这个方法还要集成
         preview(){
-          //1.传值获取数据，并更新数据
-          this.axios.post('',this.getOptions())
+          this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
-              var data=re.data
-              this.EM=data.EM
-              this.beta=data.beta
-              this.line1=data.graph[0]
-              this.line2=data.graph[1]
-              this.line3=data.graph[2]
-              this.line4=data.graph[3]
-              //2.画图
-              this.drawLine()
+              if(re.data.msg=='custom portfolio finished'){
+                this.$Message.success("已添加至我的组合")
+                this.resultTable.num=re.data.num
+                this.resultTable.cost=re.data.cost
+                this.resultTable.bond=re.data.bond
+                this.resultTable.z_delta=re.data.z_delta
+                this.resultTable.z_gamma=re.data.z_gamma
+                this.resultTable.z_vega=re.data.z_vega
+                this.resultTable.z_theta=re.data.z_theta
+                this.resultTable.z_rho=re.data.z_rho
+                this.resultTable.em=re.data.em
+                this.resultTable.beta=re.data.beta
+                this.resultTable.m0=re.data.m0
+                this.resultTable.k=re.data.k
+                this.resultTable.sigma1=re.data.sigma1
+                this.resultTable.sigma2=re.data.sigma2
+                this.resultTable.p1=re.data.p1
+                this.resultTable.p2=re.data.p2
+                this.line1=re.data.graph[0]
+                this.line2=re.data.graph[1]
+                this.line3=re.data.graph[2]
+                this.line4=re.data.graph[3]
+                this.drawLine()
+              }
+              else{
+                this.$Message.error("未能添加至我的组合")
+              }
             })
         },
       }
@@ -570,6 +723,7 @@
   }
   .table2{
     border-collapse: collapse;
+    margin: auto;
   }
   .table2 td{
     text-align: left;
@@ -579,6 +733,24 @@
     min-width: 130px;
     -webkit-text-fill-color: #808695;
     font-weight: normal;
+  }
+
+  .table3{
+    border-collapse: collapse;
+  }
+
+  .table3 td{
+    text-align: left;
+    font-size: 13px;
+    padding-left: 2px;
+    padding-right: 2px;
+    background-color: #f8f8f9;
+  }
+  .table3 th{
+    text-align: left;
+    font-size: 13px;
+    background-color: #f8f8f9;
+    -webkit-text-fill-color: #515a6e;
   }
 
   li{
