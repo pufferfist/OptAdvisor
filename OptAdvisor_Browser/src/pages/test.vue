@@ -16,11 +16,7 @@
     },
     methods:{
       getCode(){
-        this.axios.get('/sinaOption/list=CON_SO_10001407')
-          .then(re=>{
-            var parts=re.data.substr(re.data.indexOf("=")+2).split(",")
-
-          })
+        alert(parseInt("0")+5)
       }
     }
   };

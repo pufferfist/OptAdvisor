@@ -155,7 +155,7 @@
           </div>
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
-          <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="drawLine">预览</Button> </h3>
+          <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="preview">预览</Button> </h3>
           <table class="table3" style="margin: auto">
             <tr>
               <th>数量</th>
@@ -523,6 +523,7 @@
           });
         },
         async confirm(name){
+          //1.需要传递的options参数
           var type=3
           var trackingStatus=false
           var options
@@ -541,7 +542,7 @@
           var z_rho
           var em
           var beta
-          await this.axios.get('/backend/recommend/customPortfolio')
+          await this.axios.get('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
               options=re.data.options
               m0=re.data.m0
@@ -636,7 +637,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultLeftCode[i].substr(7)
             op.expireTime=deadline
-            op.type=document.getElementById("left_input_number_"+i).value
+            op.type=parseInt(document.getElementById("left_input_number_"+i).value)
             op.cp=1
             options.push(op)
           }
@@ -644,7 +645,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultRightCode[i].substr(7)
             op.expireTime=deadline
-            op.type=document.getElementById("right_input_number_"+i).value
+            op.type=parseInt(document.getElementById("right_input_number_"+i).value)
             op.cp=-1
             options.push(op)
           }
@@ -671,10 +672,11 @@
 
         //这个方法还要集成
         preview(){
+          var data={options:this.getOptions()}
+          console.log(data)
           this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
               if(re.data.msg=='custom portfolio finished'){
-                this.$Message.success("已添加至我的组合")
                 this.resultTable.num=re.data.num
                 this.resultTable.cost=re.data.cost
                 this.resultTable.bond=re.data.bond
@@ -698,7 +700,7 @@
                 this.drawLine()
               }
               else{
-                this.$Message.error("未能添加至我的组合")
+                this.$Message.error("未能")
               }
             })
         },
@@ -745,6 +747,7 @@
     padding-left: 2px;
     padding-right: 2px;
     background-color: #f8f8f9;
+    min-width: 50px;
   }
   .table3 th{
     text-align: left;
