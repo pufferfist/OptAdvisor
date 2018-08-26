@@ -66,7 +66,7 @@ public class RecommendServiceImpl implements RecommendService {
     private double dv;//股票分红率
     private double S[];
     private double eps1;
-    private String[] month={"2015-2","2015-3","2015-4","2015-5","2015-6","2015-7","2015-8","2015-9","2015-10","2015-11","2015-12","2016-1","2016-2","2016-3","2016-4","2016-5","2016-6","2016-7","2016-8","2016-9","2016-10","2016-11","2016-12","2017-1","2017-2","2017-3","2017-4","2017-5","2017-6","2017-7","2017-8","2017-9","2017-10","2017-11","2017-12","2018-1","2018-2","2018-3","2018-4"};
+    private String[] month={"2015-3","2015-4","2015-5","2015-6","2015-7","2015-8","2015-9","2015-10","2015-11","2015-12","2016-1","2016-2","2016-3","2016-4","2016-5","2016-6","2016-7","2016-8","2016-9","2016-10","2016-11","2016-12","2017-1","2017-2","2017-3","2017-4","2017-5","2017-6","2017-7","2017-8","2017-9","2017-10","2017-11","2017-12","2018-1","2018-2","2018-3"};
 
     /*计算得到的值*/
 
@@ -1023,6 +1023,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
+        boolean flag1=false,flag2=false;
         int stage = calculateFirstFew(T);                            //得到是在第几个阶段
         logger.info("stage is " + stage);
         Calendar c= Calendar.getInstance();
@@ -1050,20 +1051,26 @@ public class RecommendServiceImpl implements RecommendService {
             int comparativeMonth = Integer.parseInt(parse[1]);
             int comparativeDay = Integer.parseInt(parse[2]);
 
-            if((comparativeYear < 2015) || (comparativeYear ==2015 && comparativeMonth<3) || (comparativeYear == 2015 && comparativeMonth==3 && comparativeDay<9)) continue;
-
             TimeSeriesData ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(startDate);
 
 
             double assetClose1,assetClose2;
             int diff = difference;
 
-            while (ETF50findByLastTradeDate == null){
+            int i=0;
+            while (ETF50findByLastTradeDate == null && i<5){
+                i++;
                 startDate = calculateDate(year, month, diff--);
                 logger.info("nullShowUp, assetClose1 is null, startDate is " + startDate);
                 ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(startDate);
             }
-            assetClose1 = ETF50findByLastTradeDate.getClosePrice();
+            if(i!=5) {
+                assetClose1 = ETF50findByLastTradeDate.getClosePrice();
+            }else {
+                flag1 = true;
+                assetClose1 = 0;
+            }
+            i = 0;
 
 
 //            if(ETF50findByLastTradeDate != null) {
@@ -1073,12 +1080,7 @@ public class RecommendServiceImpl implements RecommendService {
 //                assetClose1 = 0;
 //            }
             ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
-            if(ETF50findByLastTradeDate != null){
-                assetClose2 = ETF50findByLastTradeDate.getClosePrice();
-            }else {
-                logger.info("nullShowUp, assetClose2 is null, the endDate is" + endDate);
-                assetClose2 = 0;
-            }
+            assetClose2 = ETF50findByLastTradeDate.getClosePrice();
 
             List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
             double totalLoss = 0;
@@ -1094,14 +1096,13 @@ public class RecommendServiceImpl implements RecommendService {
                     double backTestClose1 = backTestI.getClosePrice();      //起始日期权收盘价
                     OptionTsd endDateMsg = optionTsdDataService.findByCodeNameAndLatestDate(backTestOptionCodeName, endDate);
 
-
                     double backTestClose2;
                     if(endDateMsg != null)  backTestClose2= endDateMsg.getClosePrice();    //结束日期权收盘价
                     else{
                         logger.info("nullShowUp, backTestClose2 is null");
+                        flag2 = true;
                         backTestClose2=0;
                     }
-
 
                     if ((iK - pAsset) - (backTestK - assetClose1) <= eps) {
                         double backTestIDelta = backTestI.getDelta();
@@ -1124,9 +1125,13 @@ public class RecommendServiceImpl implements RecommendService {
             String lossDifference = Double.toString(lossDifferenceDouble);
 
             rtn[0][index] = m;
-            rtn[1][index] = hold;
-            rtn[2][index] = unhold;
+            if(flag1) rtn[1][index] = "0";
+            else rtn[1][index] = hold;
+            if(flag2) rtn[2][index] = "0";
+            else rtn[2][index] = unhold;
             rtn[3][index] = lossDifference;
+            flag1 = false;
+            flag2 = false;
             index++;
         }
 
