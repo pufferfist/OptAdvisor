@@ -32,9 +32,10 @@ import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
 public class RecommendServiceImpl implements RecommendService {
 
     private static final double eps = 0.025;
-    private static final double zero = 0.001;
+    private static final double zero = 0.05;
     /*用户输入值*/
     private String T;//投资者预测价格有效时间
+    private double M0;
     private double p1;
     private double p2;
     private double sigma1;
@@ -66,6 +67,7 @@ public class RecommendServiceImpl implements RecommendService {
     private double dv;//股票分红率
     private double S[];
     private double eps1;
+
     private String[] month={"2015-3","2015-4","2015-5","2015-6","2015-7","2015-8","2015-9","2015-10","2015-11","2015-12","2016-1","2016-2","2016-3","2016-4","2016-5","2016-6","2016-7","2016-8","2016-9","2016-10","2016-11","2016-12","2017-1","2017-2","2017-3","2017-4","2017-5","2017-6","2017-7","2017-8","2017-9","2017-10","2017-11","2017-12","2018-1","2018-2","2018-3"};
 
     /*计算得到的值*/
@@ -101,6 +103,7 @@ public class RecommendServiceImpl implements RecommendService {
         double E;//
         double beta;//组合风险值
         double goal;
+        double returnOnAssets;
     }
 
     void setP1(double p1) {
@@ -173,7 +176,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     //计算是第几个阶段的期权
     private int calculateFirstFew(String T){
-        return Arrays.asList(expiredMonths).indexOf(T)+1;
+        return Arrays.asList(expiredMonths).indexOf(T) + 1;
     }
 
     //计算期权回测时到期日
@@ -223,6 +226,8 @@ public class RecommendServiceImpl implements RecommendService {
             i++;
         }
         dv = 0;//股票分红率
+        M = 10000;
+        T = "2018-09";
     }
 
     /*从网络获取所需的数据*/
@@ -235,71 +240,72 @@ public class RecommendServiceImpl implements RecommendService {
         S0 = lastestOptionPrice;
         expiredMonths = dataSource.get_T();
         for (String expiredMonth : expiredMonths) {
-            //region 根据行权名称得到相关数据
-            chigh.put(expiredMonth, new ArrayList<>());
-            clow.put(expiredMonth, new ArrayList<>());
-            phigh.put(expiredMonth, new ArrayList<>());
-            plow.put(expiredMonth, new ArrayList<>());
+            if (expiredMonth != null) {
+                //region 根据行权名称得到相关数据
+                chigh.put(expiredMonth, new ArrayList<>());
+                clow.put(expiredMonth, new ArrayList<>());
+                phigh.put(expiredMonth, new ArrayList<>());
+                plow.put(expiredMonth, new ArrayList<>());
 
-            String[][] Optionss = dataSource.get_contract(expiredMonth);
-            String expireTime = dataSource.get_expireAndremainder(expiredMonth)[0];
+                String[][] Optionss = dataSource.get_contract(expiredMonth);
+                String expireTime = dataSource.get_expireAndremainder(expiredMonth)[0];
 //            System.out.println(expiredMonth);
-            for(int i = 0; i < 2; i++) {
-                for (String cpOption : Optionss[i]) {
-                    int cp;
-                    if(i == 0)
-                        cp = 1;
-                    else
-                        cp = -1;
+                for (int i = 0; i < 2; i++) {
+                    for (String cpOption : Optionss[i]) {
+                        int cp;
+                        if (i == 0)
+                            cp = 1;
+                        else
+                            cp = -1;
 
-                    //region 得到某个期权的属性 并且将值放入一个实体Option中
-                    double[] attributes = dataSource.get_Attributes(cpOption);
-                    double k = attributes[0];
-                    double price1 = attributes[1];
-                    double price2 = attributes[2];
-                    double yclose = attributes[3];
-                    double delta = attributes[4];
-                    double gamma = attributes[5];
-                    double theta = attributes[6];
-                    double vega = attributes[7];
+                        //region 得到某个期权的属性 并且将值放入一个实体Option中
+                        double[] attributes = dataSource.get_Attributes(cpOption);
+                        double k = attributes[0];
+                        double price1 = attributes[1];
+                        double price2 = attributes[2];
+                        double yclose = attributes[3];
+                        double delta = attributes[4];
+                        double gamma = attributes[5];
+                        double theta = attributes[6];
+                        double vega = attributes[7];
+                        double realTimePrice = attributes[8];
 
-                    Option newOption = new Option();
-                    newOption.setOptionCode(cpOption);
-                    newOption.setK(k);
-                    newOption.setCp(cp);
-                    newOption.setPrice1(price1);
-                    newOption.setPrice2(price2);
-                    newOption.setYclose(yclose);
-                    newOption.setExpireTime(expireTime);
-                    newOption.setDelta(delta);
-                    newOption.setGamma(gamma);
-                    newOption.setTheta(theta);
-                    newOption.setVega(vega);
+                        Option newOption = new Option();
+                        newOption.setOptionCode(cpOption);
+                        newOption.setK(k);
+                        newOption.setCp(cp);
+                        newOption.setPrice1(price1);
+                        newOption.setPrice2(price2);
+                        newOption.setYclose(yclose);
+                        newOption.setExpireTime(expireTime);
+                        newOption.setDelta(delta);
+                        newOption.setGamma(gamma);
+                        newOption.setTheta(theta);
+                        newOption.setVega(vega);
+                        newOption.setRealTimePrice(realTimePrice);
 //                    GreekCharacteValue(newOption, Integer.parseInt(dataSource.get_expireAndremainder(expiredMonth)[1]));
-                    //endregion
+                        //endregion
 
-                    //region 判断cp 和 low high
-                    if(cp == 1){
-                        if(k >= this.lastestOptionPrice){
-                            chigh.get(expiredMonth).add(newOption);
+                        //region 判断cp 和 low high
+                        if (cp == 1) {
+                            if (k >= this.lastestOptionPrice) {
+                                chigh.get(expiredMonth).add(newOption);
 //                            System.out.println(newOption.toString());
+                            } else {
+                                clow.get(expiredMonth).add(newOption);
+                            }
+                        } else {
+                            if (k >= this.lastestOptionPrice) {
+                                phigh.get(expiredMonth).add(newOption);
+                            } else {
+                                plow.get(expiredMonth).add(newOption);
+                            }
                         }
-                        else{
-                            clow.get(expiredMonth).add(newOption);
-                        }
+                        //endregion
                     }
-                    else{
-                        if(k >= this.lastestOptionPrice){
-                            phigh.get(expiredMonth).add(newOption);
-                        }
-                        else{
-                            plow.get(expiredMonth).add(newOption);
-                        }
-                    }
-                    //endregion
                 }
+                //endregion
             }
-            //endregion
         }
     }
 
@@ -313,6 +319,7 @@ public class RecommendServiceImpl implements RecommendService {
         double gamma = attributes[5];
         double theta = attributes[6];
         double vega = attributes[7];
+        double realTimePrice = attributes[8];
 
         newOption.setK(k);
         newOption.setPrice1(price1);
@@ -322,6 +329,7 @@ public class RecommendServiceImpl implements RecommendService {
         newOption.setGamma(gamma);
         newOption.setTheta(theta);
         newOption.setVega(vega);
+        newOption.setRealTimePrice(realTimePrice);
         //endregion
     }
 
@@ -468,13 +476,14 @@ public class RecommendServiceImpl implements RecommendService {
         } catch (IOException e) {
             return StatusMsg.IOExceptionOccurs;
         }
-        return new ResponseMsg(2000, "recommend Portfolio finished", recommendOption1);
+        return new ResponseMsg(0, "recommend Portfolio finished", recommendOption1);
     }
 
     private RecommendOption1 mainRecommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) throws IOException {
         //参数都是由用户输入的
         /*用户输入数据*/
         this.T = T;
+        this.M0 = M0;
         this.p1 = p1;
         this.p2 = p2;
         this.sigma1 = sigma1;
@@ -491,19 +500,30 @@ public class RecommendServiceImpl implements RecommendService {
         this.M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
 
         List<structD> D = firstStep(combination);
+        System.out.println("first step is finished");
+        System.out.println(D.size());
         structD maxGoalD;
         maxGoalD = secondStep(D);
+        System.out.println("second step is finished");
         for(int i = 0;i < maxGoalD.optionCombination.length;i++){
             maxGoalD.optionCombination[i].setType(maxGoalD.buyAndSell[i]);
         }
         List<Double> profits = thirdStep(maxGoalD, combination);
+        System.out.println("third step is finished");
+        double[] assertOnReturns = assertReturns(maxGoalD, profits);
         String[] StringProfits = new String[profits.size()];
+        String[] StringAssertOnReturns = new String[profits.size()];
         for(int i = 0; i < profits.size();i++){
             StringProfits[i] = Double.toString(profits.get(i));
+            StringAssertOnReturns[i] = Double.toString(assertOnReturns[i]);
         }
-        String[][] graph = new String[][]{month, StringProfits};
+        String[][] graph = new String[][]{month, StringProfits, StringAssertOnReturns};
+        System.out.println(Arrays.deepToString(graph[0]));
+        System.out.println(Arrays.deepToString(graph[1]));
+        System.out.println(Arrays.deepToString(graph[2]));
         return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
-                maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho, maxGoalD.E / M, maxGoalD.beta,graph, M0, k, sigma1, sigma2, p1, p2);
+                maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
+                maxGoalD.E / M, maxGoalD.returnOnAssets,maxGoalD.beta,graph, M0, k, sigma1, sigma2, p1, p2);
     }
 
     //期权组合第一步，计算出集合D及其相关内容
@@ -594,7 +614,7 @@ public class RecommendServiceImpl implements RecommendService {
                     break;
 
                 //卖出高价看涨，卖出低价看跌
-                case 'G':buyAndSell.add(1);buyAndSell.add(-1);
+                case 'G':buyAndSell.add(-1);buyAndSell.add(-1);
                     buyAndSellOptions.add(chigh.get(T).toArray(new Option[0]));
                     buyAndSellOptions.add(plow.get(T).toArray(new Option[0]));
                     break;
@@ -660,6 +680,8 @@ public class RecommendServiceImpl implements RecommendService {
                 isInD = true;
             else if(choose == 'H')
                 isInD = Math.abs(sumDelta) < zero;
+            else if(choose == 'G' || choose == 'F')
+                isInD = Math.abs(sumDelta) < zero && sumVega < 0;
             else
                 isInD = Math.abs(sumDelta) < zero && sumVega > 0;
             if(isInD){
@@ -676,6 +698,8 @@ public class RecommendServiceImpl implements RecommendService {
                             pb = Math.abs(buyAndSell[i]) * (one.getPrice2() + Math.max((0.12 * one.getYclose() - (one.getYclose() - one.getK())),0.07 * one.getYclose()));
                     }
                 }
+                p0 *= 10000;
+                pb *= 10000;
                 p0 += pb;
 
                 structD d = new structD();
@@ -724,12 +748,6 @@ public class RecommendServiceImpl implements RecommendService {
         double min_beta = Double.MAX_VALUE;
         for (structD z : D) {
             z.num = (int) (M / z.p0);
-            if(max_numE < z.num){
-                max_numE = z.num;
-            }
-            if(min_numE > z.num){
-                min_numE = z.num;
-            }
             List <double[]> C = new ArrayList<>();
             for(int i = 0;i < z.buyAndSell.length;i++){
                 double price = z.optionCombination[i].getPrice1();
@@ -747,6 +765,12 @@ public class RecommendServiceImpl implements RecommendService {
                 }
             }
             z.E = Expected(C_new);
+            if(max_numE < z.num * z.E){
+                max_numE = z.num * z.E;
+            }
+            if(min_numE > z.num * z.E){
+                min_numE = z.num * z.E;
+            }
             z.beta = 0;
             for(int i = 0;i < z.buyAndSell.length; i++){
                 double price = z.optionCombination[i].getPrice1();
@@ -773,6 +797,7 @@ public class RecommendServiceImpl implements RecommendService {
         List <Boolean> cOrP = new ArrayList<>();
         //0为low，1为high，2为par，3为highShallow，4为lowShallow，5为highDeep，6为lowDeep
         List <Integer> lowOrHigh = new ArrayList<>();
+
         //region 先根据choose和goalD判断cp 和 low, high
         switch (choose){
             case 'A':cOrP.add(true);cOrP.add(true);
@@ -851,7 +876,6 @@ public class RecommendServiceImpl implements RecommendService {
                 break;
             default:break;
         }//endregion
-
         Calendar c= Calendar.getInstance();
         int nowYear = c.get(Calendar.YEAR);
         int nowMonth = c.get(Calendar.MONTH) + 1;
@@ -865,47 +889,65 @@ public class RecommendServiceImpl implements RecommendService {
             int month = Integer.parseInt(str[1]);
 
             int difference = calculateDifference(nowYear, nowMonth, nowDay);  //得到今天距离最近的第四个星期三所差的天数
-            String startDate = calculateDate(year, month, difference);       //得到回测月的起始日期
-            int stage = calculateFirstFew(T);                            //得到是在第几个阶段
+            int storeDifference = difference;
+            boolean isEmpty = false;
+            int offset = 0;
+            do {
+                if(profits.size() < numberOfDot) {
+                   if(isEmpty){
+                        logger.info(m + " warning : 没找到数据");
+                        if(storeDifference < 15)
+                            difference++;
+                        else
+                            difference--;
+                        offset++;
+                    }
+                    String startDate = calculateDate(year, month, difference);       //得到回测月的起始日期
+                    int stage = calculateFirstFew(T);                            //得到是在第几个阶段
 
-            String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
+                    String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
 
-
-            List <OptionTsd[]> backTestData = new ArrayList<>();
-            //region根据条件筛选backTestData
-            for(int i = 0; i < cOrP.size();i++){
-                List<OptionTsd> one = new ArrayList<>();
-                if(lowOrHigh.get(i) == 0 || lowOrHigh.get(i) == 1){
-                    one = optionTsdDataService.complexFind(startDate, endDate, cOrP.get(i), lowOrHigh.get(i));
-                }
-                else
-                {
-                    switch (lowOrHigh.get(i)){
-                        case 2:one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), -1*eps, eps);
-                            break;
-                        case 3:one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), 0, 2*eps);
-                            break;
-                        case 4:one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), -2 * eps, 0);
-                            break;
-                        case 5:one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), 2 * eps, 5);
-                            break;
-                        case 6:one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), -5, -2 * eps);
-                            break;
+                    List<OptionTsd[]> backTestData = new ArrayList<>();
+                    //region根据条件筛选backTestData
+                    for (int i = 0; i < cOrP.size(); i++) {
+                        List<OptionTsd> one = new ArrayList<>();
+                        if (lowOrHigh.get(i) == 0 || lowOrHigh.get(i) == 1) {
+                            one = optionTsdDataService.complexFind(startDate, endDate, cOrP.get(i), lowOrHigh.get(i));
+                        } else {
+                            switch (lowOrHigh.get(i)) {
+                                case 2:
+                                    one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), -1 * eps, eps);
+                                    break;
+                                case 3:
+                                    one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), 0, 2 * eps);
+                                    break;
+                                case 4:
+                                    one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), -2 * eps, 0);
+                                    break;
+                                case 5:
+                                    one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), 2 * eps, 5);
+                                    break;
+                                case 6:
+                                    one = optionTsdDataService.complexFindRange(startDate, endDate, cOrP.get(i), -5, -2 * eps);
+                                    break;
+                            }
+                        }
+                        backTestData.add(one.toArray(new OptionTsd[0]));
+                    }//endregion
+                    List<OptionTsd> array = new ArrayList<>();
+                    backTest(backTestData, 0, array, profits, goalD);
+                    if(offset >= 5 && profits.size()== numberOfDot - 1){
+                        profits.add(0.0);
                     }
                 }
-                backTestData.add(one.toArray(new OptionTsd[0]));
-            }//endregion
-            List<OptionTsd> array = new ArrayList<>();
-            backTest(backTestData, 0, array, profits, goalD);
-            while(profits.size() != numberOfDot){
-                logger.info("warning : 期权组合回测出现问题");
-                if(profits.size() < numberOfDot){
-                    profits.add(0.0);
-                }
-                else {
+                else{
+                    logger.info(m + " warning : 数据过多");
                     profits.remove(profits.size() - 1);
                 }
-            }
+                if(profits.size() == numberOfDot - 1){
+                    isEmpty = true;
+                }
+            }while(profits.size() != numberOfDot);
             numberOfDot ++;
         }
         return profits;
@@ -917,13 +959,22 @@ public class RecommendServiceImpl implements RecommendService {
             for(int i = 0;i < array.size();i++){
                 double backK = optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getPrice();
                 double backS0 = timeSeriesDataSerice.findByLastTradeDate(array.get(i).getLatestDate()).getClosePrice();
-                flag = flag && ((backK - backS0) - (goal.optionCombination[i].getK() - S0) <= eps);
+                flag = flag && (Math.abs((backK - backS0) - (goal.optionCombination[i].getK() - S0)) <= eps);
             }
             double profit = 0;
             if(flag){
                 for(int i = 0;i < array.size();i++){
+                    double backK = optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getPrice();
+                    double backS0 = timeSeriesDataSerice.findByLastTradeDate(array.get(i).getLatestDate()).getClosePrice();
+                    double iK = goal.optionCombination[i].getK();
+                    double s0 = S0;
+
+
                     double backPrice = array.get(i).getClosePrice();
-                    double backClose = optionTsdDataService.findByCodeNameAndLatestDate(array.get(i).getCodeName(), optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getEndDate()).getClosePrice();
+                    System.out.println(array.get(i).getCodeName());
+                    System.out.println(optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getEndDate());
+                    double backClose = optionTsdDataService.findByCodeNameAndLatestDate(array.get(i).getCodeName(),
+                            optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getEndDate()).getClosePrice();
 
                     profit += goal.buyAndSell[i] * (backClose - backPrice);
                 }
@@ -937,6 +988,17 @@ public class RecommendServiceImpl implements RecommendService {
                 array.remove(index);
             }
         }
+    }
+
+    private double[] assertReturns(structD goal, List<Double> profit){
+        goal.returnOnAssets = (goal.E + (M0 - M) * r * Math.ceil(t / 30.0) / 12) / M0;
+
+        double[] assertGraph = new double[profit.size()];
+
+        for(int i = 0; i < profit.size();i++){
+            assertGraph[i] = profit.get(i) + (M0 - M) * r * Math.ceil(t / 30.0) / 12;
+        }
+        return assertGraph;
     }
 
     @Override
@@ -1142,11 +1204,12 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg customPortfolio(Option[] list)  {
         //传入的Option列表只有期权代码、到期时间、买入卖出、cp属性
-        return new ResponseMsg(2000, "custom portfolio finished",mainOneCustomPortfolio(list));
+        return new ResponseMsg(0, "custom portfolio finished",mainOneCustomPortfolio(list, 0));
     }
 
     //sigma1 2 and p1 2 没有初始化
-    RecommendOption1 mainTwoCustomPortfolio(Option[] list){
+    //type为零：正常的DIY组合计算，type为1,：查看我的DIY组合，type为2：查看我的期权组合
+    RecommendOption1 mainTwoCustomPortfolio(Option[] list, int type, double k, double M0){
         try {
             r = dataSource.get_r();
             t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
@@ -1173,24 +1236,33 @@ public class RecommendServiceImpl implements RecommendService {
         generateD(D,new ArrayList<>(),0,d.buyAndSell, Arrays.asList(list),'D', 1);
         structD maxGoalD;
         maxGoalD = secondStep(D);
-        List<Double> profits = thirdStep(maxGoalD, 'W');
-        String[] StringProfits = new String[profits.size()];
+        List<Double> profits = new ArrayList<>();
+        String[] StringProfits = new String[month.length];
+        if(type == 0){
+            profits = thirdStep(maxGoalD, 'W');
+        }
         for(int i = 0; i < profits.size();i++){
             StringProfits[i] = Double.toString(profits.get(i));
         }
+        double M = 50000;
         String[][] graph = new String[][]{month, StringProfits};
+        if(type == 2){
+            M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
+            maxGoalD.returnOnAssets = (maxGoalD.E + (M0 - M) * r * Math.ceil(t / 30.0) / 12) / M0;
+        }
         return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
-                maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho, maxGoalD.E / M, maxGoalD.beta,graph ,10, 0.5);
+                maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
+                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, graph, M, k);
     }
 
-    RecommendOption1 mainOneCustomPortfolio(Option[] list) {
+    RecommendOption1 mainOneCustomPortfolio(Option[] list, int type) {
         try {
             sigma1 = sigma2 = dataSource.get_Sigma();
             p1 = p2 = dataSource.get_LatestPrice();
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return mainTwoCustomPortfolio(list);
+        return mainTwoCustomPortfolio(list, type, 0, 0);
     }
 
     private void warning() throws IOException {
