@@ -113,7 +113,8 @@ public class PortfolioServiceImpl implements PortfolioService {
                     StringAssertGraph[i] = Double.toString(assertGraph[i]);
                 }
 
-                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.getBackTestData(), StringAssertGraph};
+                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.getBackTestData(),
+                                                    StringAssertGraph};
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rnt);
                 map.put("graph", graph);
