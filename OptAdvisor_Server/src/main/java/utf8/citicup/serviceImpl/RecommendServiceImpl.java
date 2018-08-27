@@ -473,7 +473,7 @@ public class RecommendServiceImpl implements RecommendService {
         try {
             recommendOption1 = mainRecommendPortfolio(M0, k, T, combination, p1, p2, sigma1, sigma2, w1, w2);
         } catch (IOException e) {
-            return StatusMsg.IOExceptionOccurs;
+            return new ResponseMsg(2000, "网络获取失败", null);
         }
         return new ResponseMsg(0, "recommend Portfolio finished", recommendOption1);
     }
