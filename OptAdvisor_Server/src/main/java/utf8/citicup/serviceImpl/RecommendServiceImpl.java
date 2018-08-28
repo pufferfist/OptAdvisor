@@ -957,7 +957,7 @@ public class RecommendServiceImpl implements RecommendService {
         return profits;
     }
 
-    private void backTest(List<OptionTsd[]> data, int index, List<OptionTsd> array, List <Double> profits, structD goal, List<Boolean> flagArray){
+    private void backTest(List<OptionTsd[]> data, int index, List<OptionTsd> array, List <Double> profits, structD goal, List<Boolean> flagArray) {
         if(index == data.size()){
             boolean flag = true;
             for(int i = 0;i < array.size();i++){
