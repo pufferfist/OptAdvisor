@@ -54,9 +54,9 @@
         return {
           price: 1,
           volatility: 1,
-          infoStep: false,
+          infoStep: true,
           loading: false,
-          resultStep: true,
+          resultStep: false,
           date: [],
           portfolioProfit: [],//图表
           assetsProfit: [],
@@ -125,11 +125,11 @@
           this.price = event.price;
           this.volatility = event.volatility;
         },
-        handleNextStep: function () {
+        handleNextStep: function (event) {
           this.loading = true;
-          this.axios.post("backend/recommend/recommendPortfolio")
+          this.axios.post("backend/recommend/recommendPortfolio",event)
             .then((res)=>{
-              this.portfolio=res.data;
+              this.portfolio=res.data.data;
               this.loading = false;
               this.infoStep = false;
               setTimeout(() => {

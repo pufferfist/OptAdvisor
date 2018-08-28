@@ -39,7 +39,7 @@ public class Portfolio {
     private double z_vega;
     private double z_theta;
     private double z_rho;
-    private double returnOnAssets;
+    private double returnOnAssets; //资产收益率
     private double EM;//组合的期望收益率
     private double beta;//组合风险值
 
