@@ -3,7 +3,7 @@ package utf8.citicup.domain.entity;
 public class RecommendOption1 {
     private Option[] optionList;
     private int[] buyAndSell;
-    private int num;
+    private int num;//组合的分数
     private double cost;//成本p1-p2
     private double bond;//保证金
     private double z_delta;
@@ -13,6 +13,7 @@ public class RecommendOption1 {
     private double z_rho;
     private double EM;//组合的期望收益率
     private double beta;//组合风险值
+    private double returnOnAssets;//资产期望收益率
     private String[][] Graph;
 
     private double M0;
@@ -23,8 +24,8 @@ public class RecommendOption1 {
     private double p2;
 
     public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta,
-                            double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta,
-                            String[][] graph, double m0, double k) {
+                            double z_gamma, double z_vega, double z_theta, double z_rho, double EM,
+                            double returnOnAssets, double beta, String[][] graph, double m0, double k) {
         this.optionList = optionList;
         this.buyAndSell = buyAndSell;
         this.num = num;
@@ -36,6 +37,7 @@ public class RecommendOption1 {
         this.z_theta = z_theta;
         this.z_rho = z_rho;
         this.EM = EM;
+        this.returnOnAssets = returnOnAssets;
         this.beta = beta;
         Graph = graph;
         this.M0 = m0;
@@ -43,8 +45,9 @@ public class RecommendOption1 {
     }
 
     public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta,
-                            double z_gamma, double z_vega, double z_theta, double z_rho, double EM, double beta,
-                            String[][] graph, double m0, double k, double sigma1, double sigma2, double p1, double p2) {
+                            double z_gamma, double z_vega, double z_theta, double z_rho, double EM,
+                            double returnOnAssets, double beta, String[][] graph, double m0, double k,
+                            double sigma1, double sigma2, double p1, double p2) {
         this.optionList = optionList;
         this.buyAndSell = buyAndSell;
         this.num = num;
@@ -56,6 +59,7 @@ public class RecommendOption1 {
         this.z_theta = z_theta;
         this.z_rho = z_rho;
         this.EM = EM;
+        this.returnOnAssets = returnOnAssets;
         this.beta = beta;
         Graph = graph;
         M0 = m0;
@@ -140,5 +144,9 @@ public class RecommendOption1 {
 
     public double getP2() {
         return p2;
+    }
+
+    public double getReturnOnAssets() {
+        return returnOnAssets;
     }
 }
