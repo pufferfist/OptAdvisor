@@ -33,7 +33,7 @@ public class RecommendPortfolioServiceTest {
 
     @Test
     public void test02(){
-        recommendService.recommendPortfolio(50000, 0.5, "2018-09", 'B', 2.53,
+        recommendService.recommendPortfolio(500, 0.5, "2018-09", 'B', 2.53,
                 2.60, 23, 24, 70, 30);
     }
 
