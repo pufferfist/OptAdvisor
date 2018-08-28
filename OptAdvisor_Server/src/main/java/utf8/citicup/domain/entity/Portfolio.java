@@ -1,5 +1,7 @@
 package utf8.citicup.domain.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.*;
 
 import java.util.HashMap;
@@ -8,6 +10,7 @@ import java.util.Map;
 import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
 
 @Entity
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Portfolio {
 
     @Id
