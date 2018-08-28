@@ -69,6 +69,7 @@ public class RecommendServiceImpl implements RecommendService {
     private double eps1;
 
     private String[] month={"2015-3","2015-4","2015-5","2015-6","2015-7","2015-8","2015-9","2015-10","2015-11","2015-12","2016-1","2016-2","2016-3","2016-4","2016-5","2016-6","2016-7","2016-8","2016-9","2016-10","2016-11","2016-12","2017-1","2017-2","2017-3","2017-4","2017-5","2017-6","2017-7","2017-8","2017-9","2017-10","2017-11","2017-12","2018-1","2018-2","2018-3"};
+//    private String[] month={"2015-9","2015-12"};
 
     /*计算得到的值*/
 
@@ -231,14 +232,16 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     /*从网络获取所需的数据*/
-    private void upDataFromNet() throws IOException {
+    private void upDataFromNet() throws IOException
+    {
         r = dataSource.get_r();
         t = Integer.parseInt(dataSource.get_expireAndremainder(T)[1]);
 //        S0 = dataSource.get_S0();//实时标的价格
         sigma = dataSource.get_Sigma();//实时波动率
         lastestOptionPrice = dataSource.get_LatestPrice();
         S0 = lastestOptionPrice;
-        expiredMonths = dataSource.get_T();
+        expiredMonths = new String[]{ T };
+//        expiredMonths = dataSource.get_T();
         for (String expiredMonth : expiredMonths) {
             if (expiredMonth != null) {
                 //region 根据行权名称得到相关数据
@@ -895,7 +898,7 @@ public class RecommendServiceImpl implements RecommendService {
             do {
                 if(profits.size() < numberOfDot) {
                    if(isEmpty){
-                        logger.info(m + " warning : 没找到数据");
+//                        logger.info(m + " warning : 没找到数据");
                         if(storeDifference < 15)
                             difference++;
                         else
@@ -935,13 +938,14 @@ public class RecommendServiceImpl implements RecommendService {
                         backTestData.add(one.toArray(new OptionTsd[0]));
                     }//endregion
                     List<OptionTsd> array = new ArrayList<>();
-                    backTest(backTestData, 0, array, profits, goalD);
+                    List<Boolean> flagArray = new ArrayList<>();
+                    backTest(backTestData, 0, array, profits, goalD, flagArray);
                     if(offset >= 5 && profits.size()== numberOfDot - 1){
                         profits.add(0.0);
                     }
                 }
                 else{
-                    logger.info(m + " warning : 数据过多");
+//                    logger.info(m + " warning : 数据过多");
                     profits.remove(profits.size() - 1);
                 }
                 if(profits.size() == numberOfDot - 1){
@@ -953,13 +957,17 @@ public class RecommendServiceImpl implements RecommendService {
         return profits;
     }
 
-    private void backTest(List<OptionTsd[]> data, int index, List<OptionTsd> array, List <Double> profits, structD goal){
+    private void backTest(List<OptionTsd[]> data, int index, List<OptionTsd> array, List <Double> profits, structD goal, List<Boolean> flagArray){
         if(index == data.size()){
             boolean flag = true;
             for(int i = 0;i < array.size();i++){
                 double backK = optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getPrice();
                 double backS0 = timeSeriesDataSerice.findByLastTradeDate(array.get(i).getLatestDate()).getClosePrice();
-                flag = flag && (Math.abs((backK - backS0) - (goal.optionCombination[i].getK() - S0)) <= eps);
+                flag = flag && Math.abs(backK - backS0 - (goal.optionCombination[i].getK() - S0)) <= eps;
+                if(!flag){
+                    flagArray.set(i, false);
+                    break;
+                }
             }
             double profit = 0;
             if(flag){
@@ -971,8 +979,6 @@ public class RecommendServiceImpl implements RecommendService {
 
 
                     double backPrice = array.get(i).getClosePrice();
-                    System.out.println(array.get(i).getCodeName());
-                    System.out.println(optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getEndDate());
                     double backClose = optionTsdDataService.findByCodeNameAndLatestDate(array.get(i).getCodeName(),
                             optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getEndDate()).getClosePrice();
 
@@ -982,11 +988,21 @@ public class RecommendServiceImpl implements RecommendService {
             }
         }
         else {
+            flagArray.add(true);
             for(OptionTsd each:data.get(index)){
+                flagArray.set(index, true);
                 array.add(each);
-                backTest(data, index + 1, array, profits, goal);
+                backTest(data, index + 1, array, profits, goal, flagArray);
                 array.remove(index);
+
+                boolean flag = true;
+                for(int i = 0;i < index;i++){
+                    flag = flag && flagArray.get(i);
+                }
+                if(!flag)
+                    break;
             }
+            flagArray.remove(index);
         }
     }
 
