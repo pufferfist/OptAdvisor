@@ -70,7 +70,7 @@
             </tr>
             <tr>
               <td>保证金</td>
-              <td>{{data.securityDeposit}}</td>
+              <td>{{data.bond}}</td>
             </tr>
             <tr>
               <td>delta</td>
@@ -94,11 +94,11 @@
             </tr>
             <tr>
               <td>组合期望收益率</td>
-              <td>{{data.expectedRate}}</td>
+              <td>{{data.em}}</td>
             </tr>
             <tr>
               <td>组合风险值</td>
-              <td>{{data.risk}}</td>
+              <td>{{data.beta}}</td>
             </tr>
           </table>
         </div>
@@ -108,11 +108,11 @@
           <table class="w-100 tl">
             <tr>
               <td>资产期望收益率</td>
-              <td>{{data.assetsExpectedRate}}</td>
+              <td>{{data.returnOnAssets}}</td>
             </tr>
             <tr>
               <td>资产风险值</td>
-              <td>{{data.assetsRisk}}</td>
+              <td>{{data.beta}}</td>
             </tr>
           </table>
         </div>
@@ -157,8 +157,8 @@
             xAxis: {
               type: 'category',
               boundaryGap: false,
-              data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-              // data:this.date
+              // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
+              data:this.data.graph[0]
             },
             yAxis: {
               type: 'value',
@@ -170,14 +170,14 @@
               {
                 name: '组合收益',
                 type: 'line',
-                data: [11, 11, 15, 13, 12, 13, 10],
-                // data:this.portfolioProfit,
+                // data: [11, 11, 15, 13, 12, 13, 10],
+                data:this.data.graph[1],
               },
               {
                 name: '资产收益',
                 type: 'line',
-                data: [1, -2, 2, 5, 3, 2, 0],
-                // data:this.assetsProfit,
+                // data: [1, -2, 2, 5, 3, 2, 0],
+                data:this.data.graph[2],
               },
               // {
               //   name: 'ppp',

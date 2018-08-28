@@ -26,10 +26,10 @@ public class RecommendController {
     @PostMapping("recommendPortfolio")
     public ResponseMsg recommendPortfolio(@RequestBody Map<String, Object> params) {
         User user = userService.getUser(SecurityUtils.getSubject().getPrincipal().toString());
-        return recommendService.recommendPortfolio((Double) params.get("m0"), (Double) params.get("k"),
-                params.get("t").toString(), (char) params.get("combination"),
-                (Double) params.get("p1"), (Double) params.get("p2"), (Double) params.get("sigma1"),
-                (Double) params.get("sigma2"), user.getW1(), user.getW2());
+        return recommendService.recommendPortfolio(Double.parseDouble((String) params.get("m0")), Double.parseDouble((String) params.get("k")),
+                params.get("t").toString(), ((String) params.get("combination")).charAt(0),
+                Double.parseDouble(params.get("p1").toString()), Double.parseDouble(params.get("p2").toString()), Double.parseDouble(params.get("sigma1").toString()),
+                Double.parseDouble(params.get("sigma2").toString()), user.getW1(), user.getW2());
     }
 
     @PostMapping("hedging")
