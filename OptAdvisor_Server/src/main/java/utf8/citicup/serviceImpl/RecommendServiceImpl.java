@@ -493,7 +493,7 @@ public class RecommendServiceImpl implements RecommendService {
         this.sigma2 = sigma2;
         this.w1 = w1 / 100.0;
         this.w2 = w2 / 100.0;
-
+        k = k / M0;
         /*实时数据的获取*/
 
         this.upDataFromNet();
@@ -972,10 +972,10 @@ public class RecommendServiceImpl implements RecommendService {
             double profit = 0;
             if(flag){
                 for(int i = 0;i < array.size();i++){
-                    double backK = optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getPrice();
-                    double backS0 = timeSeriesDataSerice.findByLastTradeDate(array.get(i).getLatestDate()).getClosePrice();
-                    double iK = goal.optionCombination[i].getK();
-                    double s0 = S0;
+//                    double backK = optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getPrice();
+//                    double backS0 = timeSeriesDataSerice.findByLastTradeDate(array.get(i).getLatestDate()).getClosePrice();
+//                    double iK = goal.optionCombination[i].getK();
+//                    double s0 = S0;
 
 
                     double backPrice = array.get(i).getClosePrice();
@@ -984,7 +984,7 @@ public class RecommendServiceImpl implements RecommendService {
 
                     profit += goal.buyAndSell[i] * (backClose - backPrice);
                 }
-                profits.add(profit);
+                profits.add(profit * 10000);
             }
         }
         else {
