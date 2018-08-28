@@ -20,7 +20,7 @@ public class Option {
     private int type;//1为买入0为卖出
     private int cp;//1为看涨 -1为看跌
     private String expireTime;//到期时间
-    private double transactionPrice;//成交价
+    private double transactionPrice;//成交价(即交易时的买价或卖价)
     private double yclose;//期权前一天收盘价
     private double price1;//期权实时买入价格
     private double price2;//期权实时卖出价格
@@ -40,6 +40,28 @@ public class Option {
 
     public Option(){}
 
+    @SuppressWarnings("CopyConstructorMissesField")
+    public Option(Option option) {
+        this.tradeCode = option.tradeCode;
+        this.optionCode = option.optionCode;
+        this.name = option.name;
+        this.type = option.type;
+        this.cp = option.cp;
+        this.expireTime = option.expireTime;
+        this.transactionPrice = option.transactionPrice;
+        this.yclose = option.yclose;
+        this.price1 = option.price1;
+        this.price2 = option.price2;
+        this.k = option.k;
+        this.realTimePrice = option.realTimePrice;
+        this.delta = option.delta;
+        this.gamma = option.gamma;
+        this.vega = option.vega;
+        this.theta = option.theta;
+        this.rho = option.rho;
+        this.beta = option.beta;
+    }
+
     public Option(String optionCode, int type, int cp, String expireTime) {
         this.optionCode = optionCode;
         this.type = type;
@@ -47,7 +69,7 @@ public class Option {
         this.expireTime = expireTime;
     }
 
-    public Option(String tradeCode, String optionCode, String name, int type, int cp, String expireTime, double transactionPrice, double yclose, double price1, double price2, double k, double realTimePrice, double delta, double gamma, double vega, double theta, double rho, double beta, Portfolio portfolio) {
+    public Option(String tradeCode, String optionCode, String name, int type, int cp, String expireTime, double transactionPrice, double yclose, double price1, double price2, double k, double realTimePrice, double delta, double gamma, double vega, double theta, double rho, double beta) {
         this.tradeCode = tradeCode;
         this.optionCode = optionCode;
         this.name = name;
@@ -66,7 +88,6 @@ public class Option {
         this.theta = theta;
         this.rho = rho;
         this.beta = beta;
-        this.portfolio = portfolio;
     }
 
     @Override

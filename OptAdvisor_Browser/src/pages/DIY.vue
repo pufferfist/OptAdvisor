@@ -156,12 +156,11 @@
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
           <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="drawLine">预览</Button> </h3>
-          <span>组合的期望收益率E/M：XXX &nbsp&nbsp 组合的风险值β：123</span>
+          <span>组合的期望收益率E/M：{{EM}} &nbsp&nbsp 组合的风险值β：{{beta}}</span>
           <div id="myChart" style="width: 100%;height: 325px">
           </div>
         </div>
       </div>
-
     </div>
 </template>
 
@@ -197,7 +196,15 @@
           text12:'',
           text13:'',
           text14:'',
-          lineName:['data1','data2','data3']
+          lineName:['data1','data2','data3'],
+          resultLeftCode:[],
+          resultRightCode:[],
+          EM:'',
+          beta:'',
+          line1:[],
+          line2:[],
+          line3:[],
+          line4:[]
         }
       },
       mounted() {
@@ -287,14 +294,18 @@
         setLeftOrRightValue(){
           this.leftValue=[]
           this.rightValue=[]
+          this.resultLeftCode=[]
+          this.resultRightCode=[]
           for(var i=0;i<this.value.length;i++){
             var colorl=document.getElementById("checkbox_up_"+i).style.backgroundColor
             if(colorl=='rgb(255, 238, 238)'){
               this.leftValue.push(this.upValue[i][37])
+              this.resultLeftCode.push(this.currentCodeLeft[i])
             }
             var colorr=document.getElementById("checkbox_down_"+i).style.backgroundColor
             if(colorr=='rgb(255, 238, 238)'){
               this.rightValue.push(this.downValue[i][37])
+              this.resultRightCode.push(this.currentCodeRight[i])
             }
           }
         },
@@ -436,8 +447,6 @@
           }
 
         },
-
-        //这三个方法需要集成
         drawLine(){
           // 基于准备好的dom，初始化echarts实例
           let myChart = this.$echarts.init(document.getElementById('myChart'))
@@ -451,40 +460,95 @@
             },
             xAxis: {
               type: 'category',
-              data: ['2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08','2018-08']
+              data: this.line1
             },
             yAxis: {
               type: 'value'
             },
             series: [{
               name:this.lineName[0],
-              data: [15,24,36,58,95,36,45,47,63],
+              data: this.line2,
               type: 'line'
             },
               {
                 name:this.lineName[1],
-                data:  [51,24,89,45,77,86,23,58,61],
+                data:  this.line3,
                 type: 'line'
               },
               {
                 name:this.lineName[2],
-                data: [25,75,92,38,46,91,78,62,70],
+                data: this.line4,
                 type: 'line'
               }]
           });
         },
+        confirm(){
+          this.axios.post('/backend/recommend/customPortfolio',this.getOptions())
+            .then(re=>{
+              if(re.data.msg=='custom portfolio finished'){
+                this.$Message.success("已添加至我的组合")
+              }
+              else{
+                this.$Message.error("未能添加至我的组合")
+              }
+            })
+        },
+        getOptions(){
+          var options=[]
+          var deadline=this.calculateForthWednesday()
+          for(var i=0;i<this.resultLeftCode.length;i++){
+            var op={}
+            op.optionCode=this.resultLeftCode[i].substr(7)
+            op.expireTime=deadline
+            op.type=document.getElementById("left_input_number_"+i).value
+            op.cp=1
+            options.push(op)
+          }
+          for(var i=0;i<this.resultRightCode.length;i++){
+            var op={}
+            op.optionCode=this.resultRightCode[i].substr(7)
+            op.expireTime=deadline
+            op.type=document.getElementById("right_input_number_"+i).value
+            op.cp=-1
+            options.push(op)
+          }
+          return options
+        },
+        calculateForthWednesday(){
+          //1.先判断每月第一天是星期几
+          var year=this.selectMonth.substr(0,4)
+          var month=this.selectMonth.substr(5,2)
+          var d=new Date()
+          d.setFullYear(year)
+          d.setMonth(month-1)
+          d.setDate(1)
+          var weekday=d.getDay()
+          var day
+          if(weekday>3){
+            day=21+(7-weekday)+4
+          }
+          else if(weekday<=3){
+            day=21+(4-weekday)
+          }
+          return year+"-"+month+"-"+(Array(2).join(0)+day).slice(-2)
+        },
+
+        //这个方法还要集成
         preview(){
           //1.传值获取数据，并更新数据
-
-
-
-
-          //2.画图
-          this.drawLine()
+          this.axios.post('',this.getOptions())
+            .then(re=>{
+              var data=re.data
+              this.EM=data.EM
+              this.beta=data.beta
+              this.line1=data.graph[0]
+              this.line2=data.graph[1]
+              this.line3=data.graph[2]
+              this.line4=data.graph[3]
+              //2.画图
+              this.drawLine()
+            })
         },
-        confirm(){
-          //确认组合，提交至后台
-        }
       }
     }
 </script>

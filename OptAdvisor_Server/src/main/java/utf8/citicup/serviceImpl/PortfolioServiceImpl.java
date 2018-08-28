@@ -41,7 +41,6 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (null == portfolio) {
             return StatusMsg.portfolioNotExists;
         } else if (portfolio.getUsername().equals(username)) {
-//            logger.info(String.valueOf(portfolio.isTrackingStatus()));
             dataService.updateTrackingStatus(portfolioId, !portfolio.isTrackingStatus());
             return StatusMsg.updateRiskTrackingSuccess;
         } else {

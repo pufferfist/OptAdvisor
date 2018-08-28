@@ -6,7 +6,7 @@
         <div class="middleBorder">
           <CellGroup class="ph3 pt3" v-on:on-click="switchOption">
             <Cell v-for="item in data.optionList" :title="item.name"
-                  :extra="item.number>0?'买'+item.number:'卖'+(-item.number)"
+                  :extra="item.type>0?'买'+item.type:'卖'+(-item.type)"
                   :key="data.optionList.indexOf(item)" class="tl w-80 center" :class="{backRed:item.cp===1}"
                   :name="data.optionList.indexOf(item)"/>
           </CellGroup>
@@ -18,7 +18,7 @@
             <table class="w-100 tl">
               <tr>
                 <td>交易代码</td>
-                <td>{{currentOption.id}}</td>
+                <td>{{currentOption.tradeCode}}</td>
               </tr>
               <tr>
                 <td>到期时间</td>
@@ -30,7 +30,7 @@
               </tr>
               <tr>
                 <td>成交价格</td>
-                <td>{{currentOption.number>0?currentOption.price1:currentOption.price2}}</td>
+                <td>{{currentOption.type>0?currentOption.price1:currentOption.price2}}</td>
               </tr>
               <tr>
                 <td>delta</td>
@@ -52,6 +52,10 @@
                 <td>rho</td>
                 <td>{{currentOption.rho}}</td>
               </tr>
+              <tr>
+                <td>beta</td>
+                <td>{{currentOption.beta}}</td>
+              </tr>
             </table>
           </div>
         </div>
@@ -62,39 +66,39 @@
           <table class="w-100 tl">
             <tr>
               <td>成本</td>
-              <td>{{data.portfolioInfo.cost}}</td>
+              <td>{{data.cost}}</td>
             </tr>
             <tr>
               <td>保证金</td>
-              <td>{{data.portfolioInfo.securityDeposit}}</td>
+              <td>{{data.securityDeposit}}</td>
             </tr>
             <tr>
               <td>delta</td>
-              <td>{{data.portfolioInfo.z_delta}}</td>
+              <td>{{data.z_delta}}</td>
             </tr>
             <tr>
               <td>gamma</td>
-              <td>{{data.portfolioInfo.z_gamma}}</td>
+              <td>{{data.z_gamma}}</td>
             </tr>
             <tr>
               <td>theta</td>
-              <td>{{data.portfolioInfo.z_theta}}</td>
+              <td>{{data.z_theta}}</td>
             </tr>
             <tr>
               <td>vega</td>
-              <td>{{data.portfolioInfo.z_vega}}</td>
+              <td>{{data.z_vega}}</td>
             </tr>
             <tr>
               <td>rho</td>
-              <td>{{data.portfolioInfo.z_rho}}</td>
+              <td>{{data.z_rho}}</td>
             </tr>
             <tr>
               <td>组合期望收益率</td>
-              <td>{{data.portfolioInfo.expectedRate}}</td>
+              <td>{{data.expectedRate}}</td>
             </tr>
             <tr>
               <td>组合风险值</td>
-              <td>{{data.portfolioInfo.risk}}</td>
+              <td>{{data.risk}}</td>
             </tr>
           </table>
         </div>
@@ -104,11 +108,11 @@
           <table class="w-100 tl">
             <tr>
               <td>资产期望收益率</td>
-              <td>{{data.assetsInfo.expectedRate}}</td>
+              <td>{{data.assetsExpectedRate}}</td>
             </tr>
             <tr>
               <td>资产风险值</td>
-              <td>{{data.assetsInfo.risk}}</td>
+              <td>{{data.assetsRisk}}</td>
             </tr>
           </table>
         </div>

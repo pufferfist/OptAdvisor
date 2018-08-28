@@ -9,7 +9,7 @@
           </Option>
         </Select>
         <h4 class="item" style="display:inline;line-height: 32px;text-align: left;">到期日：{{expiry}} ({{differ}} 天)</h4>
-        <h4 class="item" style="display:inline;line-height: 32px;text-align: left;"> 标的资产：华夏上证 50ETF（<span  v-bind:style="{ color:  ETF.rate  > 0 ? 'rgb(187, 0, 0)' : (ETF.rate === 0 ?  'black' : 'green')}">{{ETF.price}}</span> / <span v-bind:style="{ color:  ETF.rate  > 0 ? 'rgb(187, 0, 0)' : (ETF.rate === 0 ?  'black' : 'green')}">{{ETF.rate}}</span>）</h4>
+        <h4 class="item" style="display:inline;line-height: 32px;text-align: left;"> 标的资产：华夏上证 50ETF（<span  v-bind:style="{ color:  ETF.rate  > 0 ? 'rgb(187, 0, 0)' : (ETF.rate === 0 ?  'black' : 'green')}">{{ETF.price}}</span> / <span v-bind:style="{ color:  ETF.rate  > 0 ? 'rgb(187, 0, 0)' : (ETF.rate === 0 ?  'black' : 'green')}">{{ETF.rate !== 0 ? ETF.rate + '%' : 0}}</span>）</h4>
       </Row>
   </div>
 </template>

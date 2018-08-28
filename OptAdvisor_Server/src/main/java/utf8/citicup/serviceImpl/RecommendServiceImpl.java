@@ -341,7 +341,7 @@ public class RecommendServiceImpl implements RecommendService {
         Option[] clow_T = clow.get(T).toArray(new Option[0]);
         Option[] phigh_T = phigh.get(T).toArray(new Option[0]);
         Option[] plow_T = plow.get(T).toArray(new Option[0]);
-        
+
         //平价看涨
         sievesImpl(cpar, chigh_T,S0 - eps, S0 + eps);
         sievesImpl(cpar, clow_T,S0 - eps, S0 + eps);
@@ -843,7 +843,7 @@ public class RecommendServiceImpl implements RecommendService {
             case 'F':cOrP.add(false);cOrP.add(false);
                 lowOrHigh.add(1);lowOrHigh.add(0);
                 break;
-                
+
             case 'G':switch (goalD.rank){
                 case 1:cOrP.add(true);cOrP.add(false);
                     lowOrHigh.add(2);lowOrHigh.add(2);
@@ -854,7 +854,7 @@ public class RecommendServiceImpl implements RecommendService {
                 case 3:cOrP.add(true);cOrP.add(false);cOrP.add(true);cOrP.add(false);
                     lowOrHigh.add(2);lowOrHigh.add(2);lowOrHigh.add(1);lowOrHigh.add(0);
                     break;
-                    //0为low，1为high，2为par，3为highShallow，4为lowShallow，5为highDeep，6为lowDeep
+                //0为low，1为high，2为par，3为highShallow，4为lowShallow，5为highDeep，6为lowDeep
                 case 4:cOrP.add(true);cOrP.add(false);cOrP.add(true);cOrP.add(false);
                     lowOrHigh.add(3);lowOrHigh.add(4);lowOrHigh.add(5);lowOrHigh.add(6);
                     break;

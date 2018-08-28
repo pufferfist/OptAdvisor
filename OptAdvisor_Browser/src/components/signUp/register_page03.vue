@@ -40,7 +40,7 @@
               username:this.username,
               password:this.password
             }).then((response)=>{
-              this.$router.push("/home")
+              this.$router.push("/50ETF")
             })
 
           }

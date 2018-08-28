@@ -13,7 +13,7 @@ public interface PortfolioDataService {
     //额外操作
     public List<Portfolio> findByUsername(String username);
 
-    public void updateTrackingStatus(long id, boolean trackingStatus);
+    public Portfolio updateTrackingStatus(long id, boolean trackingStatus);
 
-    public void updateName(long id, String portfolioName);
+    public Portfolio updateName(long id, String portfolioName);
 }

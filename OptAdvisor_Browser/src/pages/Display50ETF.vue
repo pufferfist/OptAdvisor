@@ -7,7 +7,7 @@
         <h1 style="position:relative" v-bind:style="{ color:  currentPrice  > closingPrice ? 'rgb(187, 0, 0)' : (currentPrice === closingPrice ?  'black' : 'green')}">{{currentPrice}}</h1>
         <div id="current">
           <p class="currentItem" v-bind:style="{ color: rate > 0 ? 'rgb(187, 0, 0)' : (rate === 0 ?  'black' : 'green')}">{{rate.toFixed(2)}}{{rate===0?'': '%'}}</p>
-          <p class="currentItem" v-bind:style="{ color: deta > 0 ? 'rgb(187, 0, 0)' : (deta === 0 ?  'black' : 'green')}">{{deta.toFixed(2)}}</p>
+          <p class="currentItem" v-bind:style="{ color: deta > 0 ? 'rgb(187, 0, 0)' : (deta === 0 ?  'black' : 'green')}">{{deta.toFixed(3)}}</p>
         </div>
       </div>
     </div>
@@ -187,8 +187,13 @@ export default {
   computed: {
     nowTime: function() {
       console.log(this.dataTime);
-      
-      return (this.dataDate+'').slice(0,4) + '-' + (this.dataDate+'').slice(4,6) + '-' + (this.dataDate+'').slice(6,9) + ' ' + (this.dataTime+'').slice(0,2) + ':' + (this.dataTime+'').slice(2,4) + ':' + (this.dataTime+'').slice(4,7)
+      if((this.dataTime +'').length === 6){
+        console.log(111);
+        
+        return (this.dataDate+'').slice(0,4) + '-' + (this.dataDate+'').slice(4,6) + '-' + (this.dataDate+'').slice(6,9) + ' ' + (this.dataTime+'').slice(0,2) + ':' + (this.dataTime+'').slice(2,4) + ':' + (this.dataTime+'').slice(4,7)
+      } else if ((this.dataTime+'').length === 5) {
+        return (this.dataDate+'').slice(0,4) + '-' + (this.dataDate+'').slice(4,6) + '-' + (this.dataDate+'').slice(6,9) + ' ' + (this.dataTime+'').slice(0,1) + ':' + (this.dataTime+'').slice(1,3) + ':' + (this.dataTime+'').slice(3,6)
+      }
     }
   },
   methods: {
