@@ -114,7 +114,7 @@
             line2:[],
             line3:[],
             line4:[],
-            lineName:[]
+            lineName:['持有','不持有','持有与不持有之差']
           }
       },
       methods: {

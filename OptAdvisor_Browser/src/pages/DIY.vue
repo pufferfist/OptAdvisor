@@ -237,13 +237,11 @@
           text12:'',
           text13:'',
           text14:'',
-          lineName:['data1','data2','data3'],
+          lineName:['回测收益'],
           resultLeftCode:[],
           resultRightCode:[],
           line1:[],
           line2:[],
-          line3:[],
-          line4:[],
           resultTable:{},
           show1:false,
           show2:false
@@ -257,7 +255,7 @@
             this.getValue(months[1]);
           })
         this.drawLine()
-        //setInterval(this.circle, 5000);
+        setInterval(this.circle, 5000);
 
       },
       methods: {
@@ -511,17 +509,7 @@
               name:this.lineName[0],
               data: this.line2,
               type: 'line'
-            },
-              {
-                name:this.lineName[1],
-                data:  this.line3,
-                type: 'line'
-              },
-              {
-                name:this.lineName[2],
-                data: this.line4,
-                type: 'line'
-              }]
+            }]
           });
         },
         async confirm(name){
@@ -588,8 +576,7 @@
 
           await this.axios.post('/backend/portfolio',data)
             .then(re=>{
-              console.log(re)
-              if(re.msg=='Add portfolio success'){
+              if(re.data.msg=='Add portfolio success'){
                 this.$Message.success("添加成功")
               }
               else{
@@ -686,8 +673,6 @@
                 this.resultTable.p2=re.data.data.p2.toFixed(4)
                 this.line1=re.data.data.graph[0]
                 this.line2=re.data.data.graph[1]
-                this.line3=re.data.data.graph[2]
-                this.line4=re.data.data.graph[3]
                 this.drawLine()
               }
               else{
