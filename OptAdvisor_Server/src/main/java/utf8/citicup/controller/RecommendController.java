@@ -34,8 +34,8 @@ public class RecommendController {
 
     @PostMapping("hedging")
     public ResponseMsg hedging(@RequestBody Map<String, Object> params) {
-        return recommendService.hedging((Integer) params.get("n0"), (Double) params.get("a"),
-                (Double) params.get("s_exp"), params.get("t").toString());
+        return recommendService.hedging(Integer.parseInt(params.get("n0").toString()), Double.parseDouble(params.get("a").toString()),
+                Double.parseDouble(params.get("s_exp").toString()), params.get("t").toString());
     }
 
     @PostMapping("customPortfolio")
