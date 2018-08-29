@@ -240,9 +240,9 @@ public class RecommendServiceImpl implements RecommendService {
         sigma = dataSource.get_Sigma();//实时波动率
         lastestOptionPrice = dataSource.get_LatestPrice();
         S0 = lastestOptionPrice;
-        expiredMonths = new String[]{ T };
-//        expiredMonths = dataSource.get_T();
-        for (String expiredMonth : expiredMonths) {
+        String[] newExpiredMonths = new String[]{ T };
+        expiredMonths = dataSource.get_T();
+        for (String expiredMonth : newExpiredMonths) {
             if (expiredMonth != null) {
                 //region 根据行权名称得到相关数据
                 chigh.put(expiredMonth, new ArrayList<>());
@@ -337,6 +337,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private void addAttributesToDOption(Option one) throws IOException {
+        //添加期权名称、成交价、交易代码
         String[] nameAndCode = dataSource.getShortNameAndCodeName(one.getOptionCode());
         one.setTradeCode(nameAndCode[1]);
         one.setName(nameAndCode[0]);
@@ -508,24 +509,24 @@ public class RecommendServiceImpl implements RecommendService {
         /*实时数据的获取*/
 
         this.upDataFromNet();
-
+        logger.info("get data from net successfully");
         parShallowDeep();
         /*货币基金与衍生品组合分配：*/
         this.M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
 
         List<structD> D = firstStep(combination);
-        System.out.println("first step is finished");
+        logger.info("first step is finished");
         System.out.println(D.size());
         structD maxGoalD;
         maxGoalD = secondStep(D);
 
-        System.out.println("second step is finished");
+        logger.info("second step is finished");
         for(int i = 0;i < maxGoalD.optionCombination.length;i++){
             maxGoalD.optionCombination[i].setType(maxGoalD.buyAndSell[i]);
             addAttributesToDOption(maxGoalD.optionCombination[i]);
         }
         List<Double> profits = thirdStep(maxGoalD, combination);
-        System.out.println("third step is finished");
+        logger.info("third step back test finished");
         double[] assertOnReturns = assertReturns(maxGoalD, profits);
         String[] StringProfits = new String[profits.size()];
         String[] StringAssertOnReturns = new String[profits.size()];
@@ -1239,6 +1240,7 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg customPortfolio(Option[] list)  {
         //传入的Option列表只有期权代码、到期时间、买入卖出、cp属性
+        logger.info("DIY starting!");
         try {
             return new ResponseMsg(0, "custom portfolio finished",mainOneCustomPortfolio(list, 0));
         } catch (IOException e) {
@@ -1258,6 +1260,7 @@ public class RecommendServiceImpl implements RecommendService {
         for (Option each :list) {
             setOptionAttributes(each);
         }
+        logger.info("get data from net successfully");
         structD d = new structD();
         d.optionCombination = list;
         d.buyAndSell = new int[d.optionCombination.length];
@@ -1268,6 +1271,7 @@ public class RecommendServiceImpl implements RecommendService {
         generateD(D,new ArrayList<>(),0,d.buyAndSell, Arrays.asList(list),'D', 1);
         structD maxGoalD;
         maxGoalD = secondStep(D);
+        logger.info("real time data finished");
         for(int i = 0;i < maxGoalD.optionCombination.length;i++){
             addAttributesToDOption(maxGoalD.optionCombination[i]);
         }
@@ -1275,6 +1279,7 @@ public class RecommendServiceImpl implements RecommendService {
         String[] StringProfits = new String[month.length];
         if(type == 0){
             profits = thirdStep(maxGoalD, 'W');
+            logger.info("back test finished");
         }
         for(int i = 0; i < profits.size();i++){
             StringProfits[i] = Double.toString(profits.get(i));
@@ -1293,6 +1298,12 @@ public class RecommendServiceImpl implements RecommendService {
     RecommendOption1 mainOneCustomPortfolio(Option[] list, int type) throws IOException {
         sigma1 = sigma2 = dataSource.get_Sigma();
         p1 = p2 = dataSource.get_LatestPrice();
+        expiredMonths = dataSource.get_T();
+        String expireT = null;
+        if(list.length > 1) {
+            expireT = list[1].getExpireTime();
+            T = expireT.split("-")[0] + '-' + expireT.split("-")[1];
+        }
         return mainTwoCustomPortfolio(list, type, 0, 0);
     }
 
