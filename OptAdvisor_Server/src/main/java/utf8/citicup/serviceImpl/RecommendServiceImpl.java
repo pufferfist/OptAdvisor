@@ -504,7 +504,7 @@ public class RecommendServiceImpl implements RecommendService {
         this.sigma2 = sigma2;
         this.w1 = w1 / 100.0;
         this.w2 = w2 / 100.0;
-        k = k / M0;
+        k = k / 100.0;
         /*实时数据的获取*/
 
         this.upDataFromNet();
