@@ -72,36 +72,36 @@
                 var w1;
                 var w2;
                 if(points<=10){
-                  w1=0.1
-                  w2=0.9
+                  w1=10
+                  w2=90
                   this.$refs.results.type="C1（安逸型）"
                   this.$refs.results.text1="在投资时会以降低风险承受度为前提，风险承受能力低，对收益要求不高，但追求资金本金的绝对安全。预期报酬率优于中长期存款利率，并确保本金在通货膨胀中发挥保值功能。"
                   this.$refs.results.text2="R1（低风险）"
                 }
                 else if(points<=20){
-                  w1=0.3
-                  w2=0.7
+                  w1=30
+                  w2=70
                   this.$refs.results.type="C2（保守型）"
                   this.$refs.results.text1="风险承受能力较低，能容忍一定程度的本金损失，止损意识强。资产配置以低风险品种为主，少量参与股票投资。"
                   this.$refs.results.text2="R2（中低风险）"
                 }
                 else if(points<=30){
-                  w1=0.5
-                  w2=0.5
+                  w1=50
+                  w2=50
                   this.$refs.results.type="C3（稳健型）"
                   this.$refs.results.text1="从总体投资来看，在风险较小的情况下获得一定的收益是您主要的投资目的。您通常愿意使本金面临一定的风险，但在做投资决定时，对风险总是客观存在的道理有清楚的认识，会仔细地对将要面临的风险进行认真的分析。总体来看，愿意承受市场的平均风险。"
                   this.$refs.results.text2="R3（中等风险）"
                 }
                 else if(points<=40){
-                  w1=0.7
-                  w2=0.3
+                  w1=70
+                  w2=30
                   this.$refs.results.type="C4（积极型）"
                   this.$refs.results.text1="偏向于激进的资产配置，对风险有较高的承受能力，投资收益预期相对较高，资产配置以股票等高风险的品种为主，资产市直波动相对较大，除获取资本利得之外，也寻求投资差价收益。"
                   this.$refs.results.text2="R4（中高风险）"
                 }
                 else if(points<=50){
-                  w1=0.9
-                  w2=0.1
+                  w1=90
+                  w2=10
                   this.$refs.results.type="C5（激进型）"
                   this.$refs.results.text1="具有较强的主观风险承受意愿。并试图尝试较高收益的投资，乐意承担一定的风险，希望获得比一般人更高的收益。"
                   this.$refs.results.text2="R5（高风险）"
