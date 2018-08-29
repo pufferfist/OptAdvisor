@@ -4,9 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
 
 @Entity
@@ -68,8 +65,8 @@ public class Portfolio {
 
             options = new Option[1];
             options[0] = recommendOption2.getOption();
-            setBackTestData(recommendOption2.getGraph()[1]);
-            setBackTestData1(recommendOption2.getGraph()[2]);
+            transformStringlistToString(recommendOption2.getGraph()[1]);
+            transformStringlistToString1(recommendOption2.getGraph()[2]);
     }
 
     public Portfolio(String name, String username, RecommendOption1 recommendOption1, Enum type, boolean trackingStatus) {
@@ -97,7 +94,7 @@ public class Portfolio {
         EM = recommendOption1.getEM();
         beta = recommendOption1.getBeta();
         this.trackingStatus = trackingStatus;
-        setBackTestData(recommendOption1.getGraph()[1]);
+        transformStringlistToString(recommendOption1.getGraph()[1]);
     }
 
     public Portfolio(){}
@@ -234,12 +231,20 @@ public class Portfolio {
         return returnOnAssets;
     }
 
-    public String[] getBackTestData(){
+    public String[] transformStringToStringlist(){
         return this.backTestData.split(",");
     }
 
-    public String[] getBackTestData1(){
+    public String[] transformStringToStringlist1(){
         return this.backTestData1.split(",");
+    }
+
+    public String getBackTestData() {
+        return backTestData;
+    }
+
+    public String getBackTestData1() {
+        return backTestData1;
     }
 
     public void setId(Long id) {
@@ -330,11 +335,19 @@ public class Portfolio {
         this.returnOnAssets = returnOnAssets;
     }
 
-    public void setBackTestData(String[] BackTestData){
+    public void transformStringlistToString(String[] BackTestData){
         this.backTestData = String.join(",",BackTestData);
     }
 
-    public void setBackTestData1(String[] BackTestData){
+    public void transformStringlistToString1(String[] BackTestData){
         this.backTestData1 = String.join(",",BackTestData);
+    }
+
+    public void setBackTestData(String backTestData) {
+        this.backTestData = backTestData;
+    }
+
+    public void setBackTestData1(String backTestData1) {
+        this.backTestData1 = backTestData1;
     }
 }
