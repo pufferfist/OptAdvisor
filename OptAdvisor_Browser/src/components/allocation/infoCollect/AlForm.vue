@@ -188,13 +188,13 @@
             let list = res.data.split(/\r?\n|\r/);
             let index;
             let length=list.length;
-            for(index=0;index<length;index++){
-              if(list[length-1]===""){
-                index=length-1;
-                break;
-              }
-              if(list[index].split(',')[1].trim()===''){
-                break;
+            if(list[length-2].split(',')[1].trim()!==""){
+              index=length-1;
+            }else {
+              for (index = 0; index < length; index++) {
+                if (list[index].split(',')[1].trim() === '') {
+                  break;
+                }
               }
             }
             this.currentVolatility = parseFloat(list[index-1].split(',')[1].trim());
