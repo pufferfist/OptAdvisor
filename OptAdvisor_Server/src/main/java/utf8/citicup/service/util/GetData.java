@@ -280,5 +280,19 @@ public class GetData {
 
     }
 
+    public String[] getShortNameAndCodeName(String contract) throws IOException {
+        contract = contract.replace("OP","ZL");
+        String url = "http://hq.sinajs.cn/list="+contract;
+        String result = getDataFromURL(url);
+
+        String[] output = result.split(",");
+        String temp = output[0];
+        String[] out = temp.split("\"");
+        String shortName = out[1];
+        String codeName = output[18];
+        return new String[]{shortName,codeName};
+    }
+
+
 
 }
