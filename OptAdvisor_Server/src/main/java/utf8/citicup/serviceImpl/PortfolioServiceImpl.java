@@ -99,12 +99,12 @@ public class PortfolioServiceImpl implements PortfolioService {
                         RECOMMEND_PORTFOLIO, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
 
-                double[] assertGraph = new double[portfolio.getBackTestData().length];
+                double[] assertGraph = new double[portfolio.transformStringToStringlist().length];
                 String[] StringAssertGraph = new String[assertGraph.length];
                 double addThing = recommendOption1.getReturnOnAssets() * portfolio.getM0()
                         - recommendOption1.getEM() * recommendOption1.getM0();
-                for(int i = 0; i < portfolio.getBackTestData().length;i++){
-                    double value = Double.valueOf(portfolio.getBackTestData()[i]);
+                for(int i = 0; i < portfolio.transformStringToStringlist().length; i++){
+                    double value = Double.valueOf(portfolio.transformStringToStringlist()[i]);
                     if(value != 0)
                         assertGraph[i] = value + addThing;
                     else
@@ -112,7 +112,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                     StringAssertGraph[i] = Double.toString(assertGraph[i]);
                 }
 
-                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.getBackTestData(),
+                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.transformStringToStringlist(),
                                                     StringAssertGraph};
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rnt);
@@ -125,7 +125,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 Portfolio showPortfolio = new Portfolio(portfolio.getName(), portfolio.getUsername(),
                         recommendOption1, DIY, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
-                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.getBackTestData()};
+                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.transformStringToStringlist()};
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rnt);
                 map.put("graph", graph);
@@ -157,8 +157,8 @@ public class PortfolioServiceImpl implements PortfolioService {
 
                 Portfolio[] rtn = new Portfolio[]{portfolio,showPortfolio};
 
-                String[] backTestData = portfolio.getBackTestData();
-                String[] backTestData1 = portfolio.getBackTestData1();
+                String[] backTestData = portfolio.transformStringToStringlist();
+                String[] backTestData1 = portfolio.transformStringToStringlist1();
                 String[] difference = new String[backTestData.length];
 
 

@@ -7,7 +7,7 @@
       </Row>
       <Row class="mt4 mb4">
         <i-input v-model="maxLost" placeholder="允许最大损失" class="w-70 cover">
-          <span slot="append" class="f5">元</span>
+          <span slot="append" class="f5">%</span>
         </i-input>
       </Row>
       <Row class="pb4 border">

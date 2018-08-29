@@ -28,151 +28,137 @@
     </transition>
     <transition name="move-right">
       <div v-if="resultStep">
-        <ResultDisplay class="pt4" :data="portfolio" :date="date" :portfolioProfit="portfolioProfit" :assetsProfit="assetsProfit" ></ResultDisplay>
+        <ResultDisplay class="pt4" :data="portfolio"></ResultDisplay>
         <Row class="pt4">
           <Button size="large" type="warning" @click="lastStep" class="fl forwardButton" ghost>
             <Icon type="ios-arrow-back"/>
             上一步
           </Button>
-          <Button size="large" type="warning" @click="addPortfolio" class="fr addButton" ghost :loading="addPortfolioLoading">
-            <Icon type="md-add" />
+          <Button size="large" type="warning" @click="modal=true" class="fr addButton" ghost
+                  :loading="addPortfolioLoading">
+            <Icon type="md-add"/>
             加入我的组合
           </Button>
         </Row>
+
+        <Modal
+          v-model="modal"
+          title="请输入组合名"
+          :loading="modelLoading"
+          @on-ok="addPortfolio">
+          <Form ref="formInline" :model="myPortfolio" :rules="rule">
+            <FormItem prop="name">
+              <i-input v-model="myPortfolio.name" placeholder="..." class="w-70 cover">
+              </i-input>
+            </FormItem>
+          </Form>
+        </Modal>
       </div>
     </transition>
   </div>
 </template>
 
 <script>
-    import NineGrid from "../components/allocation/infoCollect/NineGrid";
-    import AlForm from "../components/allocation/infoCollect/AlForm";
-    import ResultDisplay from "../components/allocation/ResultDisplay";
-    export default {
-      name: "Allocation",
-      data() {
-        return {
-          price: 1,
-          volatility: 1,
-          infoStep: true,
-          loading: false,
-          resultStep: false,
-          date: [],
-          portfolioProfit: [],//图表
-          assetsProfit: [],
-          data: {
-            optionList: [
-              {
-                id: '510050C1808M02600',
-                name: "50ETF购8月2600",
-                number: "2",
-                cp: 1,
-                expireTime: "2018-8-22",
-                k: 2.600,
-                price1: 2.2,
-                price2: 2.8,
-                delta: 1,
-                gamma: 2,
-                theta: 3,
-                vega: 4,
-                rho: 5
-              },
-              {
-                id: '510050C1809M02700',
-                name: "50ETF沽9月2700",
-                number: "-1",
-                cp: -1,
-                expireTime: "2018-9-26",
-                k: 2.700,
-                price1: 2.3,
-                price2: 2.9,
-                delta: 5,
-                gamma: 4,
-                theta: 3,
-                vega: 2,
-                rho: 1
-              }
-            ],
-            portfolioInfo: {
-              cost: 10000,
-              securityDeposit: 100,
-              z_delta: 1,
-              z_gamma: 2,
-              z_vega: 3,
-              z_theta: 4,
-              z_rho: 5,
-              expectedRate: 6,
-              risk: 7,
-            },
-            assetsInfo: {
-              expectedRate: '60%',
-              risk: '30%'
-            },
-          },
-          addPortfolioLoading:false,
-          portfolio:{},
-          myPortfolio:{
-            options:[],
-            name:"temp",
-            type:0,
-            trackingStatus:false
-          }
-        }
+  import NineGrid from "../components/allocation/infoCollect/NineGrid";
+  import AlForm from "../components/allocation/infoCollect/AlForm";
+  import ResultDisplay from "../components/allocation/ResultDisplay";
+
+  export default {
+    name: "Allocation",
+    data() {
+      return {
+        price: 1,
+        volatility: 1,
+        infoStep: true,
+        loading: false,
+        resultStep: false,
+        addPortfolioLoading: false,
+        portfolio: {},
+        myPortfolio: {
+          name: "",
+          trackingStatus: false
+        },
+        modal: false,
+        modelLoading:true,
+        rule: {
+          name: [
+            {required: true, message: '组合名不得为空', trigger: 'blur'}
+          ]
+        },
+      }
+    },
+    components: {ResultDisplay, AlForm, NineGrid},
+    methods: {
+      handleOnGrid: function (event) {
+        this.price = event.price;
+        this.volatility = event.volatility;
       },
-      components: {ResultDisplay, AlForm, NineGrid},
-      methods: {
-        handleOnGrid: function (event) {
-          this.price = event.price;
-          this.volatility = event.volatility;
-        },
-        handleNextStep: function (event) {
-          this.loading = true;
-          this.axios.post("backend/recommend/recommendPortfolio",event)
-            .then((res)=>{
-              this.portfolio=res.data.data;
-              this.loading = false;
-              this.infoStep = false;
-              setTimeout(() => {
-                this.resultStep = true;
-              }, 200);
-            });
-        },
-        lastStep: function () {
-          this.resultStep = false;
-          setTimeout(() => {
-            this.infoStep = true;
-          }, 200);
-        },
-        addPortfolio: function () {
-          this.addPortfolioLoading=true;
-          //异步请求添加组合并跳转到我的组合界面
-          //理论上来说应该支持自定义组合名
-          this.myPortfolio.options=this.portfolio.optionList;
-          this.myPortfolio.type='RECOMMEND_PORTFOLIO';
-          this.axios.post("/backend/portfolio", this.myPortfolio)
-            .then((res) => {
-            this.addPortfolioLoading=false;
-            if (res.data.code === 0) {
+      handleNextStep: function (event) {
+        this.loading = true;
+        this.axios.post("backend/recommend/recommendPortfolio", event)
+          .then((res) => {
+            this.portfolio = res.data.data;
+            this.loading = false;
+            this.infoStep = false;
+            setTimeout(() => {
+              this.resultStep = true;
+            }, 200);
+          });
+      },
+      lastStep: function () {
+        this.resultStep = false;
+        setTimeout(() => {
+          this.infoStep = true;
+        }, 200);
+      },
+      addPortfolio: function () {
+        let validation;
+        this.$refs['formInline'].validate((valid) => {
+          validation=valid
+        });
+        if(!validation) {
+          this.modelLoading=false;
+          setTimeout(()=>{
+            this.modelLoading=true;
+          },300);
+          return;
+        }
+        this.model=false;
+        this.addPortfolioLoading = true;
+        //异步请求添加组合并跳转到我的组合界面
+        //理论上来说应该支持自定义组合名
+        this.portfolio.options = this.portfolio.optionList;
+        delete this.portfolio.optionList;
+        this.portfolio.type = 0;
+        this.portfolio.trackingStatus=false;
+        this.portfolio.name=this.myPortfolio.name;
+        this.axios.post("/backend/portfolio", this.portfolio)
+          .then((res) => {
+              this.addPortfolioLoading = false;
+              if (res.data.code === 0) {
+                this.$Message.success("添加组合成功");
                 this.$router.push('/myPortfolio');
               } else {
                 this.$Message.error('发生了预料之外的错误');
               }
             }
           )
-        }
       }
     }
+  }
 </script>
 
 <style scoped>
-  .nineGrid{
+  .nineGrid {
     height: 600px;
   }
-  .middleBorder{
-    border-right: 1px solid rgba( 0, 0, 0, .3 );
+
+  .middleBorder {
+    border-right: 1px solid rgba(0, 0, 0, .3);
   }
-  .spin{
-    position:fixed;
+
+  .spin {
+    position: fixed;
   }
 
   .loader {
@@ -279,7 +265,7 @@
     }
   }
 
-  .forwardButton{
+  .forwardButton {
     color: #f90;
     background: 0 0;
     border-color: #f90;

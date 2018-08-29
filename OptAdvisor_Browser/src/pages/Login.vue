@@ -16,7 +16,15 @@
     import Logo from "../components/util/Logo";
     export default {
         name: "Login",
-      components: {Logo, LoginForm}
+      components: {Logo, LoginForm},
+      mounted:function () {
+        this.axios.post("backend/auth")
+          .then(res=>{
+            if(res.data.code===0){
+              this.$router.push("/50ETF");
+            }
+          })
+      }
     }
 </script>
 
