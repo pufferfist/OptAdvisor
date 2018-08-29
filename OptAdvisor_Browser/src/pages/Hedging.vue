@@ -48,24 +48,19 @@
               var deadline_value=this.$refs.info.formItem.month[deadline.substr(5)-1]
 
               //写入数据
-              var param={NO:OpenInterest,a:rate/100,s_exp:min_price,T:deadline_value}
+              var param={n0:OpenInterest,a:rate/100,s_exp:min_price,t:deadline_value}
               this.axios.post('/backend/recommend/hedging',param).then((response)=>{
-                console.log(response)
-                /**********************************查看data是否合规**************************************/
                 var data=response.data
                 //1.填充表格
                 var forms={
-                    persisentId:data.option.persisentId,
-                    tradeCode:data.option.tradeCode, //交易代码
                     optionCode:data.option.optionCode, //期权代码
-                    name:data.option.name,//例如:50ETF购8月2600
                     expireTime:data.option.expireTime,//到期时间
                     transactionPrice:data.option.transactionPrice,//成交价
-                    quantity:data.option.quantity,//在组合中的份数,单独存在无意义
                     yclose:data.option.yclose,//期权前一天收盘价
                     price1:data.option.price1,//期权实时买入价格
                     price2:data.option.price2,//期权实时卖出价格
                     k:data.option.k,//期权行权价格
+                    realTimePrice:data.option.realTimePrice,
                     delta:data.option.delta,
                     gamma:data.option.gamma,
                     vega:data.option.vega,

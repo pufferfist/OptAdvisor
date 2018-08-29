@@ -57,50 +57,65 @@
         }
       },
       methods:{
-          getName(index){
-            return 'tr'+index
-          },
-          choose(index){
-            //1.恢复线条
-            document.getElementById("tr"+this.lastSelectedLineIndex).style.border="none"
-            //2.勾画线条
-            document.getElementById("tr"+index).style.border="1px solid #2db7f5"
-            //3.赋值
-            this.lastSelectedLineIndex=index
-            //4.初始化displayResult
-            this.$refs.result.getSingleInfo('up','10001407')
-            this.$refs.result.drawLine()
-          },
-          getLatestPrice(address){
-          //address是10004125这种
-            this.axios.get('/sinaOption/list=CON_SO_'+address)
-              .then(re=>{
-                var parts=re.data.substr(re.data.indexOf("=")+2).split(",")
-                return parts[14]
-              })
+        getName(index){
+          return 'tr'+index
         },
-          initial(optionData){
-            //1.初始化数据
-            this.name=optionData.name
-            this.time
-            if(optionData.type=='0'){
-              this.type='资产配置'
-            }
-            else if(optionData.type=='1'){
-              this.type='套期保值'
-            }
-            else{
-              this.type='DIY'
-            }
-            this.earnings
-            this.tdata
-            this.text1
-            this.text2
-            this.text3
-            this.text4
-            //3.调用getLatestPrice实时的更改表格中最新价数据
-            //4.调用choose方法默认选中第一项，同时画echarts
+        choose(index){
+          //1.恢复线条
+          document.getElementById("tr"+this.lastSelectedLineIndex).style.border="none"
+          //2.勾画线条
+          document.getElementById("tr"+index).style.border="1px solid #2db7f5"
+          //3.赋值
+          this.lastSelectedLineIndex=index
+          //4.初始化displayResult
+          this.$refs.result.getSingleInfo('up','10001407')
+          this.$refs.result.drawLine()
+        },
+        //待集成
+        getLatestPrice(){
+          var suffix=''
+          for(var i=0;i<this.tdata.length;i++){
+            suffix+='CON_SO_'+this.tdata[i][0]+','
           }
+          this.axios.get('/sinaOption/list='+suffix)
+            .then(re=>{
+              //设置tdata中每项的第一项，即设置tdata[i][0]未取到信息中的最新价
+            })
+        },
+        //待集成
+        initial(optionData){
+          //1.初始化数据
+          this.name=optionData.name
+          this.time
+          if(optionData.type=='1'){
+            this.type='资产配置'
+          }
+          else if(optionData.type=='2'){
+            this.type='套期保值'
+          }
+          else{
+            this.type='DIY'
+          }
+          this.earnings=optionData.EM
+          this.tdata=[]
+          for(var i=0;i<optionData.options.length;i++){
+            var temp=[]
+            temp.push(optionData.options[i].optionCode)
+            temp.push(optionData.options[i].name)
+            temp.push(optionData.options[i].transactionPrice)
+            this.tdata.push(temp)
+          }
+          this.getLatestPrice()
+          this.text1=optionData.cost
+          this.text2=optionData.bond
+          this.text3
+          this.text4
+          //4.调用choose方法默认选中第一项
+          // 同时画echarts
+          this.$refs.result.lineName=['data1','data2','data3']
+
+
+        }
       }
 
     }

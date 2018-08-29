@@ -1170,8 +1170,14 @@ public class RecommendServiceImpl implements RecommendService {
 //                logger.info("nullShowUp, assetClose1 is null, startDate is " + startDate);
 //                assetClose1 = 0;
 //            }
+//            logger.info("endDate 是" + endDate);
             ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
-            assetClose2 = ETF50findByLastTradeDate.getClosePrice();
+            if(ETF50findByLastTradeDate != null)
+                assetClose2 = ETF50findByLastTradeDate.getClosePrice();
+            else {
+                flag1 = true;
+                assetClose2 = 0;
+            }
 
             List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
             double totalLoss = 0;
