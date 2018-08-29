@@ -93,8 +93,12 @@ public class PortfolioServiceImpl implements PortfolioService {
                 recommendService.setSigma1(portfolio.getSigma1());
                 recommendService.setSigma2(portfolio.getSigma2());
                 Option[] optionList = portfolio.getOptions().clone();
-                RecommendOption1 recommendOption1 = recommendService.mainTwoCustomPortfolio(optionList, 2,
-                        portfolio.getK(), portfolio.getM0());
+                RecommendOption1 recommendOption1 = null;
+                try {
+                    recommendOption1 = recommendService.mainTwoCustomPortfolio(optionList, 2,portfolio.getK(), portfolio.getM0());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Portfolio showPortfolio = new Portfolio(portfolio.getName(), portfolio.getUsername(),recommendOption1,
                         RECOMMEND_PORTFOLIO, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
@@ -121,7 +125,12 @@ public class PortfolioServiceImpl implements PortfolioService {
             }
             else if(portfolio.getType() == DIY){
                 Option[] optionList = portfolio.getOptions().clone();
-                RecommendOption1 recommendOption1 = recommendService.mainOneCustomPortfolio(optionList, 1);
+                RecommendOption1 recommendOption1 = null;
+                try {
+                    recommendOption1 = recommendService.mainOneCustomPortfolio(optionList, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 Portfolio showPortfolio = new Portfolio(portfolio.getName(), portfolio.getUsername(),
                         recommendOption1, DIY, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
