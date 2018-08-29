@@ -61,7 +61,7 @@
                   content: "登录成功",
                   duration: 0.5
                 });
-                this.$router.push("/home")
+                this.$router.push("/50ETF")
               } else if (response.data.code === 1001) {
                 this.$Message.warning("用户名不存在")
               } else if (response.data.code === 1002) {

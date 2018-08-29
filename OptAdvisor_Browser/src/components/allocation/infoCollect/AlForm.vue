@@ -21,7 +21,7 @@
       <Row v-if="price===1" class="pt4">
         <h4 class="tl">预测价格范围</h4>
         <Slider  id="priceUp" v-model="priceForecast" :step="0.001" :tip-format="priceFormat" show-input :max="4" :min="currentPrice"></Slider>
-        <p class="pt4">价格范围:{{currentPrice}}~{{priceForecast>currentPrice?priceForecast:currentPrice}}元</p>
+        <p class="pt4">价格范围:{{currentPrice}}~{{priceForecast}}元</p>
       </Row>
       <Row v-if="price===-1" class="pt4">
         <h4 class="tl">预测价格范围</h4>
@@ -95,7 +95,67 @@
           return day >= theFourthWed - 4 && day <= theFourthWed + 1;
         },
         nextStep:function () {
-          this.$emit("nextStep");
+          let param={
+            t: this.time
+          };
+          param.m0= this.principal;
+          param.k=this.maxLost;
+          if (this.volatility > 0) {
+            if(this.price>0){
+              param.combination='A';
+              param.p1=this.currentPrice;
+              param.p2=this.priceForecast;
+              param.sigma1=this.currentVolatility;
+              param.sigma2=this.volatilityForecast;
+            }else if(this.price===0){
+              param.combination='B';
+              param.p1=this.currentPrice;
+              param.p2=this.currentPrice;
+              param.sigma1=this.currentVolatility;
+              param.sigma2=this.volatilityForecast;
+            }else {
+              param.combination='C';
+              param.p1=this.priceForecast;
+              param.p2=this.currentPrice;
+              param.sigma1=this.currentVolatility;
+              param.sigma2=this.volatilityForecast;
+            }
+          }else if(this.volatility===0){
+            if(this.price>0){
+              param.combination='D';
+              param.p1=this.currentPrice;
+              param.p2=this.priceForecast;
+              param.sigma1=this.currentVolatility;
+              param.sigma2=this.currentVolatility;
+            }else {
+              param.combination='E';
+              param.p1=this.priceForecast;
+              param.p2=this.currentPrice;
+              param.sigma1=this.currentVolatility;
+              param.sigma2=this.currentVolatility;
+            }
+          } else{
+            if(this.price>0){
+              param.combination='F';
+              param.p1=this.currentPrice;
+              param.p2=this.priceForecast;
+              param.sigma1=this.volatilityForecast;
+              param.sigma2=this.currentVolatility;
+            }else if(this.price===0){
+              param.combination='G';
+              param.p1=this.currentPrice;
+              param.p2=this.currentPrice;
+              param.sigma1=this.volatilityForecast;
+              param.sigma2=this.currentVolatility;
+            }else {
+              param.combination='H';
+              param.p1=this.priceForecast;
+              param.p2=this.currentPrice;
+              param.sigma1=this.volatilityForecast;
+              param.sigma2=this.currentVolatility;
+            }
+          }
+          this.$emit("nextStep",param);
         }
       },
       created:function () {
@@ -126,7 +186,18 @@
         this.axios.get("/sigma", {params: {v: new Date().getTime()}})
           .then((res) => {
             let list = res.data.split(/\r?\n|\r/);
-            this.currentVolatility = parseFloat(list[list.length - 2].split(',')[1].trim());
+            let index;
+            let length=list.length;
+            for(index=0;index<length;index++){
+              if(list[length-1]===""){
+                index=length-1;
+                break;
+              }
+              if(list[index].split(',')[1].trim()===''){
+                break;
+              }
+            }
+            this.currentVolatility = parseFloat(list[index-1].split(',')[1].trim());
             this.volatilityForecast = this.currentVolatility;
           });
         this.axios.get("/sinaOption/list=f_510050")

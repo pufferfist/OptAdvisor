@@ -2,6 +2,9 @@ package utf8.citicup.domain.entity;
 
 import javax.persistence.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
 
 @Entity
@@ -23,8 +26,8 @@ public class Portfolio {
     private boolean trackingStatus;
 
     //期权组合和DIY要有的东西
-    private double M0;
-    private double k;
+    private double M0;//警报需要
+    private double k;//警报需要
     private double sigma1;
     private double sigma2;
     private double p1;
@@ -36,6 +39,7 @@ public class Portfolio {
     private double z_vega;
     private double z_theta;
     private double z_rho;
+    private double returnOnAssets; //资产收益率
     private double EM;//组合的期望收益率
     private double beta;//组合风险值
 
@@ -45,6 +49,9 @@ public class Portfolio {
     private double pAsset;//套期保值中的pAsset
     private double sExp;
     private boolean flag;
+
+    private String backTestData;
+    private String backTestData1;
 
     public Portfolio(String username,RecommendOption2 recommendOption2,int n, double pAsset, double sExp,boolean flag, Enum type) {
             this.username = username;
@@ -58,7 +65,8 @@ public class Portfolio {
 
             options = new Option[1];
             options[0] = recommendOption2.getOption();
-
+            setBackTestData(recommendOption2.getGraph()[1]);
+            setBackTestData1(recommendOption2.getGraph()[2]);
     }
 
     public Portfolio(String name, String username, RecommendOption1 recommendOption1, Enum type, boolean trackingStatus) {
@@ -82,9 +90,11 @@ public class Portfolio {
         z_rho = recommendOption1.getZ_rho();
         z_theta = recommendOption1.getZ_theta();
         z_vega = recommendOption1.getZ_vega();
+        returnOnAssets = recommendOption1.getReturnOnAssets();
         EM = recommendOption1.getEM();
         beta = recommendOption1.getBeta();
         this.trackingStatus = trackingStatus;
+        setBackTestData(recommendOption1.getGraph()[1]);
     }
 
     public Portfolio(){}
@@ -217,6 +227,18 @@ public class Portfolio {
         return p2;
     }
 
+    public double getReturnOnAssets() {
+        return returnOnAssets;
+    }
+
+    public String[] getBackTestData(){
+        return this.backTestData.split(",");
+    }
+
+    public String[] getBackTestData1(){
+        return this.backTestData1.split(",");
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
@@ -299,5 +321,17 @@ public class Portfolio {
 
     public void setFlag(boolean flag) {
         this.flag = flag;
+    }
+
+    public void setReturnOnAssets(double returnOnAssets) {
+        this.returnOnAssets = returnOnAssets;
+    }
+
+    public void setBackTestData(String[] BackTestData){
+        this.backTestData = String.join(",",BackTestData);
+    }
+
+    public void setBackTestData1(String[] BackTestData){
+        this.backTestData1 = String.join(",",BackTestData);
     }
 }

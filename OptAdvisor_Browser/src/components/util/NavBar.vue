@@ -37,7 +37,7 @@
 
           <div class="dib pr3 pl6">
             <router-link v-if="isLogin" to="/prompt" class="black">
-              <Badge :count="1" class="di">
+              <Badge :count="unreadCount" class="di">
                 <Icon type="md-notifications-outline" size="30"/>
               </Badge>
             </router-link>
@@ -67,7 +67,8 @@
         return {
           theme: 'light',
           userName: '',
-          isLogin: false
+          isLogin: false,
+          unreadCount:0
         }
       },
       created:function () {
@@ -76,6 +77,11 @@
         this.axios.post("/backend/auth")
           .then((res)=>{
             this.isLogin = (res.data.code === 0);
+          })
+
+        this.axios.get("/backend/message/count")
+          .then((res)=>{
+            this.unreadCount=res.data.data;
           })
       }
     }

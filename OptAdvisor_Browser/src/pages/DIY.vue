@@ -672,8 +672,6 @@
 
         //这个方法还要集成
         preview(){
-          var data={options:this.getOptions()}
-          console.log(data)
           this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
               if(re.data.msg=='custom portfolio finished'){
