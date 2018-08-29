@@ -336,7 +336,7 @@ public class RecommendServiceImpl implements RecommendService {
         //endregion
     }
 
-    void addAttributesToDOption(Option one) throws IOException {
+    private void addAttributesToDOption(Option one) throws IOException {
         String[] nameAndCode = dataSource.getShortNameAndCodeName(one.getOptionCode());
         one.setTradeCode(nameAndCode[1]);
         one.setName(nameAndCode[0]);

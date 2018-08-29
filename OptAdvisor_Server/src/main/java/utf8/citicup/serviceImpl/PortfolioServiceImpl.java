@@ -95,9 +95,11 @@ public class PortfolioServiceImpl implements PortfolioService {
                 Option[] optionList = portfolio.getOptions().clone();
                 RecommendOption1 recommendOption1 = null;
                 try {
-                    recommendOption1 = recommendService.mainTwoCustomPortfolio(optionList, 2,portfolio.getK(), portfolio.getM0());
+                    recommendOption1 = recommendService.mainTwoCustomPortfolio(optionList, 2,
+                            portfolio.getK(), portfolio.getM0());
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return new ResponseMsg(2000, "网络获取数据出错", null);
                 }
                 Portfolio showPortfolio = new Portfolio(portfolio.getName(), portfolio.getUsername(),recommendOption1,
                         RECOMMEND_PORTFOLIO, false);
@@ -130,6 +132,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                     recommendOption1 = recommendService.mainOneCustomPortfolio(optionList, 1);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return new ResponseMsg(2000, "网络获取数据出错", null);
                 }
                 Portfolio showPortfolio = new Portfolio(portfolio.getName(), portfolio.getUsername(),
                         recommendOption1, DIY, false);

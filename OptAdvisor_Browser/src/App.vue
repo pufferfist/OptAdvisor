@@ -6,7 +6,12 @@
 
 <script>
 export default {
-  name: "App"
+  name: "App",
+  provide:function () {
+    return{
+      reload: this.reload
+    }
+  }
 };
 </script>
 

@@ -1,6 +1,10 @@
 <template>
   <div>
-    <button @click="getCode">XX</button>
+    <Spin v-if="show">
+      <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+      <div>请您稍后</div>
+    </Spin>
+    <button @click="test">XXX</button>
   </div>
 </template>
 
@@ -8,19 +12,22 @@
   export default {
     name:'test',
     data(){
-      return {
-        show: true,
-        count: '',
-        timer: null,
-      }
+      show:false
     },
     methods:{
-      getCode(){
-        alert(parseInt("0")+5)
+      test(){
+        this.show=true
       }
     }
   };
 </script>
 <style>
-
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
+  @keyframes ani-demo-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
+  }
 </style>

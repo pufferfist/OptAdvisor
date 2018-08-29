@@ -244,7 +244,9 @@
           line2:[],
           line3:[],
           line4:[],
-          resultTable:'',
+          resultTable:{},
+          show1:false,
+          show2:false
         }
       },
       mounted() {
@@ -255,7 +257,7 @@
             this.getValue(months[1]);
           })
         this.drawLine()
-        setInterval(this.circle, 5000);
+        //setInterval(this.circle, 5000);
 
       },
       methods: {
@@ -524,9 +526,9 @@
         },
         async confirm(name){
           //1.需要传递的options参数
-          var type=3
+          var type=2
           var trackingStatus=false
-          var options
+          var options={}
           var m0
           var k
           var sigma1
@@ -542,33 +544,25 @@
           var z_rho
           var em
           var beta
-          await this.axios.get('/backend/recommend/customPortfolio',{options:this.getOptions()})
+          await this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
-              options=re.data.options
-              m0=re.data.m0
-              z_delta=re.data.z_delta
-              z_gamma=re.data.z_gamma
-              z_vega=re.data.z_vega
-              z_theta=re.data.z_theta
-              z_rho=re.data.z_rho
-              em=re.data.em
-              beta=re.data.beta
-              k=re.data.k
-              sigma1=re.data.sigma1
-              sigma2=re.data.sigma2
-              p1=re.data.p1
-              p2=re.data.p2
-              cost=re.data.cost
-              bond=re.data.bond
+              options=re.data.data.optionList
+              m0=re.data.data.m0
+              z_delta=re.data.data.z_delta
+              z_gamma=re.data.data.z_gamma
+              z_vega=re.data.data.z_vega
+              z_theta=re.data.data.z_theta
+              z_rho=re.data.data.z_rho
+              em=re.data.data.em
+              beta=re.data.data.beta
+              k=re.data.data.k
+              sigma1=re.data.data.sigma1
+              sigma2=re.data.data.sigma2
+              p1=re.data.data.p1
+              p2=re.data.data.p2
+              cost=re.data.data.cost
+              bond=re.data.data.bond
             })
-          for(var i=0;i<options.length;i++){
-            await this.axios.get('/sinaOption/list=CON_SO_'+options[i].substr(7))
-              .then(re=>{
-                var parts=re.data.substr(re.data.indexOf("=")+2).split(",")
-                options[i].tradeCode=parts[12]
-                options[i].name=parts[0]
-              })
-          }
 
           var data={
             options:options,
@@ -594,6 +588,7 @@
 
           await this.axios.post('/backend/portfolio',data)
             .then(re=>{
+              console.log(re)
               if(re.msg=='Add portfolio success'){
                 this.$Message.success("添加成功")
               }
@@ -669,32 +664,30 @@
           }
           return year+"-"+month+"-"+(Array(2).join(0)+day).slice(-2)
         },
-
-        //这个方法还要集成
         preview(){
           this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
               if(re.data.msg=='custom portfolio finished'){
-                this.resultTable.num=re.data.num
-                this.resultTable.cost=re.data.cost
-                this.resultTable.bond=re.data.bond
-                this.resultTable.z_delta=re.data.z_delta
-                this.resultTable.z_gamma=re.data.z_gamma
-                this.resultTable.z_vega=re.data.z_vega
-                this.resultTable.z_theta=re.data.z_theta
-                this.resultTable.z_rho=re.data.z_rho
-                this.resultTable.em=re.data.em
-                this.resultTable.beta=re.data.beta
-                this.resultTable.m0=re.data.m0
-                this.resultTable.k=re.data.k
-                this.resultTable.sigma1=re.data.sigma1
-                this.resultTable.sigma2=re.data.sigma2
-                this.resultTable.p1=re.data.p1
-                this.resultTable.p2=re.data.p2
-                this.line1=re.data.graph[0]
-                this.line2=re.data.graph[1]
-                this.line3=re.data.graph[2]
-                this.line4=re.data.graph[3]
+                this.resultTable.num=re.data.data.num
+                this.resultTable.cost=re.data.data.cost
+                this.resultTable.bond=re.data.data.bond.toFixed(4)
+                this.resultTable.z_delta=re.data.data.z_delta.toFixed(4)
+                this.resultTable.z_gamma=re.data.data.z_gamma.toFixed(4)
+                this.resultTable.z_vega=re.data.data.z_vega.toFixed(4)
+                this.resultTable.z_theta=re.data.data.z_theta.toFixed(4)
+                this.resultTable.z_rho=re.data.data.z_rho.toFixed(4)
+                this.resultTable.em=re.data.data.em.toFixed(4)
+                this.resultTable.beta=re.data.data.beta.toFixed(4)
+                this.resultTable.m0=re.data.data.m0
+                this.resultTable.k=re.data.data.k.toFixed(4)
+                this.resultTable.sigma1=re.data.data.sigma1.toFixed(4)
+                this.resultTable.sigma2=re.data.data.sigma2.toFixed(4)
+                this.resultTable.p1=re.data.data.p1.toFixed(4)
+                this.resultTable.p2=re.data.data.p2.toFixed(4)
+                this.line1=re.data.data.graph[0]
+                this.line2=re.data.data.graph[1]
+                this.line3=re.data.data.graph[2]
+                this.line4=re.data.data.graph[3]
                 this.drawLine()
               }
               else{
@@ -742,10 +735,12 @@
   .table3 td{
     text-align: left;
     font-size: 13px;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
     background-color: #f8f8f9;
     min-width: 50px;
+    text-align: center;
+    -webkit-text-fill-color: #2baee9;
   }
   .table3 th{
     text-align: left;
