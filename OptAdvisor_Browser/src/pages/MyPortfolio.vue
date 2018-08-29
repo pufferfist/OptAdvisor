@@ -74,7 +74,6 @@
       },
       methods:{
         click_left(name){
-          //alert(name)//1-0
           var suffix=name.substr(2)
           var id
           if(name[0]=='1'){
@@ -88,6 +87,7 @@
           }
           this.axios.get('/backend/portfolio/'+id)
             .then(re=>{
+              console.log(re)
               this.$refs.portfolio.initial(re.data)
               document.getElementById("right").style.display=""
             })
@@ -221,13 +221,14 @@
               }
             })
           },
-        //type不确定
         initial(){
           //1.获取所有的组合数据
           this.axios.get('/backend/portfolio')
             .then(re=>{
-              this.allPortfolioData=re.data
-              var tempData=re.data
+              console.log(re)
+              this.allPortfolioData=re.data.data
+              var tempData=re.data.data
+              console.log(tempData)
               var zichan=[]
               var taoqi=[]
               var diy=[]
@@ -236,13 +237,13 @@
                 var object={}
                 object.name=temp.name
                 object.id=temp.id
-                if(temp.type=='1'){
+                if(temp.type==0){
                   zichan.push(object)
                 }
-                else if(temp.type=='2'){
+                else if(temp.type==1){
                   taoqi.push(object)
                 }
-                else if(temp.type=='3'){
+                else if(temp.type==2){
                   diy.push(object)
                 }
               }
