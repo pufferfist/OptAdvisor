@@ -240,9 +240,9 @@ public class RecommendServiceImpl implements RecommendService {
         sigma = dataSource.get_Sigma();//实时波动率
         lastestOptionPrice = dataSource.get_LatestPrice();
         S0 = lastestOptionPrice;
-        expiredMonths = new String[]{ T };
-//        expiredMonths = dataSource.get_T();
-        for (String expiredMonth : expiredMonths) {
+        String[] newExpiredMonths = new String[]{ T };
+        expiredMonths = dataSource.get_T();
+        for (String expiredMonth : newExpiredMonths) {
             if (expiredMonth != null) {
                 //region 根据行权名称得到相关数据
                 chigh.put(expiredMonth, new ArrayList<>());
@@ -334,6 +334,17 @@ public class RecommendServiceImpl implements RecommendService {
         newOption.setVega(vega);
         newOption.setRealTimePrice(realTimePrice);
         //endregion
+    }
+
+    private void addAttributesToDOption(Option one) throws IOException {
+        //添加期权名称、成交价、交易代码
+        String[] nameAndCode = dataSource.getShortNameAndCodeName(one.getOptionCode());
+        one.setTradeCode(nameAndCode[1]);
+        one.setName(nameAndCode[0]);
+        if(one.getType() < 0)
+            one.setTransactionPrice(one.getPrice2());
+        else
+            one.setTransactionPrice(one.getPrice1());
     }
 
     private void parShallowDeep(){
@@ -477,6 +488,7 @@ public class RecommendServiceImpl implements RecommendService {
         try {
             recommendOption1 = mainRecommendPortfolio(M0, k, T, combination, p1, p2, sigma1, sigma2, w1, w2);
         } catch (IOException e) {
+            e.printStackTrace();
             return new ResponseMsg(2000, "网络获取失败", null);
         }
         return new ResponseMsg(0, "recommend Portfolio finished", recommendOption1);
@@ -493,26 +505,28 @@ public class RecommendServiceImpl implements RecommendService {
         this.sigma2 = sigma2;
         this.w1 = w1 / 100.0;
         this.w2 = w2 / 100.0;
-        k = k / M0;
+        k = k / 100.0;
         /*实时数据的获取*/
 
         this.upDataFromNet();
-
+        logger.info("get data from net successfully");
         parShallowDeep();
         /*货币基金与衍生品组合分配：*/
         this.M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
 
         List<structD> D = firstStep(combination);
-        System.out.println("first step is finished");
+        logger.info("first step is finished");
         System.out.println(D.size());
         structD maxGoalD;
         maxGoalD = secondStep(D);
-        System.out.println("second step is finished");
+
+        logger.info("second step is finished");
         for(int i = 0;i < maxGoalD.optionCombination.length;i++){
             maxGoalD.optionCombination[i].setType(maxGoalD.buyAndSell[i]);
+            addAttributesToDOption(maxGoalD.optionCombination[i]);
         }
         List<Double> profits = thirdStep(maxGoalD, combination);
-        System.out.println("third step is finished");
+        logger.info("third step back test finished");
         double[] assertOnReturns = assertReturns(maxGoalD, profits);
         String[] StringProfits = new String[profits.size()];
         String[] StringAssertOnReturns = new String[profits.size()];
@@ -1157,8 +1171,14 @@ public class RecommendServiceImpl implements RecommendService {
 //                logger.info("nullShowUp, assetClose1 is null, startDate is " + startDate);
 //                assetClose1 = 0;
 //            }
+//            logger.info("endDate 是" + endDate);
             ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
-            assetClose2 = ETF50findByLastTradeDate.getClosePrice();
+            if(ETF50findByLastTradeDate != null)
+                assetClose2 = ETF50findByLastTradeDate.getClosePrice();
+            else {
+                flag1 = true;
+                assetClose2 = 0;
+            }
 
             List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
             double totalLoss = 0;
@@ -1220,28 +1240,27 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg customPortfolio(Option[] list)  {
         //传入的Option列表只有期权代码、到期时间、买入卖出、cp属性
-        return new ResponseMsg(0, "custom portfolio finished",mainOneCustomPortfolio(list, 0));
+        logger.info("DIY starting!");
+        try {
+            return new ResponseMsg(0, "custom portfolio finished",mainOneCustomPortfolio(list, 0));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseMsg(2000, "网络获取失败", null);
+        }
     }
 
     //sigma1 2 and p1 2 没有初始化
     //type为零：正常的DIY组合计算，type为1,：查看我的DIY组合，type为2：查看我的期权组合
-    RecommendOption1 mainTwoCustomPortfolio(Option[] list, int type, double k, double M0){
-        try {
-            r = dataSource.get_r();
-            t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
-            sigma = dataSource.get_Sigma();//实时波动率
-            S0 = dataSource.get_LatestPrice();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    RecommendOption1 mainTwoCustomPortfolio(Option[] list, int type, double k, double M0) throws IOException {
+        r = dataSource.get_r();
+        t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
+        sigma = dataSource.get_Sigma();//实时波动率
+        S0 = dataSource.get_LatestPrice();
 
         for (Option each :list) {
-            try {
-                setOptionAttributes(each);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            setOptionAttributes(each);
         }
+        logger.info("get data from net successfully");
         structD d = new structD();
         d.optionCombination = list;
         d.buyAndSell = new int[d.optionCombination.length];
@@ -1252,10 +1271,15 @@ public class RecommendServiceImpl implements RecommendService {
         generateD(D,new ArrayList<>(),0,d.buyAndSell, Arrays.asList(list),'D', 1);
         structD maxGoalD;
         maxGoalD = secondStep(D);
+        logger.info("real time data finished");
+        for(int i = 0;i < maxGoalD.optionCombination.length;i++){
+            addAttributesToDOption(maxGoalD.optionCombination[i]);
+        }
         List<Double> profits = new ArrayList<>();
         String[] StringProfits = new String[month.length];
         if(type == 0){
             profits = thirdStep(maxGoalD, 'W');
+            logger.info("back test finished");
         }
         for(int i = 0; i < profits.size();i++){
             StringProfits[i] = Double.toString(profits.get(i));
@@ -1271,12 +1295,14 @@ public class RecommendServiceImpl implements RecommendService {
                 maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, graph, M, k);
     }
 
-    RecommendOption1 mainOneCustomPortfolio(Option[] list, int type) {
-        try {
-            sigma1 = sigma2 = dataSource.get_Sigma();
-            p1 = p2 = dataSource.get_LatestPrice();
-        } catch (IOException e) {
-            e.printStackTrace();
+    RecommendOption1 mainOneCustomPortfolio(Option[] list, int type) throws IOException {
+        sigma1 = sigma2 = dataSource.get_Sigma();
+        p1 = p2 = dataSource.get_LatestPrice();
+        expiredMonths = dataSource.get_T();
+        String expireT = null;
+        if(list.length > 1) {
+            expireT = list[1].getExpireTime();
+            T = expireT.split("-")[0] + '-' + expireT.split("-")[1];
         }
         return mainTwoCustomPortfolio(list, type, 0, 0);
     }

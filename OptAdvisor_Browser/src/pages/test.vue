@@ -1,7 +1,10 @@
 <template>
   <div>
-    <span v-show="show" @click="getCode">获取验证码</span>
-    <span v-show="!show" class="count">{{count}} s</span>
+    <Spin v-if="show">
+      <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+      <div>请您稍后</div>
+    </Spin>
+    <button @click="test">XXX</button>
   </div>
 </template>
 
@@ -9,32 +12,22 @@
   export default {
     name:'test',
     data(){
-      return {
-        show: true,
-        count: '',
-        timer: null,
-      }
+      show:false
     },
     methods:{
-      getCode(){
-        const TIME_COUNT = 6;
-        if (!this.timer) {
-          this.count = TIME_COUNT;
-          this.show = false;
-          this.timer = setInterval(() => {
-            if (this.count > 0 && this.count <= TIME_COUNT) {
-              this.count--;
-            } else {
-              this.show = true;
-              clearInterval(this.timer);
-              this.timer = null;
-            }
-          }, 1000)
-        }
+      test(){
+        this.show=true
       }
     }
   };
 </script>
 <style>
-
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
+  @keyframes ani-demo-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
+  }
 </style>
