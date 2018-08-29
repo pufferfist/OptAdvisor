@@ -336,6 +336,16 @@ public class RecommendServiceImpl implements RecommendService {
         //endregion
     }
 
+    void addAttributesToDOption(Option one) throws IOException {
+        String[] nameAndCode = dataSource.getShortNameAndCodeName(one.getOptionCode());
+        one.setTradeCode(nameAndCode[1]);
+        one.setName(nameAndCode[0]);
+        if(one.getType() < 0)
+            one.setTransactionPrice(one.getPrice2());
+        else
+            one.setTransactionPrice(one.getPrice1());
+    }
+
     private void parShallowDeep(){
         Option[] chigh_T = chigh.get(T).toArray(new Option[0]);
         Option[] clow_T = clow.get(T).toArray(new Option[0]);
@@ -477,6 +487,7 @@ public class RecommendServiceImpl implements RecommendService {
         try {
             recommendOption1 = mainRecommendPortfolio(M0, k, T, combination, p1, p2, sigma1, sigma2, w1, w2);
         } catch (IOException e) {
+            e.printStackTrace();
             return new ResponseMsg(2000, "网络获取失败", null);
         }
         return new ResponseMsg(0, "recommend Portfolio finished", recommendOption1);
@@ -507,9 +518,11 @@ public class RecommendServiceImpl implements RecommendService {
         System.out.println(D.size());
         structD maxGoalD;
         maxGoalD = secondStep(D);
+
         System.out.println("second step is finished");
         for(int i = 0;i < maxGoalD.optionCombination.length;i++){
             maxGoalD.optionCombination[i].setType(maxGoalD.buyAndSell[i]);
+            addAttributesToDOption(maxGoalD.optionCombination[i]);
         }
         List<Double> profits = thirdStep(maxGoalD, combination);
         System.out.println("third step is finished");
@@ -1220,27 +1233,24 @@ public class RecommendServiceImpl implements RecommendService {
     @Override
     public ResponseMsg customPortfolio(Option[] list)  {
         //传入的Option列表只有期权代码、到期时间、买入卖出、cp属性
-        return new ResponseMsg(0, "custom portfolio finished",mainOneCustomPortfolio(list, 0));
+        try {
+            return new ResponseMsg(0, "custom portfolio finished",mainOneCustomPortfolio(list, 0));
+        } catch (IOException e) {
+            e.printStackTrace();
+            return new ResponseMsg(2000, "网络获取失败", null);
+        }
     }
 
     //sigma1 2 and p1 2 没有初始化
     //type为零：正常的DIY组合计算，type为1,：查看我的DIY组合，type为2：查看我的期权组合
-    RecommendOption1 mainTwoCustomPortfolio(Option[] list, int type, double k, double M0){
-        try {
-            r = dataSource.get_r();
-            t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
-            sigma = dataSource.get_Sigma();//实时波动率
-            S0 = dataSource.get_LatestPrice();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    RecommendOption1 mainTwoCustomPortfolio(Option[] list, int type, double k, double M0) throws IOException {
+        r = dataSource.get_r();
+        t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
+        sigma = dataSource.get_Sigma();//实时波动率
+        S0 = dataSource.get_LatestPrice();
 
         for (Option each :list) {
-            try {
-                setOptionAttributes(each);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            setOptionAttributes(each);
         }
         structD d = new structD();
         d.optionCombination = list;
@@ -1252,6 +1262,9 @@ public class RecommendServiceImpl implements RecommendService {
         generateD(D,new ArrayList<>(),0,d.buyAndSell, Arrays.asList(list),'D', 1);
         structD maxGoalD;
         maxGoalD = secondStep(D);
+        for(int i = 0;i < maxGoalD.optionCombination.length;i++){
+            addAttributesToDOption(maxGoalD.optionCombination[i]);
+        }
         List<Double> profits = new ArrayList<>();
         String[] StringProfits = new String[month.length];
         if(type == 0){
@@ -1271,13 +1284,9 @@ public class RecommendServiceImpl implements RecommendService {
                 maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, graph, M, k);
     }
 
-    RecommendOption1 mainOneCustomPortfolio(Option[] list, int type) {
-        try {
-            sigma1 = sigma2 = dataSource.get_Sigma();
-            p1 = p2 = dataSource.get_LatestPrice();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    RecommendOption1 mainOneCustomPortfolio(Option[] list, int type) throws IOException {
+        sigma1 = sigma2 = dataSource.get_Sigma();
+        p1 = p2 = dataSource.get_LatestPrice();
         return mainTwoCustomPortfolio(list, type, 0, 0);
     }
 
