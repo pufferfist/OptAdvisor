@@ -93,18 +93,24 @@ public class PortfolioServiceImpl implements PortfolioService {
                 recommendService.setSigma1(portfolio.getSigma1());
                 recommendService.setSigma2(portfolio.getSigma2());
                 Option[] optionList = portfolio.getOptions().clone();
-                RecommendOption1 recommendOption1 = recommendService.mainTwoCustomPortfolio(optionList, 2,
-                        portfolio.getK(), portfolio.getM0());
+                RecommendOption1 recommendOption1 = null;
+                try {
+                    recommendOption1 = recommendService.mainTwoCustomPortfolio(optionList, 2,
+                            portfolio.getK(), portfolio.getM0());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return new ResponseMsg(2000, "网络获取数据出错", null);
+                }
                 Portfolio showPortfolio = new Portfolio(portfolio.getName(), portfolio.getUsername(),recommendOption1,
                         RECOMMEND_PORTFOLIO, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
 
-                double[] assertGraph = new double[portfolio.getBackTestData().length];
+                double[] assertGraph = new double[portfolio.transformStringToStringlist().length];
                 String[] StringAssertGraph = new String[assertGraph.length];
                 double addThing = recommendOption1.getReturnOnAssets() * portfolio.getM0()
                         - recommendOption1.getEM() * recommendOption1.getM0();
-                for(int i = 0; i < portfolio.getBackTestData().length;i++){
-                    double value = Double.valueOf(portfolio.getBackTestData()[i]);
+                for(int i = 0; i < portfolio.transformStringToStringlist().length; i++){
+                    double value = Double.valueOf(portfolio.transformStringToStringlist()[i]);
                     if(value != 0)
                         assertGraph[i] = value + addThing;
                     else
@@ -112,7 +118,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                     StringAssertGraph[i] = Double.toString(assertGraph[i]);
                 }
 
-                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.getBackTestData(),
+                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.transformStringToStringlist(),
                                                     StringAssertGraph};
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rnt);
@@ -121,11 +127,17 @@ public class PortfolioServiceImpl implements PortfolioService {
             }
             else if(portfolio.getType() == DIY){
                 Option[] optionList = portfolio.getOptions().clone();
-                RecommendOption1 recommendOption1 = recommendService.mainOneCustomPortfolio(optionList, 1);
+                RecommendOption1 recommendOption1 = null;
+                try {
+                    recommendOption1 = recommendService.mainOneCustomPortfolio(optionList, 1);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return new ResponseMsg(2000, "网络获取数据出错", null);
+                }
                 Portfolio showPortfolio = new Portfolio(portfolio.getName(), portfolio.getUsername(),
                         recommendOption1, DIY, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
-                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.getBackTestData()};
+                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.transformStringToStringlist()};
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rnt);
                 map.put("graph", graph);
@@ -157,8 +169,8 @@ public class PortfolioServiceImpl implements PortfolioService {
 
                 Portfolio[] rtn = new Portfolio[]{portfolio,showPortfolio};
 
-                String[] backTestData = portfolio.getBackTestData();
-                String[] backTestData1 = portfolio.getBackTestData1();
+                String[] backTestData = portfolio.transformStringToStringlist();
+                String[] backTestData1 = portfolio.transformStringToStringlist1();
                 String[] difference = new String[backTestData.length];
 
 

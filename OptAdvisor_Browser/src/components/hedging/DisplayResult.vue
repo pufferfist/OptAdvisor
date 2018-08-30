@@ -105,7 +105,7 @@
               this.current_clicked_id=''
             }
           });
-        }
+        },
       }
 
     }
