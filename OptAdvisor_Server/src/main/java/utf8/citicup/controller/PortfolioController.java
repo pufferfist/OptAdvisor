@@ -36,6 +36,7 @@ public class PortfolioController {
 
         portfolio.setOptions(options);
         portfolio.setType(type);
+        if(listOfStringList.length > 1)
         portfolio.transformStringlistToString(listOfStringList[1]);
         if(listOfStringList.length > 2)
             portfolio.transformStringlistToString1(listOfStringList[2]);
