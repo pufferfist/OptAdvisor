@@ -53,7 +53,7 @@
         </router-link>
       </div>
     </div>
-    <v-contextmenu ref="contextmenu">
+    <v-contextmenu ref="contextmenu" style="z-index: 10000001">
       <v-contextmenu-item @click="logout">登出</v-contextmenu-item>
     </v-contextmenu>
   </Menu>
