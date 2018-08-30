@@ -136,8 +136,8 @@
           .then((res) => {
               this.addPortfolioLoading = false;
               if (res.data.code === 0) {
-                this.$Message.success("添加组合成功");
-                this.$router.push('/myPortfolio');
+                // this.$router.push('/myPortfolio');
+                window.location.href="/myPortfolio";
               } else {
                 this.$Message.error('发生了预料之外的错误');
               }

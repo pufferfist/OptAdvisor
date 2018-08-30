@@ -25,8 +25,10 @@ public class PortfolioController {
     public ResponseMsg addPortfolio(@Valid @RequestBody Map<String, Object> params) {
         Option[] options = JsonParse.objectToAnyType(params.get("options"), Option[].class);
         Type type = JsonParse.objectToAnyType(params.get("type"), Type.class);
+        String[][] listOfStringList = JsonParse.objectToAnyType(params.get("graph"), String[][].class);
         params.remove("options");
         params.remove("type");
+        params.remove("graph");
 
         Portfolio portfolio = JsonParse.objectToAnyType(params, Portfolio.class);
         String username = SecurityUtils.getSubject().getPrincipal().toString();
@@ -34,6 +36,10 @@ public class PortfolioController {
 
         portfolio.setOptions(options);
         portfolio.setType(type);
+        if(listOfStringList.length > 1)
+        portfolio.transformStringlistToString(listOfStringList[1]);
+        if(listOfStringList.length > 2)
+            portfolio.transformStringlistToString1(listOfStringList[2]);
         return portfolioService.addPortfolio(portfolio);
     }
 

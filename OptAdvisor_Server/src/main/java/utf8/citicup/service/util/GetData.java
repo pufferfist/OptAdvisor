@@ -54,7 +54,7 @@ public class GetData {
 
 //        System.out.println("Response Code : " + responseCode);
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream(),"gbk"));
         String inputLine;
         StringBuilder response = new StringBuilder();
 
