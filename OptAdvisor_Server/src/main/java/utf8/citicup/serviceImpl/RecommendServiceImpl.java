@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
+import static utf8.citicup.service.util.StatusMsg.noEligibleOptions;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
@@ -1044,6 +1045,9 @@ public class RecommendServiceImpl implements RecommendService {
         RecommendOption2 recommendOption2;
         try {
             recommendOption2 = mainHedging(N0, a, sExp, T);
+            if(recommendOption2 == null){
+                return noEligibleOptions;
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return StatusMsg.IOExceptionOccurs;
@@ -1057,7 +1061,7 @@ public class RecommendServiceImpl implements RecommendService {
         expiredMonths = dataSource.get_T();
         upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
-        logger.info("plowT的长度是" + String.valueOf(plowT.length));
+//        logger.info("plowT的长度是" + String.valueOf(plowT.length));
         Option[] phighT = new Option[phigh.get(T).size()];
         this.plow.get(T).toArray(plowT);
         this.phigh.get(T).toArray(phighT);
@@ -1070,16 +1074,39 @@ public class RecommendServiceImpl implements RecommendService {
         //第二步
         Option i1 = maxLoss(ListD1,sExp,N,pAsset);
         Option i2 = maxLoss(ListD2,sExp,N,pAsset);
-        double iK1 = i1.getK();
-        double iK2 = i2.getK();
+
+
         double iK;
         Option optionI;
+        String[][] rtn;
+        if(i1==null && i2==null){
+            return null;
+        }
+        if(i1 == null){
+            iK = i2.getK();
+            optionI = i2;
+            optionI.setType(1);
+            addAttributesToDOption(optionI);
+            rtn = hedgingBackTest(1,N,iK,pAsset,T);
+            return new RecommendOption2(optionI, iK, rtn);
+        }
+        if(i2 == null){
+            iK = i1.getK();
+            optionI = i1;
+            optionI.setType(1);
+            addAttributesToDOption(optionI);
+            rtn = hedgingBackTest(0,N,iK,pAsset,T);
+            return new RecommendOption2(optionI, iK, rtn);
+        }
+
+        double iK1 = i1.getK();
+        double iK2 = i2.getK();
         boolean flag;  //判断是第一种还是第二种情况
         if(iK1>iK2){ iK=iK2; optionI = i2; flag = false;}
         else { iK = iK1; optionI = i1; flag = true;}
-
+        optionI.setType(1);
+        addAttributesToDOption(optionI);
         //第三步
-        String[][] rtn;
         if(flag) rtn = hedgingBackTest(0,N,iK,pAsset,T);
         else rtn = hedgingBackTest(1,N,iK,pAsset,T);
         return new RecommendOption2(optionI, iK, rtn);
