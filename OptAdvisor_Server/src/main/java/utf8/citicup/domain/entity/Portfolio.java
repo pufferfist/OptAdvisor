@@ -50,8 +50,10 @@ public class Portfolio {
     private double sExp;
     private boolean flag;
 
+    @Column(columnDefinition = "TEXT")
     private String backTestData;
-    private String backTestData1;
+    @Column(columnDefinition = "TEXT")
+    private String hedgeProfitHolden;
 
     public Portfolio(String username,RecommendOption2 recommendOption2,int n, double pAsset, double sExp,boolean flag, Enum type) {
             this.username = username;
@@ -236,15 +238,15 @@ public class Portfolio {
     }
 
     public String[] transformStringToStringlist1(){
-        return this.backTestData1.split(",");
+        return this.hedgeProfitHolden.split(",");
     }
 
     public String getBackTestData() {
         return backTestData;
     }
 
-    public String getBackTestData1() {
-        return backTestData1;
+    public String getHedgeProfitHolden() {
+        return hedgeProfitHolden;
     }
 
     public void setId(Long id) {
@@ -301,6 +303,7 @@ public class Portfolio {
 
     public void setZ_rho(double z_rho) {
         this.z_rho = z_rho;
+
     }
 
     public void setEM(double EM) {
@@ -340,14 +343,14 @@ public class Portfolio {
     }
 
     public void transformStringlistToString1(String[] BackTestData){
-        this.backTestData1 = String.join(",",BackTestData);
+        this.hedgeProfitHolden = String.join(",",BackTestData);
     }
 
     public void setBackTestData(String backTestData) {
         this.backTestData = backTestData;
     }
 
-    public void setBackTestData1(String backTestData1) {
-        this.backTestData1 = backTestData1;
+    public void setHedgeProfitHolden(String hedgeProfitHolden) {
+        this.hedgeProfitHolden = hedgeProfitHolden;
     }
 }

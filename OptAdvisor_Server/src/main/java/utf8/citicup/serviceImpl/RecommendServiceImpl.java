@@ -69,7 +69,7 @@ public class RecommendServiceImpl implements RecommendService {
     private double eps1;
 
     private String[] month={"2015-3","2015-4","2015-5","2015-6","2015-7","2015-8","2015-9","2015-10","2015-11","2015-12","2016-1","2016-2","2016-3","2016-4","2016-5","2016-6","2016-7","2016-8","2016-9","2016-10","2016-11","2016-12","2017-1","2017-2","2017-3","2017-4","2017-5","2017-6","2017-7","2017-8","2017-9","2017-10","2017-11","2017-12","2018-1","2018-2","2018-3"};
-//    private String[] month={"2015-9","2015-12"};
+//    private String[] month={"2018-2"};
 
     /*计算得到的值*/
 
@@ -975,9 +975,9 @@ public class RecommendServiceImpl implements RecommendService {
         if(index == data.size()){
             boolean flag = true;
             for(int i = 0;i < array.size();i++){
-                double backK = optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getPrice();
-                double backS0 = timeSeriesDataSerice.findByLastTradeDate(array.get(i).getLatestDate()).getClosePrice();
-                flag = flag && Math.abs(backK - backS0 - (goal.optionCombination[i].getK() - S0)) <= eps;
+                double backK = optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getPrice();//一定能得到
+                double backS0 = timeSeriesDataSerice.findByLastTradeDate(array.get(i).getLatestDate()).getClosePrice();//
+                flag = Math.abs(backK - backS0 - (goal.optionCombination[i].getK() - S0)) <= eps;
                 if(!flag){
                     flagArray.set(i, false);
                     break;
@@ -991,12 +991,19 @@ public class RecommendServiceImpl implements RecommendService {
 //                    double iK = goal.optionCombination[i].getK();
 //                    double s0 = S0;
 
-
-                    double backPrice = array.get(i).getClosePrice();
-                    double backClose = optionTsdDataService.findByCodeNameAndLatestDate(array.get(i).getCodeName(),
-                            optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getEndDate()).getClosePrice();
-
-                    profit += goal.buyAndSell[i] * (backClose - backPrice);
+                    OptionTsd oneOptionTsd = optionTsdDataService.findByCodeNameAndLatestDate(array.get(i).getCodeName(),
+                            optionBasicInfoDataService.findByCodeName(array.get(i).getCodeName()).getEndDate());//可能会找不到发生null
+                    Double backPrice = array.get(i).getClosePrice();//有些日期没有收盘价，会报null错
+                    Double backClose = backPrice;
+                    if(oneOptionTsd != null){
+                        backClose = oneOptionTsd.getClosePrice();
+                    }
+                    if(backClose != null && backPrice!= null){
+                        profit += goal.buyAndSell[i] * (backClose - backPrice);
+                    }
+                    else{
+                        profit += 0.0;
+                    }
                 }
                 profits.add(profit * 10000);
             }
