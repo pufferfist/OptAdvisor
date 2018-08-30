@@ -38,7 +38,7 @@ public class PortfolioController {
         portfolio.setType(type);
         portfolio.transformStringlistToString(listOfStringList[1]);
         if(listOfStringList.length > 2)
-            portfolio.transformStringlistToString(listOfStringList[2]);
+            portfolio.transformStringlistToString1(listOfStringList[2]);
         return portfolioService.addPortfolio(portfolio);
     }
 

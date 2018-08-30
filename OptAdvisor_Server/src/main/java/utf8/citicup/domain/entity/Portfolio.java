@@ -50,7 +50,9 @@ public class Portfolio {
     private double sExp;
     private boolean flag;
 
+    @Column(columnDefinition = "TEXT")
     private String backTestData;
+    @Column(columnDefinition = "TEXT")
     private String hedgeProfitHolden;
 
     public Portfolio(String username,RecommendOption2 recommendOption2,int n, double pAsset, double sExp,boolean flag, Enum type) {
