@@ -67,8 +67,6 @@ public class Portfolio {
 
             options = new Option[1];
             options[0] = recommendOption2.getOption();
-            transformStringlistToString(recommendOption2.getGraph()[1]);
-            transformStringlistToString1(recommendOption2.getGraph()[2]);
     }
 
     public Portfolio(String name, String username, RecommendOption1 recommendOption1, Enum type, boolean trackingStatus) {

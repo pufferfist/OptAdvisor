@@ -44,6 +44,7 @@ public class GetData {
 
     }
 */
+
     private String getDataFromURL(String url) throws IOException {
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -292,7 +293,5 @@ public class GetData {
         String codeName = output[18];
         return new String[]{shortName,codeName};
     }
-
-
 
 }
