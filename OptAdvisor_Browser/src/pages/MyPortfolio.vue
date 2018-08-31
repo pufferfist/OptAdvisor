@@ -73,6 +73,7 @@
         }
       },
       methods:{
+        //该方法还未集成
         click_left(name){
           var suffix=name.substr(2)
           var id
@@ -87,11 +88,13 @@
           }
           this.axios.get('/backend/portfolio/'+id)
             .then(re=>{
-              console.log(re)
+              //console.log(re)
               this.$refs.portfolio.initial(re.data)
               document.getElementById("right").style.display=""
             })
         },
+
+        //以下方法已集成完成
         click_right(){
           this.current_clicked_id=event.currentTarget.id;
         },
@@ -136,9 +139,9 @@
               onOk: () => {
                 if(id[0]=='1'){
                   this.zichan[id.substr(2)].name=newName
-                  this.axios.put('/backend/portfolio/'+this.zichan[id.substr(2)].id+'/'+newName)
+                  this.axios.put('/backend/portfolio/'+this.diy[id.substr(2)].id+'/name',{name:newName})
                     .then(re=>{
-                      if(re.msg=='Update portfolio name success'){
+                      if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
                       }
                       else{
@@ -148,9 +151,9 @@
                 }
                 else if(id[0]=='2'){
                   this.taoqi[id.substr(2)].name=newName
-                  this.axios.put('/backend/portfolio/'+this.taoqi[id.substr(2)].id+'/'+newName)
+                  this.axios.put('/backend/portfolio/'+this.diy[id.substr(2)].id+'/name',{name:newName})
                     .then(re=>{
-                      if(re.msg=='Update portfolio name success'){
+                      if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
                       }
                       else{
@@ -160,9 +163,9 @@
                 }
                 else if(id[0]=='3'){
                   this.diy[id.substr(2)].name=newName
-                  this.axios.put('/backend/portfolio/'+this.diy[id.substr(2)].id+'/'+newName)
+                  this.axios.put('/backend/portfolio/'+this.diy[id.substr(2)].id+'/name',{name:newName})
                     .then(re=>{
-                      if(re.msg=='Update portfolio name success'){
+                      if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
                       }
                       else{
@@ -216,7 +219,7 @@
           }
           this.axios.delete('/backend/portfolio/'+portfolioID)
             .then(re=>{
-              if(re.msg !='Delete portfolio success'){
+              if(re.data.msg !='Delete portfolio success'){
                 alert("删除失败")
               }
             })
@@ -225,10 +228,8 @@
           //1.获取所有的组合数据
           this.axios.get('/backend/portfolio')
             .then(re=>{
-              console.log(re)
               this.allPortfolioData=re.data.data
               var tempData=re.data.data
-              console.log(tempData)
               var zichan=[]
               var taoqi=[]
               var diy=[]

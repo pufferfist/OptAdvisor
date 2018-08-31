@@ -47,4 +47,6 @@ public class StatusMsg {
     public static ResponseMsg portfolioNotExists = new ResponseMsg(3002, "Portfolio does not exists");
 
     public static ResponseMsg deletePortfolioSuccess = new ResponseMsg(0, "Delete portfolio success");
+
+    public static ResponseMsg noEligibleOptions = new ResponseMsg(2001,"No eligible options");
 }

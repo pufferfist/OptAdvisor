@@ -64,12 +64,14 @@
 td{
   padding-left: 5px;
   padding-right: 5px;
+  font-size: 13px;
+  -webkit-text-fill-color: #2baee9;
   background-color: #f8f8f9;
-  -webkit-text-fill-color: #808695;
 }
   th{
     padding-left: 5px;
     padding-right: 5px;
+    font-size: 13px;
     background-color: #f8f8f9;
     -webkit-text-fill-color: #515a6e;
   }
