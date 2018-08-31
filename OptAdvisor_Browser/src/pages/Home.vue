@@ -194,7 +194,7 @@
         <div class="container tc">
           <h2 class="mb4">关于我们</h2>
           <a href="/signUp" class="btn btn-xl btn-dark mr4">注册</a>
-          <a class="btn btn-xl btn-dark">了解更多</a>
+          <a href="/50ETF" class="btn btn-xl btn-dark">浏览行情</a>
         </div>
       </section>
 
@@ -239,7 +239,7 @@
             };
             document.scrollingElement.scrollTop = document.scrollingElement.scrollTop + speed;
           },15); // 15为滑动频率
-          
+
         }
       },
       destroyed () {
