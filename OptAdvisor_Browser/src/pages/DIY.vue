@@ -513,66 +513,25 @@
           });
         },
         async confirm(name){
-          //1.需要传递的options参数
-          var type=2
-          var trackingStatus=false
-          var options={}
-          var m0
-          var k
-          var sigma1
-          var sigma2
-          var p1
-          var p2
-          var cost
-          var bond
-          var z_delta
-          var z_gamma
-          var z_vega
-          var z_theta
-          var z_rho
-          var em
-          var beta
+          var origin_data
           await this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
-              options=re.data.data.optionList
-              m0=re.data.data.m0
-              z_delta=re.data.data.z_delta
-              z_gamma=re.data.data.z_gamma
-              z_vega=re.data.data.z_vega
-              z_theta=re.data.data.z_theta
-              z_rho=re.data.data.z_rho
-              em=re.data.data.em
-              beta=re.data.data.beta
-              k=re.data.data.k
-              sigma1=re.data.data.sigma1
-              sigma2=re.data.data.sigma2
-              p1=re.data.data.p1
-              p2=re.data.data.p2
-              cost=re.data.data.cost
-              bond=re.data.data.bond
+              origin_data=re.data.data
             })
+          var options=origin_data.optionList
 
-          var data={
-            options:options,
-            name:name,
-            type:type,
-            trackingStatus:trackingStatus,
-            m0:m0,
-            z_delta:z_delta,
-            z_gamma:z_gamma,
-            z_vega:z_vega,
-            z_theta:z_theta,
-            z_rho:z_rho,
-            em:em,
-            beta:beta,
-            k:k,
-            sigma1:sigma1,
-            sigma2:sigma2,
-            p1:p1,
-            p2:p2,
-            cost:cost,
-            bond:bond
+          var data={}
+          for(var key in origin_data){
+            if(key=='optionList'){
+              data['options']=origin_data[key]
+            }
+            else{
+              data[key]=origin_data[key]
+            }
           }
+          data.name=name
+          data.type=2
+          data.trackingStatus=false
 
           await this.axios.post('/backend/portfolio',data)
             .then(re=>{
