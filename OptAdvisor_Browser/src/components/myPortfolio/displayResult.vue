@@ -67,21 +67,13 @@
       <h3>组合表现展示</h3>
       <table class="table1" style="margin: auto">
         <tr>
-          <th style="-webkit-text-fill-color: #2baee9">创建：</th>
           <th>组合的期望收益率E/M</th>
           <td style="-webkit-text-fill-color: #19be6b">{{text15}}</td>
           <th>组合的风险值β</th>
           <td style="-webkit-text-fill-color: #ed4014">{{text16}}</td>
         </tr>
-        <tr>
-          <th style="-webkit-text-fill-color: #2baee9">实时：</th>
-          <th>组合的期望收益率E/M</th>
-          <td style="-webkit-text-fill-color: #19be6b">{{text17}}</td>
-          <th>组合的风险值β</th>
-          <td style="-webkit-text-fill-color: #ed4014">{{text18}}</td>
-        </tr>
       </table>
-      <div id="myChart" style="width: 100%;height: 325px">
+      <div id="myChart" style="width: 450px;height: 325px">
       </div>
     </div>
   </div>
@@ -106,15 +98,11 @@
             text12:'',
             text13:'',
             text14:'',
-            text15:'aaa',
-            text16:'aaa',
-            text17:'aaa',
-            text18:'aaa',
+            text15:'',
+            text16:'',
             line1:[],
             line2:[],
-            line3:[],
-            line4:[],
-            lineName:['持有','不持有','持有与不持有之差']
+            lineName:['回测收益']
           }
       },
       methods: {
@@ -140,17 +128,7 @@
               name:this.lineName[0],
               data: this.line2,
               type: 'line'
-            },
-              {
-                name:this.lineName[1],
-                data:  this.line3,
-                type: 'line'
-              },
-              {
-                name:this.lineName[2],
-                data: this.line4,
-                type: 'line'
-              }]
+            }]
           });
         },
         getSingleInfo(upOrDown,address){

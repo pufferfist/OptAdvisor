@@ -44,7 +44,7 @@
         <div style="float: left;width: 1px;height: 800px;background-color: #E7E8EB"></div>
       </div>
       <div style="float: left;width: 75%;min-height: 500px;">
-        <Right ref="portfolio" id="right"></Right>
+        <Right ref="portfolio" id="right" v-bind:style="{display:showRight}"></Right>
       </div>
     </div>
 </template>
@@ -59,17 +59,13 @@
       },
       data () {
         return{
-          zichan:[
-            {
-              name:'555',
-              id:5
-            }
-          ],
+          zichan:[],
           taoqi:[],
           diy:[],
           allPortfolioData:[],
           current_clicked_id:'',
-          newName:''
+          newName:'',
+          showRight:'none'
         }
       },
       methods:{
@@ -88,13 +84,10 @@
           }
           this.axios.get('/backend/portfolio/'+id)
             .then(re=>{
-              //console.log(re)
               this.$refs.portfolio.initial(re.data)
-              document.getElementById("right").style.display=""
+              this.showRight=''
             })
         },
-
-        //以下方法已集成完成
         click_right(){
           this.current_clicked_id=event.currentTarget.id;
         },
@@ -143,6 +136,7 @@
                     .then(re=>{
                       if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
+                        this.click_left(id)
                       }
                       else{
                         this.$Message.error("重命名失败")
@@ -155,6 +149,7 @@
                     .then(re=>{
                       if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
+                        this.click_left(id)
                       }
                       else{
                         this.$Message.error("重命名失败")
@@ -167,6 +162,7 @@
                     .then(re=>{
                       if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
+                        this.click_left(id)
                       }
                       else{
                         this.$Message.error("重命名失败")
