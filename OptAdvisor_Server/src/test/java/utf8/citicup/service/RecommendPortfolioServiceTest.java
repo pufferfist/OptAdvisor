@@ -12,6 +12,9 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import utf8.citicup.CiticupApplication;
+import utf8.citicup.serviceImpl.RecommendServiceImpl;
+
+import java.io.IOException;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -22,13 +25,18 @@ import utf8.citicup.CiticupApplication;
 )
 public class RecommendPortfolioServiceTest {
     @Autowired
-    private RecommendService recommendService;
+    private RecommendServiceImpl recommendService;
     private Logger logger = LoggerFactory.getLogger(RecommendService.class);
 
     @Test
     public void test01(){
-        recommendService.recommendPortfolio(50000, 0.5, "2018-09", 'A', 2.53,
-                2.60, 23, 24, 70, 30);
+//        recommendService.recommendPortfolio(50000, 0.5, "2018-09", 'A', 2.53,
+//                2.60, 23, 24, 70, 30);
+        try {
+            recommendService.upDataFromNet();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
