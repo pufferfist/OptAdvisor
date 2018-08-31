@@ -1,5 +1,8 @@
 <template>
   <div class="font0" @click="onGrid">
+    <Row class="pb4 tl">
+      <span class="bigFont">市场预期:</span>
+    </Row>
     <Row>
       <Col span="6" class="box">
         <div class="out">
@@ -83,7 +86,7 @@
         </div>
       </Col>
     </Row>
-    <Row class="pt5 tl">
+    <Row class="pt4 tl">
       <span class="db" style="font-size: 20px">
         您的选择
       </span>
