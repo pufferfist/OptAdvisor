@@ -71,6 +71,11 @@ public class RecommendServiceImpl implements RecommendService {
 
     /*判断是否正在获取网络信息*/
     boolean isUpdataRunning;
+
+    public String[] getMonth() {
+        return month;
+    }
+
     private String[] month={"2015-3","2015-4","2015-5","2015-6","2015-7","2015-8","2015-9","2015-10","2015-11","2015-12","2016-1","2016-2","2016-3","2016-4","2016-5","2016-6","2016-7","2016-8","2016-9","2016-10","2016-11","2016-12","2017-1","2017-2","2017-3","2017-4","2017-5","2017-6","2017-7","2017-8","2017-9","2017-10","2017-11","2017-12","2018-1","2018-2","2018-3"};
 //    private String[] month={"2015-3","2015-4","2015-5","2018-2"};
 
@@ -1155,7 +1160,7 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
-    String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
+    private String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
         boolean flag1=false,flag2=false;
         int stage = calculateFirstFew(T);                            //得到是在第几个阶段
         logger.info("stage is " + stage);
@@ -1385,16 +1390,8 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
-    @Scheduled(initialDelay = 1000, fixedRate = 5 * 60 * 1000)
+    @Scheduled(initialDelay = 1000, fixedRate = 10 * 60 * 1000)
     public void task() throws IOException {
-
-//        int N0 = 100000;
-//        double a = 0.5;
-//        double sExp = 2.1;
-//        String T = "2018-10";
-////        warning();
-//        hedging(N0,a,sExp,T);
-
         logger.info("正在更新网络数据");
         this.isUpdataRunning = true;
         upDataFromNet();
