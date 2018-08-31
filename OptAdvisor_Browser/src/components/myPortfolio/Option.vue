@@ -135,7 +135,7 @@
           this.tableData.cost=optionData.cost
           this.tableData.bond=optionData.bond
           this.tableData.beta=optionData.beta.toFixed(4)
-          this.tableData.returnOnAssets=optionData.returnOnAssets
+          this.tableData.returnOnAssets=optionData.returnOnAssets.toFixed(4)
           this.id=optionData.id
           if(optionData.trackingStatus==false){
             this.show1=''

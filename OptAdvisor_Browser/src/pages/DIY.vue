@@ -537,6 +537,7 @@
             .then(re=>{
               if(re.data.msg=='Add portfolio success'){
                 this.$Message.success("添加成功")
+                this.$router.push('/myPortfolio')
               }
               else{
                 this.$Message.error("添加失败")
