@@ -51,4 +51,9 @@
   .footer{
     background-color: #ffffff;
   }
+  @media screen and (max-width: 616px) {
+    .content{
+      width: 90%;
+    }
+  }
 </style>
