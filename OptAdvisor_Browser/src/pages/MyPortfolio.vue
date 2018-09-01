@@ -131,11 +131,11 @@
               },
               onOk: () => {
                 if(id[0]=='1'){
-                  this.zichan[id.substr(2)].name=newName
                   this.axios.put('/backend/portfolio/'+this.diy[id.substr(2)].id+'/name',{name:newName})
                     .then(re=>{
                       if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
+                        this.zichan[id.substr(2)].name=newName
                         this.click_left(id)
                       }
                       else{
@@ -144,11 +144,11 @@
                     })
                 }
                 else if(id[0]=='2'){
-                  this.taoqi[id.substr(2)].name=newName
                   this.axios.put('/backend/portfolio/'+this.diy[id.substr(2)].id+'/name',{name:newName})
                     .then(re=>{
                       if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
+                        this.taoqi[id.substr(2)].name=newName
                         this.click_left(id)
                       }
                       else{
@@ -157,11 +157,11 @@
                     })
                 }
                 else if(id[0]=='3'){
-                  this.diy[id.substr(2)].name=newName
                   this.axios.put('/backend/portfolio/'+this.diy[id.substr(2)].id+'/name',{name:newName})
                     .then(re=>{
                       if(re.data.msg=='Update portfolio name success'){
                         this.$Message.success("重命名成功")
+                        this.diy[id.substr(2)].name=newName
                         this.click_left(id)
                       }
                       else{

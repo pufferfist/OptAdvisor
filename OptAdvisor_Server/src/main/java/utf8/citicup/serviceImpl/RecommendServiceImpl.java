@@ -1072,6 +1072,7 @@ public class RecommendServiceImpl implements RecommendService {
 
     private RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
         this.T = T;
+        upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
 //        logger.info("plowT的长度是" + String.valueOf(plowT.length));
         Option[] phighT = new Option[phigh.get(T).size()];
@@ -1170,8 +1171,12 @@ public class RecommendServiceImpl implements RecommendService {
         int nowDay = c.get(Calendar.DATE);
         int difference = calculateDifference(nowYear, nowMonth, nowDay);  //得到今天距离最近的第四个星期三所差的天数
 
+        int length = month.length;
+        String[] holdList = new String[length];
+        String[] unholdList = new String[length];
+        String[] differenceList = new String[length];
 
-        String[][] rtn = new String[4][50]; //返回四行的数组
+        String[][] rtn; //返回四行的数组
         int index = 0; //用于计算数组的角标
         for (String m : month) {
             String[] str = m.split("-");
@@ -1268,16 +1273,31 @@ public class RecommendServiceImpl implements RecommendService {
             String unhold = Double.toString(totalLoss);
             String lossDifference = Double.toString(lossDifferenceDouble);
 
-            rtn[0][index] = m;
-            if(flag1) rtn[1][index] = "0";
-            else rtn[1][index] = hold;
-            if(flag2) rtn[2][index] = "0";
-            else rtn[2][index] = unhold;
-            rtn[3][index] = lossDifference;
+
+            if(flag1 || hold==null) holdList[index] = "0";
+            else holdList[index] = hold;
+            if(flag2 || unhold == null) unholdList[index] = unhold;
+            else unholdList[index] = unhold;
+            differenceList[index] = lossDifference;
+
+//            rtn[0][index] = m;
+//            if(flag1) rtn[1][index] = "0";
+//            else rtn[1][index] = hold;
+//            if(flag2) rtn[2][index] = "0";
+//            else rtn[2][index] = unhold;
+//            rtn[3][index] = lossDifference;
             flag1 = false;
             flag2 = false;
             index++;
         }
+
+
+        for(int i=0; i<holdList.length; i++){if(holdList[i] == null) holdList[i] = "0";}
+        for(int i=0; i<unholdList.length; i++){if(unholdList[i] == null) unholdList[i] = "0";}
+        for(int i=0; i<differenceList.length; i++){if(differenceList[i] == null) differenceList[i] = "0";}
+
+
+        rtn = new String[][]{month,holdList,unholdList,differenceList};
 
         logger.info("rtn是:\n" + Arrays.deepToString(rtn));
         return rtn;

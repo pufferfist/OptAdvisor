@@ -107,7 +107,6 @@
         initial(optionData){
           var graph=optionData.data.graph
           optionData=optionData.data.portfolios[0]
-          console.log(optionData)
           this.options=optionData.options
           //1.初始化数据
           this.name=optionData.name
@@ -121,7 +120,7 @@
           else{
             this.type='DIY'
           }
-          this.earnings=optionData.em
+          this.earnings=optionData.em.toFixed(4)
           this.tdata=[]
           for(var i=0;i<optionData.options.length;i++){
             var temp=[]
@@ -149,8 +148,24 @@
           //2.同时画echarts
           this.$refs.result.text15=optionData.em.toFixed(4)
           this.$refs.result.text16=optionData.beta.toFixed(4)
-          this.$refs.result.line1=graph[0]
-          this.$refs.result.line2=graph[1]
+          if(graph.length==2){
+            this.$refs.result.lineName=['回测收益']
+            this.$refs.result.line1=graph[0]
+            this.$refs.result.line2=graph[1]
+          }
+          else if(graph.length==3){
+            this.$refs.result.lineName=['组合收益','资产收益']
+            this.$refs.result.line1=graph[0]
+            this.$refs.result.line2=graph[1]
+            this.$refs.result.line3=graph[2]
+          }
+          else if(graph.length==4){
+            this.$refs.result.lineName=['持有','不持有','持有与不持有之差']
+            this.$refs.result.line1=graph[0]
+            this.$refs.result.line2=graph[1]
+            this.$refs.result.line3=graph[2]
+            this.$refs.result.line4=graph[3]
+          }
           this.$refs.result.drawLine()
 
           //3.调用choose方法默认选中第一项
