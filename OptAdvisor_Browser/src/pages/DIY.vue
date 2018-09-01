@@ -61,15 +61,15 @@
               <td></td>
               <td colspan="8" style="vertical-align: top">
                 <li v-for="(l,index) in leftValue">
-                  {{l}}&nbsp&nbsp
-                  <input type="number" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')">份
+                  {{l.name}}&nbsp&nbsp
+                  <input type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')">份
                 </li>
               </td>
               <td></td>
               <td colspan="8" style="vertical-align: top">
                 <li v-for="(r,index) in rightValue">
-                  {{r}}&nbsp&nbsp
-                  <input type="number" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')">份
+                  {{r.name}}&nbsp&nbsp
+                  <input type="number" v-model="r.value" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')">份
 
                 </li>
               </td>
@@ -210,13 +210,14 @@
         name: "diy",
       data () {
         return {
-          value1:5,
           deadlineMonths: [],
           upValue:[],
           downValue:[],
           value:[],
           leftValue:[],
           rightValue:[],
+          allLeftValue:[],
+          allRightValue:[],
           currentSelectedId:'',
           selectMonth:'',
           currentCodeLeft:[],
@@ -247,14 +248,15 @@
           show2:false
         }
       },
-      mounted() {
-        this.axios.get('/sinaTime/StockOptionService.getStockName')
+      async mounted() {
+        var months
+        await this.axios.get('/sinaTime/StockOptionService.getStockName')
           .then(re=>{
-            var months=re.data.result.data.contractMonth
-            this.setSelectedMonth(months);
-            this.getValue(months[1]);
+            months=re.data.result.data.contractMonth
           })
-        this.drawLine()
+        await this.setSelectedMonth(months);
+        await this.getValue(months[1]);
+        await this.getAllLeftRightValues()
         setInterval(this.circle, 5000);
 
       },
@@ -306,6 +308,14 @@
             })
           this.checkout(this.lastSelectedLineType,this.lastSelectedLineIndex)
         },
+        getAllLeftRightValues(){
+          this.allLeftValue=[]
+          this.allRightValue=[]
+          for(var i=0;i<this.upValue.length;i++){
+            this.allLeftValue.push({name:this.upValue[i][37],value:1,clicked:false})
+            this.allRightValue.push({name:this.downValue[i][37],value:1,clicked:false})
+          }
+        },
         getClassName(index,upOrDown){
           return upOrDown+index
         },
@@ -339,30 +349,30 @@
           for(var i=0;i<this.value.length;i++){
             var colorl=document.getElementById("checkbox_up_"+i).style.backgroundColor
             if(colorl=='rgb(255, 238, 238)'){
-              this.leftValue.push(this.upValue[i][37])
+              this.leftValue.push(this.allLeftValue[i])
               this.resultLeftCode.push(this.currentCodeLeft[i])
             }
             var colorr=document.getElementById("checkbox_down_"+i).style.backgroundColor
             if(colorr=='rgb(255, 238, 238)'){
-              this.rightValue.push(this.downValue[i][37])
+              this.rightValue.push(this.allRightValue[i])
               this.resultRightCode.push(this.currentCodeRight[i])
             }
           }
         },
         circle(){
           if(this.deadlineMonths.length==0){
-
           }
           else{
             this.getValue(this.selectMonth)
           }
         },
-        changeMonth(){
+        async changeMonth(){
           this.value=[]
           this.lastSelectedLineType='up'
           this.lastSelectedLineIndex=0
-          this.getValue(this.selectMonth)
-          this.setLeftOrRightValue()
+          await this.getValue(this.selectMonth)
+          await this.getAllLeftRightValues()
+          await this.setLeftOrRightValue()
         },
         checkout(upOrDown,index){
           //1.先复原
