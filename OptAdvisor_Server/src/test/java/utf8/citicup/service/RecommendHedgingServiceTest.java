@@ -1,6 +1,5 @@
 package utf8.citicup.service;
 
-import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,20 +7,11 @@ import org.junit.runners.MethodSorters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import utf8.citicup.CiticupApplication;
-import utf8.citicup.domain.entity.Option;
 import utf8.citicup.domain.entity.ResponseMsg;
-import utf8.citicup.serviceImpl.RecommendServiceImpl;
-
-import java.util.Arrays;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static utf8.citicup.service.util.JsonParse.objectToAnyType;
-import static utf8.citicup.service.util.JsonParse.objectToMap;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ActiveProfiles("dev")
