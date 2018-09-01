@@ -533,6 +533,7 @@
           data.type=2
           data.trackingStatus=false
 
+          console.log(data)
           await this.axios.post('/backend/portfolio',data)
             .then(re=>{
               if(re.data.msg=='Add portfolio success'){

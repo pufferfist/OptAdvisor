@@ -115,7 +115,10 @@
 
             }
           }
-      }
+      },
+      destroyed() {
+        clearInterval(this.Interval);
+      },
     }
 </script>
 
