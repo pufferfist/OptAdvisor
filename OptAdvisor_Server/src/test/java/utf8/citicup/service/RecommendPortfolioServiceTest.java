@@ -1,5 +1,6 @@
 package utf8.citicup.service;/*
  * @author:Wu Gang
+<<<<<<< HEAD
  * @create: 2018-08-23 09:54
  */
 

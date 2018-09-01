@@ -158,6 +158,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                 else findType=1;
 
 
+
                 String[] T1 = newOption.getExpireTime().split("-");
                 String T = T1[0]+'-'+T1[1];
                 String[][] newRtn = recommendService.hedgingBackTest(findType,portfolio.getN(),portfolio.getiK(),portfolio.getpAsset(),T);
@@ -172,7 +173,6 @@ public class PortfolioServiceImpl implements PortfolioService {
                 String[] backTestData = portfolio.transformStringToStringlist();
                 String[] backTestData1 = portfolio.transformStringToStringlist1();
                 String[] difference = new String[backTestData.length];
-
 
                 for(int i=0; i<backTestData.length;i++){
                     double value = Double.valueOf(backTestData[i]);
