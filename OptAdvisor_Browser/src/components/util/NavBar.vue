@@ -88,7 +88,7 @@
     },
     methods: {
       logout: function () {
-        this.axios.post("backend/user/logout")
+        this.axios.post("/backend/user/logout")
           .then((res) => {
             if (res.data.code === 0) {
               this.$Message.success("登出成功");

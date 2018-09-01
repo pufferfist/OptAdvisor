@@ -3,14 +3,15 @@
       <div>
         <h1>{{name}}
           <span style="font-size: 15px">
-          创建时间：{{time}} &nbsp&nbsp 分组类型：{{type}} &nbsp&nbsp 期望收益：{{earnings}} &nbsp&nbsp&nbsp
+          到期时间：{{time}} &nbsp&nbsp 分组类型：{{type}} &nbsp&nbsp 期望收益：{{earnings}} &nbsp&nbsp&nbsp
         </span>
-          <Button type="primary">添加跟踪</Button>
+          <Button type="primary" v-bind:style="{display:show1}" @click="track">添加跟踪</Button>
+          <Button type="primary" disabled v-bind:style="{display:show2}">已添加跟踪</Button>
         </h1>
       </div>
 
       <div style="width: 100%;text-align: center">
-        <table style="margin: auto">
+        <table style="margin: auto" class="table1">
           <tr>
             <th>序号</th>
             <th>合约代码</th>
@@ -23,7 +24,19 @@
             <td v-for="i in item">{{i}}</td>
           </tr>
         </table>
-        <p>成本：{{text1}}&nbsp&nbsp保证金：{{text2}}&nbsp&nbsp市值：{{text3}}&nbsp&nbsp盈亏：{{text4}}</p>
+        <br>
+        <table style="margin: auto" class="table2">
+          <tr>
+            <th>成本</th>
+            <td>{{this.tableData.cost}}</td>
+            <th>保证金</th>
+            <td>{{this.tableData.bond}}</td>
+            <th>组合风险值</th>
+            <td>{{this.tableData.beta}}</td>
+            <th>资产收益率</th>
+            <td>{{this.tableData.returnOnAssets}}</td>
+          </tr>
+        </table>
       </div>
 
       <display_result ref="result"></display_result>
@@ -38,22 +51,23 @@
       components:{display_result},
       data () {
         return {
-          name:'我的组合',
-          time:'2018-09-09',
-          type:'diy',
-          earnings:'5230',
-          tdata:[
-            [123,123,123,123],
-            [123,123,123,123],
-            [123,123,123,123],
-            [123,123,123,123]
-          ],
+          id:'',
+          name:'',
+          time:'',
+          type:'',
+          earnings:'',
+          tdata:[],
           codes:[],
           lastSelectedLineIndex:0,
-          text1:'1111',
-          text2:'1111',
-          text3:'1111',
-          text4:'1111'
+          tableData:{
+            cost:'',
+            bond:'',
+            beta:'',
+            returnOnAssets:''
+          },
+          options:'',
+          show1:'',
+          show2:''
         }
       },
       methods:{
@@ -68,53 +82,98 @@
           //3.赋值
           this.lastSelectedLineIndex=index
           //4.初始化displayResult
-          this.$refs.result.getSingleInfo('up','10001407')
-          this.$refs.result.drawLine()
+          if(parseInt(this.options[index].cp)>0){
+            this.$refs.result.getSingleInfo('up',this.options[index].optionCode.substr(7))
+          }
+          else{
+            this.$refs.result.getSingleInfo('down',this.options[index].optionCode.substr(7))
+          }
+
         },
-        //待集成
         getLatestPrice(){
           var suffix=''
-          for(var i=0;i<this.tdata.length;i++){
-            suffix+='CON_SO_'+this.tdata[i][0]+','
+          for(var i=0;i<this.codes.length;i++){
+            suffix=suffix+this.codes[i]+","
           }
           this.axios.get('/sinaOption/list='+suffix)
             .then(re=>{
-              //设置tdata中每项的第一项，即设置tdata[i][0]未取到信息中的最新价
+              var parts1=re.data.split("var")
+              for(var i=1;i<parts1.length;i++){
+                var tempparts=parts1[i].split(",")
+                this.tdata[i-1].push(tempparts[2])
+              }
             })
         },
-        //待集成
         initial(optionData){
+          var graph=optionData.data.graph
+          optionData=optionData.data.portfolios[0]
+          console.log(optionData)
+          this.options=optionData.options
           //1.初始化数据
           this.name=optionData.name
-          this.time
-          if(optionData.type=='1'){
+          this.time=optionData.options[0].expireTime
+          if(optionData.type=='0'){
             this.type='资产配置'
           }
-          else if(optionData.type=='2'){
+          else if(optionData.type=='1'){
             this.type='套期保值'
           }
           else{
             this.type='DIY'
           }
-          this.earnings=optionData.EM
+          this.earnings=optionData.em
           this.tdata=[]
           for(var i=0;i<optionData.options.length;i++){
             var temp=[]
-            temp.push(optionData.options[i].optionCode)
+            temp.push(optionData.options[i].tradeCode)
             temp.push(optionData.options[i].name)
             temp.push(optionData.options[i].transactionPrice)
+            this.codes.push(optionData.options[i].optionCode)
             this.tdata.push(temp)
           }
           this.getLatestPrice()
-          this.text1=optionData.cost
-          this.text2=optionData.bond
-          this.text3
-          this.text4
-          //4.调用choose方法默认选中第一项
-          // 同时画echarts
-          this.$refs.result.lineName=['data1','data2','data3']
+          this.tableData.cost=optionData.cost
+          this.tableData.bond=optionData.bond
+          this.tableData.beta=optionData.beta.toFixed(4)
+          this.tableData.returnOnAssets=optionData.returnOnAssets.toFixed(4)
+          this.id=optionData.id
+          if(optionData.trackingStatus==false){
+            this.show1=''
+            this.show2='none'
+          }
+          else if (optionData.trackingStatus==true) {
+            this.show1='none'
+            this.show2=''
+          }
 
+          //2.同时画echarts
+          this.$refs.result.text15=optionData.em.toFixed(4)
+          this.$refs.result.text16=optionData.beta.toFixed(4)
+          this.$refs.result.line1=graph[0]
+          this.$refs.result.line2=graph[1]
+          this.$refs.result.drawLine()
 
+          //3.调用choose方法默认选中第一项
+          if(parseInt(this.options[0].cp)>0){
+            this.$refs.result.getSingleInfo('up',this.options[0].optionCode.substr(7))
+          }
+          else{
+            this.$refs.result.getSingleInfo('down',this.options[0].optionCode.substr(7))
+          }
+
+        },
+        track(){
+          this.axios.patch('/backend/portfolio/'+this.id+'/track')
+            .then(re=>{
+              if(re.data.msg=='Update portfolio risk tracking success'){
+                this.$Message.success("追踪成功")
+                this.show1=false
+                this.show2=true
+              }
+              else{
+                this.$Message.error("追踪失败，请稍后重试")
+              }
+            })
         }
       }
 
@@ -122,18 +181,33 @@
 </script>
 
 <style scoped>
-  table{
+  .table1{
     border-collapse: collapse;
   }
-  td{
+  .table1 td{
     padding-left: 5px;
     padding-right: 5px;
     background-color: #ffeeee;
   }
-  th{
+  .table1 th{
     padding-left: 5px;
     padding-right: 5px;
     background-color: #f16643;
     -webkit-text-fill-color: #ffffff;
+  }
+  .table2{
+    border-collapse: collapse;
+  }
+  .table2 td{
+    padding-left: 5px;
+    padding-right: 5px;
+    -webkit-text-fill-color: #2baee9;
+  }
+  .table2 th{
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  #tr0{
+    border: 1px solid #2db7f5;
   }
 </style>
