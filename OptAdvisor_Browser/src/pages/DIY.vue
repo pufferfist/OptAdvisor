@@ -1,10 +1,8 @@
 <template>
     <div>
-      <p style="font-size: 30px;font-weight: bold;text-align: left">DIY</p>
-      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4">构建DIY组合</h3>
-      <div style="width: 100%;height: 2px;background-color: #2b85e4"></div>
+      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px #2b85e4 solid">选择DIY组合</h3>
       <div>
-        <div style="text-align: left;padding-bottom: 5px;padding-left: 40px">
+        <!-- <div style="text-align: left;padding-bottom: 5px;padding-left: 40px">
           <p>
             上交所 &nbsp;&nbsp;
             50ETF  &nbsp;&nbsp;
@@ -12,13 +10,18 @@
               <Option v-for="item in deadlineMonths" :value="item" :key="item">{{ item }}</Option>
             </Select>
           </p>
-        </div>
+        </div> -->
+        <month-selecter style="margin: 20px 0 0 0" v-on:selectedTime = "changeMonth"></month-selecter>
         <div style="width: 100%;text-align: center">
-          <table style="margin: auto" class="table1">
+          <table style="margin:10px 0; width: 100%; line-height:23px;" class="table1">
             <tr>
-              <th colspan="9" style="background-color: #f16643">看涨合约</th>
-              <th style="background-color: #f8f8f9"></th>
-              <th colspan="9" style="background-color: #19be6b">看跌合约</th>
+              <th colspan="9" ><div style="text-align: right; margin:5px 0; border-bottom: 4px solid  #eb6951;font-size:17px;">
+            看涨合约
+          </div></th>
+              <th ></th>
+              <th colspan="9" ><div style="text-align: left; border-bottom: 4px solid  #4bbc7c;font-size:17px;">
+            看跌合约
+          </div></th>
             </tr>
             <tr>
               <td></td>
@@ -41,9 +44,9 @@
               <td>涨跌幅</td>
               <td></td>
             </tr>
-            <tr v-for="(item,index) in value">
+            <tr v-for="(item,index) in value" :key="index">
               <td :class="getClassName(index,'up')" :id="getClassName(index,'checkbox_up_')" @click="refreshId"><Checkbox @on-change="changeColor"></Checkbox></td>
-              <td @click="checkout('up',index)" v-for="up in item[0]" :class="getClassName(index,'up')">{{up}}</td>
+              <td @click="checkout('up',index)" v-for="up in item[0]" :class="getClassName(index,'up')" >{{up}}</td>
               <td @click="checkout('up',index)" v-for="upRate in item[1]" :class="getClassName(index,'up')" v-if="upRate>0" style="-webkit-text-fill-color: #f16643">{{upRate}}%</td>
               <td @click="checkout('up',index)" v-for="upRate in item[1]" :class="getClassName(index,'up')" v-if="upRate<0" style="-webkit-text-fill-color: #19be6b">{{upRate}}%</td>
               <td @click="checkout('up',index)" v-for="upRate in item[1]" :class="getClassName(index,'up')" v-if="upRate==0">{{upRate}}%</td>
@@ -159,43 +162,43 @@
           <table class="table3" style="margin: auto">
             <tr>
               <th>数量</th>
-              <td>{{this.resultTable.num}}</td>
+              <td>{{resultTable.num}}</td>
               <th>成本</th>
-              <td>{{this.resultTable.cost}}</td>
+              <td>{{resultTable.cost}}</td>
               <th>保证金</th>
-              <td>{{this.resultTable.bond}}</td>
+              <td>{{resultTable.bond}}</td>
               <th>EM</th>
-              <td>{{this.resultTable.em}}</td>
+              <td>{{resultTable.em}}</td>
             </tr>
             <tr>
               <th>beta</th>
-              <td>{{this.resultTable.beta}}</td>
+              <td>{{resultTable.beta}}</td>
               <th>z_delta</th>
-              <td>{{this.resultTable.z_delta}}</td>
+              <td>{{resultTable.z_delta}}</td>
               <th>z_gamma</th>
-              <td>{{this.resultTable.z_gamma}}</td>
+              <td>{{resultTable.z_gamma}}</td>
               <th>z_vega</th>
-              <td>{{this.resultTable.z_vega}}</td>
+              <td>{{resultTable.z_vega}}</td>
             </tr>
             <tr>
               <th>z_theta</th>
-              <td>{{this.resultTable.z_theta}}</td>
+              <td>{{resultTable.z_theta}}</td>
               <th>z_rho</th>
-              <td>{{this.resultTable.z_rho}}</td>
+              <td>{{resultTable.z_rho}}</td>
               <th>M0</th>
-              <td>{{this.resultTable.m0}}</td>
+              <td>{{resultTable.m0}}</td>
               <th>k</th>
-              <td>{{this.resultTable.k}}</td>
+              <td>{{resultTable.k}}</td>
             </tr>
             <tr>
               <th>sigma1</th>
-              <td>{{this.resultTable.sigma1}}</td>
+              <td>{{resultTable.sigma1}}</td>
               <th>sigma2</th>
-              <td>{{this.resultTable.sigma2}}</td>
+              <td>{{resultTable.sigma2}}</td>
               <th>p1</th>
-              <td>{{this.resultTable.p1}}</td>
+              <td>{{resultTable.p1}}</td>
               <th>p2</th>
-              <td>{{this.resultTable.p2}}</td>
+              <td>{{resultTable.p2}}</td>
             </tr>
           </table>
           <div id="myChart" style="width: 100%;height: 325px">
@@ -206,8 +209,10 @@
 </template>
 
 <script>
+    import MonthSelecter from "../components/MonthSelecter/MonthSelecter";    
     export default {
-        name: "diy",
+      name: "diy",
+      components: {MonthSelecter},
       data () {
         return {
           value1:5,
@@ -357,12 +362,21 @@
             this.getValue(this.selectMonth)
           }
         },
-        changeMonth(){
-          this.value=[]
-          this.lastSelectedLineType='up'
-          this.lastSelectedLineIndex=0
-          this.getValue(this.selectMonth)
-          this.setLeftOrRightValue()
+        // changeMonth(){
+        //   this.value=[]
+        //   this.lastSelectedLineType='up'
+        //   this.lastSelectedLineIndex=0;
+        //   console.log(this.selectMonth);
+          
+        //   this.getValue(this.selectMonth)
+        //   this.setLeftOrRightValue()
+        // },
+        changeMonth(time) {
+          this.value = [];
+          this.lastSelectedLineType='up';
+          this.lastSelectedLineIndex=0;
+          this.getValue(time.date);
+          this.setLeftOrRightValue();
         },
         checkout(upOrDown,index){
           //1.先复原
