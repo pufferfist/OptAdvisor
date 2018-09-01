@@ -1,9 +1,8 @@
 <template>
     <div>
-      <p style="font-size: 30px;font-weight: bold;text-align: left">DIY</p>
-      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4">构建DIY组合</h3>
-      <div style="width: 100%;height: 2px;background-color: #2b85e4"></div>
-      <div>
+      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">构建DIY组合</h3>
+
+      <div style="margin: 10px 0">
         <div style="text-align: left;padding-bottom: 5px;padding-left: 40px">
           <p>
             上交所 &nbsp;&nbsp;
@@ -14,11 +13,15 @@
           </p>
         </div>
         <div style="width: 100%;text-align: center">
-          <table style="margin: auto" class="table1">
+          <table style="width: 100%;line-height:23px;" class="table1">
             <tr>
-              <th colspan="9" style="background-color: #f16643">看涨合约</th>
-              <th style="background-color: #f8f8f9"></th>
-              <th colspan="9" style="background-color: #19be6b">看跌合约</th>
+              <th colspan="9"> <div style="text-align: right; margin:5px 0; border-bottom: 4px solid  #eb6951;">
+            看涨合约
+          </div></th>
+              <th></th>
+              <th colspan="9"><div style="text-align: left; border-bottom: 4px solid  #4bbc7c;">
+            看跌合约
+          </div></th>
             </tr>
             <tr>
               <td></td>
@@ -54,37 +57,23 @@
               <td @click="checkout('down',index)"v-for="downRate in item[4]" :class="getClassName(index,'down')" v-if="downRate==0">{{downRate}}%</td>
               <td style="padding-left: 20px" :class="getClassName(index,'down')" :id="getClassName(index,'checkbox_down_')" @click="refreshId"><Checkbox @on-change="changeColor"></Checkbox></td>
             </tr>
-            <tr>
-              <th colspan="19" style="background-color: #2db7f5">我的组合（请在上表中勾选自己的DIY项目）</th>
-            </tr>
-            <tr>
-              <td></td>
-              <td colspan="8" style="vertical-align: top">
-                <li v-for="(l,index) in leftValue">
-                  {{l.name}}&nbsp&nbsp
-                  <input type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')">份
-                </li>
-              </td>
-              <td></td>
-              <td colspan="8" style="vertical-align: top">
-                <li v-for="(r,index) in rightValue">
-                  {{r.name}}&nbsp&nbsp
-                  <input type="number" v-model="r.value" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')">份
-
-                </li>
-              </td>
-              <td></td>
-            </tr>
-            <tr>
-              <td colspan="19">&nbsp;</td>
-            </tr>
-            <tr>
-              <td colspan="19"><Button type="primary" style="width: 250px" @click="newGroupName">确认添加至我的组合</Button></td>
-            </tr>
-            <tr>
-              <td colspan="19">&nbsp;</td>
-            </tr>
           </table>
+          <h4 style="margin:10px 0">已选择的组合</h4>
+          <Row>
+            <Col span="10" offset="2">
+              <li style="list-style-type:none;" v-for="(l,index) in leftValue" :key="index">
+                  {{l.name}}
+                  <InputNumber style="width:45px;" size="small" type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')"></InputNumber >份
+                </li>
+            </Col>
+            <Col span="10" offset="2">
+              <li style="list-style-type:none;"  v-for="(r,index) in rightValue" :key="index">
+                  {{r.name}}
+                  <InputNumber style="width:45px;" size="small" type="number" v-model="r.value" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')"></InputNumber >份
+                </li>
+            </Col>
+          </Row>
+          <Button type="primary" style="width: 250px" @click="newGroupName">确认添加至我的组合</Button>
         </div>
       </div>
       <br>
