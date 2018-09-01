@@ -278,7 +278,7 @@
   }
 
   .addButton {
-    color: #4169E1;
+    color: #4169E1 !important;
     background: 0 0;
     border-color: #4169E1;
   }

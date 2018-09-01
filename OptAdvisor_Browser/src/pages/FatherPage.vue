@@ -27,7 +27,7 @@
     width:100%;
     height:60px;
     position:fixed;
-    z-index: 10000000;
+    z-index: 1000;
     top:0;left:0;
   }
   .child{

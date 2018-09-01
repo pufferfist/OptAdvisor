@@ -25,7 +25,6 @@ public class PortfolioServiceImpl implements PortfolioService {
 
     @Autowired
     private PortfolioDataService dataService;
-
 //    private Logger logger = LoggerFactory.getLogger(PortfolioServiceImpl.class);
 
     @Override
@@ -160,9 +159,10 @@ public class PortfolioServiceImpl implements PortfolioService {
 
                 String[] T1 = newOption.getExpireTime().split("-");
                 String T = T1[0]+'-'+T1[1];
-                String[][] newRtn = recommendService.hedgingBackTest(findType,portfolio.getN(),portfolio.getiK(),portfolio.getpAsset(),T);
+                String[][] tempRtn = new String[][]{recommendService.getMonth(),null};
+//                String[][] newRtn = recommendService.hedgingBackTest(findType,portfolio.getN(),portfolio.getiK(),portfolio.getpAsset(),T);
 
-                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, newRtn);
+                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, tempRtn);
 
 
                 Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(),portfolio.isFlag(),HEDGE);
@@ -175,6 +175,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
 
                 for(int i=0; i<backTestData.length;i++){
+                    if("null".equals(backTestData[i])) break;
                     double value = Double.valueOf(backTestData[i]);
                     double value1 = Double.valueOf(backTestData1[i]);
                     double vaule3 = value1 - value;

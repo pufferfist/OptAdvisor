@@ -3,16 +3,16 @@
       <p style="font-weight: bold;font-size: 25px">套期保值效果展示&nbsp&nbsp<Button type="primary" size="small" @click="addToMyGroup">添加至我的组合</Button></p>
       <div style="text-align: left">
         <div>
-          <p style="font-size: 20px;font-weight: bold;padding-left: 50px">展示期权：</p>
+          <p style="font-size: 20px;font-weight: bold;padding-left: 20px">展示期权：</p>
           <optionGroup ref="option_group"></optionGroup>
         </div>
         <br>
         <div>
-          <span style="font-size: 20px;font-weight: bold;padding-left: 50px">到达预期最大亏损：<p style="-webkit-text-fill-color: red;display: inline">{{expectedLoss}}</p></span>
+          <span style="font-size: 20px;font-weight: bold;padding-left: 20px">到达预期最大亏损：<p style="-webkit-text-fill-color: red;display: inline">{{expectedLoss}}</p></span>
         </div>
         <br>
         <div>
-          <p style="font-size: 20px;font-weight: bold;padding-left: 50px">组合表现：</p>
+          <p style="font-size: 20px;font-weight: bold;padding-left: 20px">组合表现：</p>
           <div id="myChart" style="width: 700px;height: 300px"></div>
         </div>
       </div>
@@ -28,8 +28,13 @@
         return {
           expectedLoss:'',
           graph:'',
-          lineName:['data1','data2','data3'],
-          groupName:''
+          lineName:['持有','不持有','两者之差'],
+          groupName:'',
+          originData:'',
+          n:'',
+          pAsset:'',
+          sExp:'',
+          flag:''
         }
       },
       methods: {
@@ -87,12 +92,17 @@
               })
             },
             onOk: () => {
-              //1.判断可不可以命名
-              //2.向后台添加组合(还未加入名字)
-              var content={type:'1',options:[this.$refs.optionGroup.TData]}
-              this.axios.post('/backend/portfolio',content)
+              var data=this.originData
+              data.name=this.groupName
+              data.trackingStatus=false
+              data.type=1
+              data.graph=this.originData.graph
+              data.iK=this.originData.iK
+              data.options=[this.originData.option]
+
+              this.axios.post('/backend/portfolio',data)
                 .then(re=>{
-                  if(re.msg=='Add portfolio success'){
+                  if(re.data.msg=='Add portfolio success'){
                     this.$Message.info('添加成功');
                   }
                   else{

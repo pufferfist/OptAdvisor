@@ -46,13 +46,31 @@
             else{
               this.warn_color="#ffffff"
               var deadline_value=this.$refs.info.formItem.month[deadline.substr(5)-1]
-
               //写入数据
               var param={n0:OpenInterest,a:rate/100,s_exp:min_price,t:deadline_value}
               this.axios.post('/backend/recommend/hedging',param).then((response)=>{
-                var data=response.data
-                //1.填充表格
-                var forms={
+                if(response.data.msg=='No eligible options'){
+                  this.$refs.blank.text='没有合适的期权'
+                }
+                else if(response.data.msg=='IOException occurs'){
+                  this.$refs.blank.text='输入输出报错，请您稍后重试'
+                }
+                else if(response.data.msg=='Hedging success'){
+                  this.$refs.blank.text='暂无数据，等待输入'
+                  this.$refs.result.originData=response.data.data
+
+
+
+                  this.$refs.result.n=OpenInterest
+                  this.$refs.result.pAsset=OpenInterest
+                  this.$refs.result.flag=OpenInterest
+                  this.$refs.result.sExp=OpenInterest
+
+
+
+                  var data=response.data.data
+                  //1.填充表格
+                  var forms={
                     optionCode:data.option.optionCode, //期权代码
                     expireTime:data.option.expireTime,//到期时间
                     transactionPrice:data.option.transactionPrice,//成交价
@@ -80,18 +98,21 @@
                   else if(data.option.cp=='-1'){
                     forms.cp='看跌'
                   }
-                this.$refs.result.$refs.option_group.TData=forms
+                  this.$refs.result.$refs.option_group.TData=forms
 
-                //2.填充预期最大亏损值
-                this.$refs.result.expectedLoss=data.ik
+                  //2.填充预期最大亏损值
+                  this.$refs.result.expectedLoss=data.iK
 
-                //3.填充折线图
-                this.$refs.result.graph=data.graph
-                this.$refs.result.drawLine()
+                  //3.填充折线图
+                  this.$refs.result.graph=data.graph
+                  this.$refs.result.drawLine()
+
+                  this.ispage1="none"
+                  this.ispage2=""
+                  this.demo_spilt_height="700px"
+                }
               })
-              this.ispage1="none"
-              this.ispage2=""
-              this.demo_spilt_height="700px"
+
             }
           }
       }

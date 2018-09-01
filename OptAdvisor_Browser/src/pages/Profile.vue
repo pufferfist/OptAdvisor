@@ -14,9 +14,9 @@
             <Button type="primary" ghost @click="showEditPassword">修改密码</Button>
           </FormItem>
 
-          <FormItem label="用户手机：" prop="cellphone">
+          <FormItem label="用户手机：" prop="telephone">
             <div style="display:inline-block;width:300px;">
-              <Input v-model="userForm.cellphone"/>
+              <Input v-model="userForm.telephone"/>
             </div>
           </FormItem>
           <FormItem label="姓名：" prop="name">
@@ -30,8 +30,8 @@
               <Radio label="female">女性</Radio>
             </RadioGroup>
           </FormItem>
-          <FormItem label="生日：" prop="date">
-            <DatePicker type="date" placeholder="选择生日" v-model="userForm.date"></DatePicker>
+          <FormItem label="生日：" prop="birthday">
+            <DatePicker type="date" placeholder="选择生日" v-model="userForm.birthday"></DatePicker>
           </FormItem>
           <FormItem label="邮箱：" prop="email">
             <div style="display:inline-block;width:300px;">
@@ -90,7 +90,7 @@
         userForm: {
           username:'',
           name: '',
-          cellphone: '',
+          telephone: '',
           email: '',
           gender:'',
           birthday: '',
@@ -108,7 +108,7 @@
           name: [
             { required: true, message: '请输入姓名', trigger: 'blur' }
           ],
-          cellphone: [
+          telephone: [
             { required: true, message: '请输入手机号码' },
             { validator: validePhone }
           ],
@@ -119,7 +119,7 @@
           gender: [
             { required: true, message: '请选择用户性别', trigger: 'change' }
           ],
-          date: [
+          birthday: [
             { required: true, type: 'date', message: '请选择出生日期', trigger: 'change' }
           ],
         },
@@ -141,8 +141,7 @@
             { required: true, message: '请再次输入新密码', trigger: 'blur' },
             { validator: valideRePassword, trigger: 'blur' }
           ]
-        },
-        initPhone: '',
+        }
       };
     },
     methods: {
@@ -158,8 +157,6 @@
             this.save_loading = true;
             //异步请求修改信息
             let tempUser=JSON.parse(JSON.stringify(this.userForm));
-            delete tempUser.birthday;
-            tempUser.birthday=this.userForm.birthday.getTime();
             delete tempUser.w1;
             delete tempUser.w2;
             this.axios.post("/backend/user/modifyInfo",tempUser)
@@ -199,14 +196,13 @@
     mounted () {
       this.userForm.username='叫我小强';
       this.userForm.name = '郭玉玲';
-      this.userForm.cellphone = '18888888888';
-      this.initPhone = '18888888888';
+      this.userForm.telephone = '18888888888';
       this.userForm.email = 'xiaoqiang@163.com';
       this.userForm.gender = 'female';
       //初始化个人信息
       this.axios.post("/backend/user/getInfo")
         .then((res)=>{
-          this.userForm=res.data;
+          this.userForm=res.data.data;
         })
     }
   };

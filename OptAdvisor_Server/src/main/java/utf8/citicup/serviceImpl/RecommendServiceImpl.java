@@ -27,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
+import static utf8.citicup.service.util.StatusMsg.noEligibleOptions;
 
 @Service
 public class RecommendServiceImpl implements RecommendService {
@@ -68,8 +69,15 @@ public class RecommendServiceImpl implements RecommendService {
     private double S[];
     private double eps1;
 
+    /*判断是否正在获取网络信息*/
+    boolean isUpdataRunning;
+
+    public String[] getMonth() {
+        return month;
+    }
+
     private String[] month={"2015-3","2015-4","2015-5","2015-6","2015-7","2015-8","2015-9","2015-10","2015-11","2015-12","2016-1","2016-2","2016-3","2016-4","2016-5","2016-6","2016-7","2016-8","2016-9","2016-10","2016-11","2016-12","2017-1","2017-2","2017-3","2017-4","2017-5","2017-6","2017-7","2017-8","2017-9","2017-10","2017-11","2017-12","2018-1","2018-2","2018-3"};
-//    private String[] month={"2018-2"};
+//    private String[] month={"2015-3","2015-4","2015-5","2018-2"};
 
     /*计算得到的值*/
 
@@ -228,21 +236,18 @@ public class RecommendServiceImpl implements RecommendService {
         }
         dv = 0;//股票分红率
         M = 10000;
-        T = "2018-09";
+        this.isUpdataRunning = true;
     }
 
     /*从网络获取所需的数据*/
-    private void upDataFromNet() throws IOException
-    {
+    public void upDataFromNet() throws IOException {
         r = dataSource.get_r();
-        t = Integer.parseInt(dataSource.get_expireAndremainder(T)[1]);
 //        S0 = dataSource.get_S0();//实时标的价格
         sigma = dataSource.get_Sigma();//实时波动率
         lastestOptionPrice = dataSource.get_LatestPrice();
         S0 = lastestOptionPrice;
-        String[] newExpiredMonths = new String[]{ T };
         expiredMonths = dataSource.get_T();
-        for (String expiredMonth : newExpiredMonths) {
+        for (String expiredMonth : expiredMonths) {
             if (expiredMonth != null) {
                 //region 根据行权名称得到相关数据
                 chigh.put(expiredMonth, new ArrayList<>());
@@ -286,6 +291,10 @@ public class RecommendServiceImpl implements RecommendService {
                         newOption.setTheta(theta);
                         newOption.setVega(vega);
                         newOption.setRealTimePrice(realTimePrice);
+
+                        String[] nameAndCode = dataSource.getShortNameAndCodeName(newOption.getOptionCode());
+                        newOption.setTradeCode(nameAndCode[1]);
+                        newOption.setName(nameAndCode[0]);
 //                    GreekCharacteValue(newOption, Integer.parseInt(dataSource.get_expireAndremainder(expiredMonth)[1]));
                         //endregion
 
@@ -293,7 +302,6 @@ public class RecommendServiceImpl implements RecommendService {
                         if (cp == 1) {
                             if (k >= this.lastestOptionPrice) {
                                 chigh.get(expiredMonth).add(newOption);
-//                            System.out.println(newOption.toString());
                             } else {
                                 clow.get(expiredMonth).add(newOption);
                             }
@@ -508,9 +516,13 @@ public class RecommendServiceImpl implements RecommendService {
         k = k / 100.0;
         /*实时数据的获取*/
 
-        this.upDataFromNet();
-        logger.info("get data from net successfully");
+        while(isUpdataRunning){
+//            logger.info("正在获取网络信息");
+        };
+
         parShallowDeep();
+        t = Integer.parseInt(dataSource.get_expireAndremainder(T)[1]);
+
         /*货币基金与衍生品组合分配：*/
         this.M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
 
@@ -523,7 +535,10 @@ public class RecommendServiceImpl implements RecommendService {
         logger.info("second step is finished");
         for(int i = 0;i < maxGoalD.optionCombination.length;i++){
             maxGoalD.optionCombination[i].setType(maxGoalD.buyAndSell[i]);
-            addAttributesToDOption(maxGoalD.optionCombination[i]);
+            if(maxGoalD.optionCombination[i].getType() < 0)
+                maxGoalD.optionCombination[i].setTransactionPrice(maxGoalD.optionCombination[i].getPrice2());
+            else
+                maxGoalD.optionCombination[i].setTransactionPrice(maxGoalD.optionCombination[i].getPrice1());
         }
         List<Double> profits = thirdStep(maxGoalD, combination);
         logger.info("third step back test finished");
@@ -1044,6 +1059,9 @@ public class RecommendServiceImpl implements RecommendService {
         RecommendOption2 recommendOption2;
         try {
             recommendOption2 = mainHedging(N0, a, sExp, T);
+            if(recommendOption2 == null){
+                return noEligibleOptions;
+            }
         } catch (IOException e) {
             e.printStackTrace();
             return StatusMsg.IOExceptionOccurs;
@@ -1054,10 +1072,8 @@ public class RecommendServiceImpl implements RecommendService {
 
     private RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
         this.T = T;
-        expiredMonths = dataSource.get_T();
-        upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
-        logger.info("plowT的长度是" + String.valueOf(plowT.length));
+//        logger.info("plowT的长度是" + String.valueOf(plowT.length));
         Option[] phighT = new Option[phigh.get(T).size()];
         this.plow.get(T).toArray(plowT);
         this.phigh.get(T).toArray(phighT);
@@ -1070,16 +1086,39 @@ public class RecommendServiceImpl implements RecommendService {
         //第二步
         Option i1 = maxLoss(ListD1,sExp,N,pAsset);
         Option i2 = maxLoss(ListD2,sExp,N,pAsset);
-        double iK1 = i1.getK();
-        double iK2 = i2.getK();
+
+
         double iK;
         Option optionI;
+        String[][] rtn;
+        if(i1==null && i2==null){
+            return null;
+        }
+        if(i1 == null){
+            iK = i2.getK();
+            optionI = i2;
+            optionI.setType(1);
+            addAttributesToDOption(optionI);
+            rtn = hedgingBackTest(1,N,iK,pAsset,T);
+            return new RecommendOption2(optionI, iK, rtn);
+        }
+        if(i2 == null){
+            iK = i1.getK();
+            optionI = i1;
+            optionI.setType(1);
+            addAttributesToDOption(optionI);
+            rtn = hedgingBackTest(0,N,iK,pAsset,T);
+            return new RecommendOption2(optionI, iK, rtn);
+        }
+
+        double iK1 = i1.getK();
+        double iK2 = i2.getK();
         boolean flag;  //判断是第一种还是第二种情况
         if(iK1>iK2){ iK=iK2; optionI = i2; flag = false;}
         else { iK = iK1; optionI = i1; flag = true;}
-
+        optionI.setType(1);
+        addAttributesToDOption(optionI);
         //第三步
-        String[][] rtn;
         if(flag) rtn = hedgingBackTest(0,N,iK,pAsset,T);
         else rtn = hedgingBackTest(1,N,iK,pAsset,T);
         return new RecommendOption2(optionI, iK, rtn);
@@ -1121,7 +1160,7 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
-    String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
+    private String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
         boolean flag1=false,flag2=false;
         int stage = calculateFirstFew(T);                            //得到是在第几个阶段
         logger.info("stage is " + stage);
@@ -1351,14 +1390,12 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
-    @Scheduled(initialDelay = 1000, fixedRate = 5 * 60 * 1000)
+    @Scheduled(initialDelay = 1000, fixedRate = 10 * 60 * 1000)
     public void task() throws IOException {
-
-//        int N0 = 100000;
-//        double a = 0.5;
-//        double sExp = 2.1;
-//        String T = "2018-10";
-////        warning();
-//        hedging(N0,a,sExp,T);
+        logger.info("正在更新网络数据");
+        this.isUpdataRunning = true;
+        upDataFromNet();
+        this.isUpdataRunning = false;
+        logger.info("网络数据更新完成");
     }
 }
