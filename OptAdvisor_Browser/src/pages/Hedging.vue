@@ -40,14 +40,14 @@
             var rate=array[1].fieldValue
             var deadline=array[2].fieldValue
             var min_price=array[3].fieldValue
-            if((OpenInterest=='')||(rate=='')||(deadline=='')||(min_price=='')||(min_price=='¥')){
+            if((OpenInterest=='')||(rate=='')||(deadline=='')||(min_price=='')){
               this.warn_color="#ed4014"
             }
             else{
               this.warn_color="#ffffff"
               var deadline_value=this.$refs.info.formItem.month[deadline.substr(5)-1]
               //写入数据
-              var param={n0:OpenInterest,a:rate/100,s_exp:min_price,t:deadline_value}
+              var param={n0:OpenInterest,a:rate/100,s_exp:min_price.toFixed(2),t:deadline_value}
               this.axios.post('/backend/recommend/hedging',param).then((response)=>{
                 if(response.data.msg=='No eligible options'){
                   this.$refs.blank.text='没有合适的期权'
@@ -115,7 +115,10 @@
 
             }
           }
-      }
+      },
+      destroyed() {
+        clearInterval(this.Interval);
+      },
     }
 </script>
 

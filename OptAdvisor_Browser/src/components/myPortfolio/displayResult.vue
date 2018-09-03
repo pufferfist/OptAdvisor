@@ -102,7 +102,9 @@
             text16:'',
             line1:[],
             line2:[],
-            lineName:['回测收益']
+            line3:[],
+            line4:[],
+            lineName:[]
           }
       },
       methods: {
@@ -128,7 +130,17 @@
               name:this.lineName[0],
               data: this.line2,
               type: 'line'
-            }]
+            },
+              {
+                name:this.lineName[1],
+                data: this.line3,
+                type: 'line'
+              },
+              {
+                name:this.lineName[2],
+                data: this.line4,
+                type: 'line'
+              }]
           });
         },
         getSingleInfo(upOrDown,address){

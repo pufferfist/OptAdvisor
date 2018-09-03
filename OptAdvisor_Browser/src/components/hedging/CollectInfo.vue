@@ -25,11 +25,7 @@
           </TimelineItem>
           <TimelineItem color="red">
             <FormItem style="text-align: left" label="预测价格最低值" prop="min_price">
-              <InputNumber
-                :max="10"
-                v-model="formItem.min_price"
-                :formatter="value => `¥ ${value}`.replace(/B(?=(d{3})+(?!d))/g, ',')"
-                :parser="value => value.replace(/$s?|(,*)/g, '')" style="width: 100%"></InputNumber>
+              ¥&nbsp&nbsp<InputNumber :max="10" v-model="formItem.min_price"></InputNumber>
             </FormItem>
           </TimelineItem>
         </Timeline>
@@ -47,7 +43,7 @@
         return {
           formItem: {
             rate:25,
-            min_price:'',
+            min_price:1000,
             OpenInterest: '',
             deadline: '',
             month:''

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
+import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
 import utf8.citicup.domain.entity.User;
 import utf8.citicup.service.UserService;
 
@@ -13,6 +14,7 @@ import utf8.citicup.service.UserService;
 public class Initializer implements CommandLineRunner {
     @Autowired
     private UserService userService;
+
 
     private Logger logger = LoggerFactory.getLogger(Initializer.class);
 
