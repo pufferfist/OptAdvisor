@@ -19,7 +19,6 @@ import utf8.citicup.service.util.GetData;
 import utf8.citicup.service.util.PolySms;
 import utf8.citicup.service.util.StatusMsg;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -70,9 +69,9 @@ public class RecommendServiceImpl implements RecommendService {
     private double eps1;
 
     /*判断是否正在获取网络信息*/
-    boolean isUpdataRunning;
+    private boolean isUpdataRunning;
 
-    public String[] getMonth() {
+    String[] getMonth() {
         return month;
     }
 
@@ -241,6 +240,10 @@ public class RecommendServiceImpl implements RecommendService {
 
     /*从网络获取所需的数据*/
     public void upDataFromNet() throws IOException {
+        chigh.clear();
+        clow.clear();
+        phigh.clear();
+        plow.clear();
         r = dataSource.get_r();
 //        S0 = dataSource.get_S0();//实时标的价格
         sigma = dataSource.get_Sigma();//实时波动率
@@ -360,6 +363,13 @@ public class RecommendServiceImpl implements RecommendService {
         Option[] clow_T = clow.get(T).toArray(new Option[0]);
         Option[] phigh_T = phigh.get(T).toArray(new Option[0]);
         Option[] plow_T = plow.get(T).toArray(new Option[0]);
+
+        cpar.clear();
+        ppar.clear();
+        chighShallow.clear();
+        plowShallow.clear();
+        chighDeep.clear();
+        plowDeep.clear();
 
         //平价看涨
         sievesImpl(cpar, chigh_T,S0 - eps, S0 + eps);
@@ -516,10 +526,12 @@ public class RecommendServiceImpl implements RecommendService {
         k = k / 100.0;
         /*实时数据的获取*/
 
-        while(isUpdataRunning){
-//            logger.info("正在获取网络信息");
-        };
+//        while (isUpdataRunning);
 
+        if(isUpdataRunning){
+            upDataFromNet();
+            isUpdataRunning = false;
+        }
         parShallowDeep();
         t = Integer.parseInt(dataSource.get_expireAndremainder(T)[1]);
 
@@ -712,8 +724,10 @@ public class RecommendServiceImpl implements RecommendService {
                 isInD = true;
             else if(choose == 'H')
                 isInD = Math.abs(sumDelta) < zero;
-            else if(choose == 'G' || choose == 'F')
+            else if(choose == 'G')
                 isInD = Math.abs(sumDelta) < zero && sumVega < 0;
+            else if(choose == 'F')
+                isInD = sumVega < 0;
             else
                 isInD = Math.abs(sumDelta) < zero && sumVega > 0;
             if(isInD){
@@ -1071,6 +1085,10 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
+        if(isUpdataRunning){
+            upDataFromNet();
+            isUpdataRunning = false;
+        };
         this.T = T;
         Option[] plowT = new Option[plow.get(T).size()];
 //        logger.info("plowT的长度是" + String.valueOf(plowT.length));
