@@ -579,7 +579,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultLeftCode[i].substr(7)
             op.expireTime=deadline
-            op.type=parseInt(document.getElementById("left_input_number_"+i).value)
+            op.type=this.leftValue[i].value
             op.cp=1
             options.push(op)
           }
@@ -587,7 +587,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultRightCode[i].substr(7)
             op.expireTime=deadline
-            op.type=parseInt(document.getElementById("right_input_number_"+i).value)
+            op.type=this.rightValue[i].value
             op.cp=-1
             options.push(op)
           }
