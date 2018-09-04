@@ -62,7 +62,7 @@
               <td colspan="8" style="vertical-align: top">
                 <li v-for="(l,index) in leftValue">
                   {{l.name}}&nbsp&nbsp
-                  <input type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')">份
+                  <InputNumber type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')"/>份
                 </li>
               </td>
               <td></td>
@@ -156,52 +156,59 @@
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
           <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="preview">预览</Button> </h3>
-          <table class="table3" style="margin: auto">
-            <tr>
-              <th>数量</th>
-              <td>{{this.resultTable.num}}</td>
-              <th>成本</th>
-              <td>{{this.resultTable.cost}}</td>
-              <th>保证金</th>
-              <td>{{this.resultTable.bond}}</td>
-              <th>EM</th>
-              <td>{{this.resultTable.em}}</td>
-            </tr>
-            <tr>
-              <th>beta</th>
-              <td>{{this.resultTable.beta}}</td>
-              <th>z_delta</th>
-              <td>{{this.resultTable.z_delta}}</td>
-              <th>z_gamma</th>
-              <td>{{this.resultTable.z_gamma}}</td>
-              <th>z_vega</th>
-              <td>{{this.resultTable.z_vega}}</td>
-            </tr>
-            <tr>
-              <th>z_theta</th>
-              <td>{{this.resultTable.z_theta}}</td>
-              <th>z_rho</th>
-              <td>{{this.resultTable.z_rho}}</td>
-              <th>M0</th>
-              <td>{{this.resultTable.m0}}</td>
-              <th>k</th>
-              <td>{{this.resultTable.k}}</td>
-            </tr>
-            <tr>
-              <th>sigma1</th>
-              <td>{{this.resultTable.sigma1}}</td>
-              <th>sigma2</th>
-              <td>{{this.resultTable.sigma2}}</td>
-              <th>p1</th>
-              <td>{{this.resultTable.p1}}</td>
-              <th>p2</th>
-              <td>{{this.resultTable.p2}}</td>
-            </tr>
-          </table>
-          <div id="myChart" style="width: 100%;height: 325px">
+          <div style="height: 450px;width: 100%">
+            <Spin v-if="!showPreview">
+              <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+              <div>Loading</div>
+            </Spin>
+            <table class="table3" style="margin: auto" v-if="showPreview">
+              <tr>
+                <th>数量</th>
+                <td>{{this.resultTable.num}}</td>
+                <th>成本</th>
+                <td>{{this.resultTable.cost}}</td>
+                <th>保证金</th>
+                <td>{{this.resultTable.bond}}</td>
+                <th>EM</th>
+                <td>{{this.resultTable.em}}</td>
+              </tr>
+              <tr>
+                <th>beta</th>
+                <td>{{this.resultTable.beta}}</td>
+                <th>z_delta</th>
+                <td>{{this.resultTable.z_delta}}</td>
+                <th>z_gamma</th>
+                <td>{{this.resultTable.z_gamma}}</td>
+                <th>z_vega</th>
+                <td>{{this.resultTable.z_vega}}</td>
+              </tr>
+              <tr>
+                <th>z_theta</th>
+                <td>{{this.resultTable.z_theta}}</td>
+                <th>z_rho</th>
+                <td>{{this.resultTable.z_rho}}</td>
+                <th>M0</th>
+                <td>{{this.resultTable.m0}}</td>
+                <th>k</th>
+                <td>{{this.resultTable.k}}</td>
+              </tr>
+              <tr>
+                <th>sigma1</th>
+                <td>{{this.resultTable.sigma1}}</td>
+                <th>sigma2</th>
+                <td>{{this.resultTable.sigma2}}</td>
+                <th>p1</th>
+                <td>{{this.resultTable.p1}}</td>
+                <th>p2</th>
+                <td>{{this.resultTable.p2}}</td>
+              </tr>
+            </table>
+            <div id="myChart" style="width: 100%;height: 325px" v-if="showPreview">
+            </div>
           </div>
         </div>
       </div>
+      <button @click="test">XXX</button>
     </div>
 </template>
 
@@ -245,7 +252,8 @@
           line2:[],
           resultTable:{},
           show1:false,
-          show2:false
+          show2:false,
+          showPreview:true
         }
       },
       async mounted() {
@@ -590,7 +598,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultLeftCode[i].substr(7)
             op.expireTime=deadline
-            op.type=parseInt(document.getElementById("left_input_number_"+i).value)
+            op.type=this.leftValue[i].value
             op.cp=1
             options.push(op)
           }
@@ -623,6 +631,7 @@
           return year+"-"+month+"-"+(Array(2).join(0)+day).slice(-2)
         },
         preview(){
+          this.showPreview=false
           this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
               if(re.data.msg=='custom portfolio finished'){
@@ -650,7 +659,11 @@
                 this.$Message.error("未能")
               }
             })
+
         },
+        test(){
+          console.log(this.getOptions())
+        }
       }
     }
 </script>
@@ -716,6 +729,13 @@
     width: 40px;
   }
 
-
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
+  @keyframes ani-demo-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
+  }
 
 </style>
