@@ -1191,7 +1191,10 @@
                     },
                   },
                 ]
-              },true)
+              },true);
+            window.addEventListener("resize", function() {
+                that.myChart.resize();
+              });
             this.myChart.hideLoading();
           },
           initDayK() {
@@ -1452,7 +1455,9 @@
          this.myChart = echarts.init(this.$refs.myechart);
          this.initLine();
         },
-    
+        destroyed() {
+          clearInterval(this.Interval);
+        },
         
     }
 </script>
