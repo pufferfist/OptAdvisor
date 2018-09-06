@@ -7,18 +7,21 @@
     50%  { transform: rotate(180deg);}
     to   { transform: rotate(360deg);}
   }
+  .demo-spin-container{
+    display: inline-block;
+    width: 100%;
+    height: 500px;
+    position: relative;
+    border: 1px solid #eee;
+  }
 
 </style>
 <template>
-  <div>
-    <Spin v-if="show">
+  <div class="demo-spin-container">
+    <Spin v-if="show" fix>
       <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
       <div>Loading</div>
     </Spin>
-    <button @click="test">XXX</button>
-    <table v-if="show">
-      <tr><td>XXXXX</td></tr>
-    </table>
   </div>
 
 </template>
