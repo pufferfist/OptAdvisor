@@ -100,7 +100,7 @@
               data.iK=this.originData.iK
               data.options=[this.originData.option]
 
-              console.log(data)
+              this.handleSpinCustom()
               this.axios.post('/backend/portfolio',data)
                 .then(re=>{
                   if(re.data.msg=='Add portfolio success'){
@@ -118,11 +118,32 @@
             }
           });
         },
+        handleSpinCustom () {
+          this.$Spin.show({
+            render: (h) => {
+              return h('div', [
+                h('Icon', {
+                  'class': 'demo-spin-icon-load',
+                  props: {
+                    type: 'ios-loading',
+                    size: 18
+                  }
+                }),
+                h('div', '加载中')
+              ])
+            }
+          });
+          setTimeout(() => {
+            this.$Spin.hide();
+          }, 3000);
+        }
       }
 
     }
 </script>
 
 <style scoped>
-
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
 </style>

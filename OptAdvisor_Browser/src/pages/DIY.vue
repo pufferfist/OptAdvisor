@@ -145,49 +145,39 @@
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
           <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="preview">预览</Button> </h3>
-          <table class="table3" style="margin: auto">
-            <tr>
-              <th>数量</th>
-              <td>{{this.resultTable.num}}</td>
-              <th>成本</th>
-              <td>{{this.resultTable.cost}}</td>
-              <th>保证金</th>
-              <td>{{this.resultTable.bond}}</td>
-              <th>EM</th>
-              <td>{{this.resultTable.em}}</td>
-            </tr>
-            <tr>
-              <th>beta</th>
-              <td>{{this.resultTable.beta}}</td>
-              <th>z_delta</th>
-              <td>{{this.resultTable.z_delta}}</td>
-              <th>z_gamma</th>
-              <td>{{this.resultTable.z_gamma}}</td>
-              <th>z_vega</th>
-              <td>{{this.resultTable.z_vega}}</td>
-            </tr>
-            <tr>
-              <th>z_theta</th>
-              <td>{{this.resultTable.z_theta}}</td>
-              <th>z_rho</th>
-              <td>{{this.resultTable.z_rho}}</td>
-              <th>M0</th>
-              <td>{{this.resultTable.m0}}</td>
-              <th>k</th>
-              <td>{{this.resultTable.k}}</td>
-            </tr>
-            <tr>
-              <th>sigma1</th>
-              <td>{{this.resultTable.sigma1}}</td>
-              <th>sigma2</th>
-              <td>{{this.resultTable.sigma2}}</td>
-              <th>p1</th>
-              <td>{{this.resultTable.p1}}</td>
-              <th>p2</th>
-              <td>{{this.resultTable.p2}}</td>
-            </tr>
-          </table>
-          <div id="myChart" style="width: 100%;height: 325px">
+          <div class="demo-spin-container">
+            <table class="table3" style="margin: auto">
+              <tr>
+                <th>数量</th>
+                <td>{{this.resultTable.num}}</td>
+                <th>成本</th>
+                <td>{{this.resultTable.cost}}</td>
+                <th>保证金</th>
+                <td>{{this.resultTable.bond}}</td>
+                <th>EM</th>
+                <td>{{this.resultTable.em}}</td>
+                <th>beta</th>
+                <td>{{this.resultTable.beta}}</td>
+              </tr>
+              <tr>
+                <th>delta</th>
+                <td>{{this.resultTable.z_delta}}</td>
+                <th>gamma</th>
+                <td>{{this.resultTable.z_gamma}}</td>
+                <th>vega</th>
+                <td>{{this.resultTable.z_vega}}</td>
+                <th>theta</th>
+                <td>{{this.resultTable.z_theta}}</td>
+                <th>rho</th>
+                <td>{{this.resultTable.z_rho}}</td>
+              </tr>
+            </table>
+            <div id="myChart" style="width: 100%;height: 325px">
+            </div>
+            <Spin v-if="showPreview" fix>
+              <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+              <div>加载中</div>
+            </Spin>
           </div>
         </div>
       </div>
@@ -234,7 +224,8 @@
           line2:[],
           resultTable:{},
           show1:false,
-          show2:false
+          show2:false,
+          showPreview:false
         }
       },
       async mounted() {
@@ -512,6 +503,7 @@
           });
         },
         async confirm(name){
+          this.handleSpinCustom()
           var origin_data
           await this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
@@ -532,7 +524,6 @@
           data.type=2
           data.trackingStatus=false
 
-          console.log(data)
           await this.axios.post('/backend/portfolio',data)
             .then(re=>{
               if(re.data.msg=='Add portfolio success'){
@@ -579,7 +570,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultLeftCode[i].substr(7)
             op.expireTime=deadline
-            op.type=parseInt(document.getElementById("left_input_number_"+i).value)
+            op.type=this.leftValue[i].value
             op.cp=1
             options.push(op)
           }
@@ -587,7 +578,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultRightCode[i].substr(7)
             op.expireTime=deadline
-            op.type=parseInt(document.getElementById("right_input_number_"+i).value)
+            op.type=this.rightValue[i].value
             op.cp=-1
             options.push(op)
           }
@@ -612,6 +603,7 @@
           return year+"-"+month+"-"+(Array(2).join(0)+day).slice(-2)
         },
         preview(){
+          this.showPreview=true
           this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
               if(re.data.msg=='custom portfolio finished'){
@@ -638,8 +630,31 @@
               else{
                 this.$Message.error("未能")
               }
+
+              setTimeout(() => {
+                this.showPreview = false;
+              }, 2000);
             })
         },
+        handleSpinCustom () {
+          this.$Spin.show({
+            render: (h) => {
+              return h('div', [
+                h('Icon', {
+                  'class': 'demo-spin-icon-load',
+                  props: {
+                    type: 'ios-loading',
+                    size: 18
+                  }
+                }),
+                h('div', 'Loading')
+              ])
+            }
+          });
+          setTimeout(() => {
+            this.$Spin.hide();
+          }, 3000);
+        }
       }
     }
 </script>
@@ -705,6 +720,23 @@
     width: 40px;
   }
 
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
+  @keyframes ani-demo-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
+  }
+  .demo-spin-container{
+    display: inline-block;
+    width: 100%;
+    min-height: 400px;
+    position: relative;
+  }
 
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
 
 </style>

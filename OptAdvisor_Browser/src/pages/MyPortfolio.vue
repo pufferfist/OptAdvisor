@@ -44,7 +44,13 @@
         <div style="float: left;width: 1px;height: 800px;background-color: #E7E8EB"></div>
       </div>
       <div style="float: left;width: 75%;min-height: 500px;">
-        <Right ref="portfolio" id="right" v-bind:style="{display:showRight}"></Right>
+        <div class="demo-spin-container">
+          <Right ref="portfolio" id="right" v-bind:style="{display:showRight}"></Right>
+          <Spin v-if="showInfo" fix>
+            <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+            <div>加载中</div>
+          </Spin>
+        </div>
       </div>
     </div>
 </template>
@@ -65,12 +71,14 @@
           allPortfolioData:[],
           current_clicked_id:'',
           newName:'',
-          showRight:'none'
+          showRight:'none',
+          showInfo:false
         }
       },
       methods:{
         //该方法还未集成
         click_left(name){
+          this.showInfo=true
           var suffix=name.substr(2)
           var id
           if(name[0]=='1'){
@@ -86,6 +94,9 @@
             .then(re=>{
               this.$refs.portfolio.initial(re.data)
               this.showRight=''
+              setTimeout(() => {
+                this.showInfo = false;
+              }, 2000);
             })
         },
         click_right(){
@@ -255,4 +266,18 @@
 
 <style scoped>
 
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
+  @keyframes ani-demo-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
+  }
+  .demo-spin-container{
+    display: inline-block;
+    width: 100%;
+    min-height: 500px;
+    position: relative;
+  }
 </style>
