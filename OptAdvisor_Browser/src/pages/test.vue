@@ -1,10 +1,7 @@
 <template>
   <div>
-    <Spin v-if="show">
-      <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-      <div>请您稍后</div>
-    </Spin>
-    <button @click="test">XXX</button>
+    <input v-model="data[1]" type="text"/>
+    <button @click="test">XX</button>
   </div>
 </template>
 
@@ -12,11 +9,13 @@
   export default {
     name:'test',
     data(){
-      show:false
+      return{
+        data:[0,1]
+      }
     },
     methods:{
       test(){
-        this.show=true
+        alert(this.data[1])
       }
     }
   };

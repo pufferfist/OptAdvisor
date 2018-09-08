@@ -1416,8 +1416,10 @@ public class RecommendServiceImpl implements RecommendService {
                         price = anAllPortfolio.getOptions()[j].getPrice1();
                     loss += -1 * (anAllPortfolio.getOptions()[j].getRealTimePrice() - price) * anAllPortfolio.getOptions()[j].getType();
                 }
-                if (loss / M > k)
+                if (loss / M > k){
+                    logger.info("警报！！");
                     PolySms.sendWarningSms(userDataService.findById(anAllPortfolio.getUsername()).getTelephone());
+                }
                 return;
                 //报警！
             }
@@ -1426,10 +1428,16 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Scheduled(initialDelay = 1000, fixedRate = 10 * 60 * 1000)
     public void task() throws IOException {
+        logger.info("-------------------");
         logger.info("正在更新网络数据");
         this.isUpdataRunning = true;
         upDataFromNet();
         this.isUpdataRunning = false;
         logger.info("网络数据更新完成");
+        logger.info("-------------------");
+        logger.info("警报检测");
+        warning();
+        logger.info("警报检测完成");
+        logger.info("-------------------");
     }
 }

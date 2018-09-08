@@ -100,10 +100,12 @@
               data.iK=this.originData.iK
               data.options=[this.originData.option]
 
+              console.log(data)
               this.axios.post('/backend/portfolio',data)
                 .then(re=>{
                   if(re.data.msg=='Add portfolio success'){
                     this.$Message.info('添加成功');
+                    this.$router.push('/myPortfolio')
                   }
                   else{
                     this.$Message.error('添加失败');
