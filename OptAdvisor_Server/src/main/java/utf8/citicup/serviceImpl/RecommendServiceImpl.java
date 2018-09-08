@@ -31,8 +31,8 @@ import static utf8.citicup.service.util.StatusMsg.noEligibleOptions;
 @Service
 public class RecommendServiceImpl implements RecommendService {
 
-    private static final double eps = 0.025;
-    private static final double zero = 0.05;
+    private static final double eps = 0.1;
+    private static final double zero = 0.1;
     /*用户输入值*/
     private String T;//投资者预测价格有效时间
     private double M0;
@@ -223,14 +223,14 @@ public class RecommendServiceImpl implements RecommendService {
 
     public RecommendServiceImpl(){
         dataSource = new GetData();
-        S = new double[21];
+        S = new double[5001];
         int i = 0;
-        double temp = 2.0;
-        DecimalFormat df = new DecimalFormat("0.00");
-        while(temp <= 3.0){
+        double temp = 0.0;
+        DecimalFormat df = new DecimalFormat("0.000");
+        while(temp <= 5.0){
             temp = Double.valueOf(df.format(temp));
             S[i] = temp;
-            temp += 0.05;
+            temp += 0.001;
             i++;
         }
         dv = 0;//股票分红率
@@ -429,8 +429,8 @@ public class RecommendServiceImpl implements RecommendService {
 
     private double Options(int cp, double S0, double k) {
         double t = this.t / 365.0;
-        double d_1 = Math.log(S0 / k) + (r - dv + 0.5 * Math.pow(sigma, 2) * t) / sigma / Math.sqrt(t);
-        double d_2 = d_1 - (sigma * (Math.sqrt(t)));
+        double d_1 = Math.log(S0 / k) + (r - dv + 0.5 * Math.pow((sigma1 + sigma2) / 2, 2) * t) / ((sigma1 + sigma2) / 2) / Math.sqrt(t);
+        double d_2 = d_1 - (((sigma1 + sigma2) / 2) * (Math.sqrt(t)));
         return cp * S0 * Math.exp(-1 * dv * t) * normcdf(cp * d_1) -
                 cp * k * Math.exp(-1 * r * t) * normcdf(cp * d_2);
     }
@@ -542,6 +542,7 @@ public class RecommendServiceImpl implements RecommendService {
         logger.info("first step is finished");
         System.out.println(D.size());
         structD maxGoalD;
+
         maxGoalD = secondStep(D);
 
         logger.info("second step is finished");
@@ -606,8 +607,8 @@ public class RecommendServiceImpl implements RecommendService {
                 buyAndSellOptions.add(plow.get(T).toArray(new Option[0]));
                 break;
 
-            //卖出一个低价看跌期权，买入两个高价看跌期权
-            case 'F':buyAndSell.add(2);buyAndSell.add(-1);
+            //卖出2个低价看跌期权，买入1个高价看跌期权
+            case 'F':buyAndSell.add(1);buyAndSell.add(-2);
                 buyAndSellOptions.add(phigh.get(T).toArray(new Option[0]));
                 buyAndSellOptions.add(plow.get(T).toArray(new Option[0]));
                 break;
@@ -818,6 +819,7 @@ public class RecommendServiceImpl implements RecommendService {
                 min_numE = z.num * z.E;
             }
             z.beta = 0;
+            z.E *= z.num;
             for(int i = 0;i < z.buyAndSell.length; i++){
                 double price = z.optionCombination[i].getPrice1();
                 if(z.buyAndSell[i] < 0)
