@@ -1,17 +1,17 @@
 <template>
   <Form ref="formInline" :model="formInline" :rules="ruleInline" v-on:keyup.enter="handleSubmit()">
     <FormItem prop="user">
-      <i-input type="text" v-model="formInline.user" placeholder="用户名" class="mb1">
+      <i-input size="large" type="text" v-model="formInline.user" placeholder="用户名" class="mb1">
       <Icon type="ios-person-outline" slot="prepend"></Icon>
       </i-input>
     </FormItem>
     <FormItem prop="password">
-      <i-input type="password" v-model="formInline.password" placeholder="密码" class="mb4">
+      <i-input  size="large" type="password" v-model="formInline.password" placeholder="密码" class="mb4">
       <Icon type="ios-lock-outline" slot="prepend"></Icon>
       </i-input>
     </FormItem>
     <FormItem class="tl">
-      <p>没有注册? <a href="/signUp">注册</a> | <a href="/forgetPassword">忘记密码?</a></p>
+      <p><span style="color:black">没有注册? </span><a href="/signUp">注册</a> | <a href="/forgetPassword">忘记密码?</a></p>
     </FormItem>
     <FormItem class="tc">
       <Button id="loginButton" type="primary" @click="handleSubmit()" class="Button">登录</Button>
