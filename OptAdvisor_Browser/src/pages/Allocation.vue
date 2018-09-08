@@ -1,12 +1,12 @@
 <template>
   <div>
     <Row>
-      <Col offset="3"><h1 class="w-50">资产配置</h1></Col>
+      <Col offset="8"><h1 class="w-50">资产配置</h1></Col>
     </Row>
     <transition name="move-left">
       <div v-if="infoStep">
         <Row>
-          <Col span="12" class="middleBorder">
+          <Col span="12" class="">
             <Row class="verticalCenterFather nineGrid center">
               <NineGrid class="verticalCenterChild" v-on:onGrid="handleOnGrid"></NineGrid>
             </Row>
