@@ -1096,7 +1096,7 @@ public class RecommendServiceImpl implements RecommendService {
             return null;
         }
         if(i1 == null){
-            double[] result = calcaulateMaxLoss(i2,sExp,N,pAsset);
+            double[] result = calcaulateMaxLoss(i2,sExp,N0,a,pAsset);
             maxLoss = result[0];
             iNum = result[1];
             optionI = i2;
@@ -1106,7 +1106,7 @@ public class RecommendServiceImpl implements RecommendService {
             return new RecommendOption2(optionI, maxLoss,iNum, rtn);
         }
         if(i2 == null){
-            double[] resule = calcaulateMaxLoss(i1,sExp,N,pAsset);
+            double[] resule = calcaulateMaxLoss(i1,sExp,N0,a,pAsset);
             maxLoss = resule[0];
             iNum = resule[1];
             optionI = i1;
@@ -1116,10 +1116,10 @@ public class RecommendServiceImpl implements RecommendService {
             return new RecommendOption2(optionI, maxLoss,iNum, rtn);
         }
 
-        double[] result1 = calcaulateMaxLoss(i1,sExp,N,pAsset);
+        double[] result1 = calcaulateMaxLoss(i1,sExp,N0,a,pAsset);
         double maxLoss1 = result1[0];
         double iNum1 = result1[1];
-        double[] resutl2 = calcaulateMaxLoss(i2,sExp,N,pAsset);
+        double[] resutl2 = calcaulateMaxLoss(i2,sExp,N0,a,pAsset);
         double maxLoss2 = resutl2[0];
         double iNum2 = resutl2[1];
         boolean flag;  //判断是第一种还是第二种情况
@@ -1150,7 +1150,8 @@ public class RecommendServiceImpl implements RecommendService {
         return D.toArray(new Option[0]);
     }
 
-    private double[] calcaulateMaxLoss(Option i, double sExp, int N, double pAsset){
+    private double[] calcaulateMaxLoss(Option i, double sExp, int N0,double a, double pAsset){
+        int N = (int)(N0 * a);
         double cost;
         double iK = i.getK();
         double iDelta = i.getDelta();
