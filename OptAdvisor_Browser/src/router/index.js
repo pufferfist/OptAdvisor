@@ -10,7 +10,6 @@ import Display50ETFOption from '../pages/Display50ETFOption'
 import Profile from '../pages/Profile'
 import Allocation from '../pages/Allocation'
 import Hedging from '../pages/Hedging'
-import InfoCollect from '../pages/InfoCollect'
 import DIY from '../pages/DIY'
 import MyPortfolio from '../pages/MyPortfolio'
 import Prompt from '../pages/Prompt'
@@ -82,10 +81,6 @@ export default new Router({
         {
           path: 'hedging',
           component: Hedging
-        },
-        {
-          path: 'infoCollect',
-          component: InfoCollect
         },
         {
           path: 'diy',

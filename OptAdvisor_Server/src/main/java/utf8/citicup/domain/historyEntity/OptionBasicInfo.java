@@ -2,11 +2,16 @@ package utf8.citicup.domain.historyEntity;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 /**
  * 对应option50etf_basic_info表
  */
 @Entity
+@Table(indexes = {
+        @Index(name = "index_code_name", columnList = "codeName")
+})
 public class OptionBasicInfo {
     @Id
     private String codeName;//期权代码

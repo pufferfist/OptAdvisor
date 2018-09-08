@@ -1,17 +1,22 @@
 package utf8.citicup.domain.historyEntity;
 
+
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * 对应ETF50_Time_Series_Data表
  */
 @Entity
-public class TimeSeriesData {
+@Table(indexes = {
+        @Index(name = "index_lastTradeDate", columnList = "lastTradeDate")
+})
+public class TimeSeriesData implements Serializable {
     @Id
     private Long id;
-
     private String lastTradeDate;
     private double closePrice;
     private double openPrice;
@@ -20,10 +25,11 @@ public class TimeSeriesData {
     private double amt;
     private long volume;
 
-    public TimeSeriesData(){}
+    public TimeSeriesData() {
+    }
 
-    public TimeSeriesData(String value){
-        String[] values=value.split(",");
+    public TimeSeriesData(String value) {
+        String[] values = value.split(",");
     }
 
     public String getLastTradeDate() {

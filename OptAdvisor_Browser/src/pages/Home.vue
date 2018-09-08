@@ -164,7 +164,7 @@
           </div>
           <Row class="flex">
             <Col span="12">
-              <a class="portfolio-item" href="/signUp">
+              <router-link class="portfolio-item" to="/allocation">
               <span class="caption">
                 <span class="caption-content">
                   <h2>组合推荐</h2>
@@ -172,10 +172,10 @@
                 </span>
               </span>
                 <img class="img-fluid" src="../../static/graph/homeBack/8.jpg" alt="">
-              </a>
+              </router-link>
             </Col>
             <Col span="12">
-              <a class="portfolio-item" href="/signUp">
+              <router-link class="portfolio-item" to="/diy">
               <span class="caption">
                 <span class="caption-content">
                   <h2>自定义组合</h2>
@@ -183,7 +183,7 @@
                 </span>
               </span>
                 <img class="img-fluid" src="../../static/graph/homeBack/5.jpg" alt="">
-              </a>
+              </router-link>
             </Col>
           </Row>
         </div>

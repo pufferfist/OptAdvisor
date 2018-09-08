@@ -58,22 +58,32 @@
               <td style="padding-left: 20px" :class="getClassName(index,'down')" :id="getClassName(index,'checkbox_down_')" @click="refreshId"><Checkbox @on-change="changeColor"></Checkbox></td>
             </tr>
           </table>
-          <h4 style="margin:10px 0">已选择的组合</h4>
-          <Row>
-            <Col span="10" offset="2">
-              <li style="list-style-type:none;" v-for="(l,index) in leftValue" :key="index">
-                  {{l.name}}
-                  <InputNumber style="width:45px;" size="small" type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')"></InputNumber >份
-                </li>
-            </Col>
-            <Col span="10" offset="2">
-              <li style="list-style-type:none;"  v-for="(r,index) in rightValue" :key="index">
-                  {{r.name}}
-                  <InputNumber style="width:45px;" size="small" type="number" v-model="r.value" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')"></InputNumber >份
-                </li>
-            </Col>
-          </Row>
-          <Button type="primary" style="width: 250px" @click="newGroupName">确认添加至我的组合</Button>
+          <Card style="margin:10px 0;">
+            <p slot="title">
+                已选择的组合
+            </p>
+            <Row >
+              <div v-if="leftValue.length === 0 && rightValue.length === 0">
+                请选择组合
+              </div>
+              <div v-else>
+                <Col span="10" offset="2">
+                  <div v-if="leftValue.length === 0">&nbsp;</div>
+                  <li style="list-style-type:none;" v-for="(l,index) in leftValue" :key="index">
+                    <Tag type="dot" >{{l.name}}</Tag> ×
+                    <InputNumber style="width:45px;" size="small" type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')"></InputNumber >份
+                  </li>
+                </Col>
+                <Col span="10" offset="2">
+                  <li style="list-style-type:none;"  v-for="(r,index) in rightValue" :key="index">
+                    <Tag type="dot" >{{r.name}}</Tag> ×
+                    <InputNumber style="width:45px;" size="small" type="number" v-model="r.value" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')"></InputNumber >份
+                  </li>
+                </Col>
+              </div>
+            </Row>
+            <Row style="margin:10px 0;"><Button  @click="preview">预览</Button> <Button type="primary"  @click="newGroupName">添加至我的组合</Button></Row>
+          </Card>
         </div>
       </div>
       <br>
@@ -144,7 +154,7 @@
           </div>
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
-          <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="preview">预览</Button> </h3>
+          <h3>组合表现展示</h3>
           <div class="demo-spin-container">
             <table class="table3" style="margin: auto">
               <tr>
@@ -225,8 +235,17 @@
           resultTable:{},
           show1:false,
           show2:false,
-          showPreview:false
+          showPreview:false,
+          interval: Number,
         }
+      },
+      beforeCreate:function () {
+        this.axios.post("backend/auth")
+          .then((res)=>{
+            if(res.data.code===1008){
+              this.$router.push("/login");
+            }
+          });
       },
       async mounted() {
         var months
@@ -237,7 +256,7 @@
         await this.setSelectedMonth(months);
         await this.getValue(months[1]);
         await this.getAllLeftRightValues()
-        setInterval(this.circle, 5000);
+        this.interval = setInterval(this.circle, 5000);
 
       },
       methods: {
@@ -655,7 +674,10 @@
             this.$Spin.hide();
           }, 3000);
         }
-      }
+      },
+      destroyed() {
+        clearInterval(this.interval);
+      },
     }
 </script>
 
