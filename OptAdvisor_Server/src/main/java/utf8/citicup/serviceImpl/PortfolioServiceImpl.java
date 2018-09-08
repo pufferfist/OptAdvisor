@@ -152,6 +152,7 @@ public class PortfolioServiceImpl implements PortfolioService {
                     e.printStackTrace();
                 }
                 double iK = newOption.getK();
+                double iNum = portfolio.getiNum();
                 int findType;
                 if(portfolio.isFlag()) findType=0;
                 else findType=1;
@@ -163,10 +164,10 @@ public class PortfolioServiceImpl implements PortfolioService {
                 String[][] tempRtn = new String[][]{recommendService.getMonth(),null};
 //                String[][] newRtn = recommendService.hedgingBackTest(findType,portfolio.getN(),portfolio.getiK(),portfolio.getpAsset(),T);
 
-                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, tempRtn);
+                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, iNum,tempRtn);
 
 
-                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(),portfolio.isFlag(),HEDGE);
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(),portfolio.isFlag(), iNum, HEDGE);
 
                 Portfolio[] rtn = new Portfolio[]{portfolio,showPortfolio};
 

@@ -1107,45 +1107,54 @@ public class RecommendServiceImpl implements RecommendService {
         Option[] ListD2 = calculateD(phighT,sExp,N,pAsset);
 
         //第二步
-        Option i1 = maxLoss(ListD1,sExp,N,pAsset);
-        Option i2 = maxLoss(ListD2,sExp,N,pAsset);
+        Option i1 = maxLoss(ListD1,sExp,N0, a, pAsset);
+        Option i2 = maxLoss(ListD2,sExp,N0, a, pAsset);
 
 
         double maxLoss;
+        double iNum;
         Option optionI;
         String[][] rtn;
         if(i1==null && i2==null){
             return null;
         }
         if(i1 == null){
-            maxLoss = calcaulateMaxLoss(i2,sExp,N,pAsset);
+            double[] result = calcaulateMaxLoss(i2,sExp,N0,a,pAsset);
+            maxLoss = result[0];
+            iNum = result[1];
             optionI = i2;
             optionI.setType(1);
             addAttributesToDOption(optionI);
-            rtn = hedgingBackTest(1,N,maxLoss,pAsset,T);
-            return new RecommendOption2(optionI, maxLoss, rtn);
+            rtn = hedgingBackTest(1,N0,a , maxLoss,pAsset,T);
+            return new RecommendOption2(optionI, maxLoss,iNum, rtn);
         }
         if(i2 == null){
-            maxLoss = calcaulateMaxLoss(i1,sExp,N,pAsset);
+            double[] resule = calcaulateMaxLoss(i1,sExp,N0,a,pAsset);
+            maxLoss = resule[0];
+            iNum = resule[1];
             optionI = i1;
             optionI.setType(1);
             addAttributesToDOption(optionI);
-            rtn = hedgingBackTest(0,N,maxLoss,pAsset,T);
-            return new RecommendOption2(optionI, maxLoss, rtn);
+            rtn = hedgingBackTest(0,N0, a, maxLoss,pAsset,T);
+            return new RecommendOption2(optionI, maxLoss,iNum, rtn);
         }
 
-        double maxLoss1 = calcaulateMaxLoss(i1,sExp,N,pAsset);
-        double maxLoss2 = calcaulateMaxLoss(i2,sExp,N,pAsset);
+        double[] result1 = calcaulateMaxLoss(i1,sExp,N0,a,pAsset);
+        double maxLoss1 = result1[0];
+        double iNum1 = result1[1];
+        double[] resutl2 = calcaulateMaxLoss(i2,sExp,N0,a,pAsset);
+        double maxLoss2 = resutl2[0];
+        double iNum2 = resutl2[1];
         boolean flag;  //判断是第一种还是第二种情况
-        if(maxLoss1>maxLoss2){ maxLoss=maxLoss2; optionI = i2; flag = false;}
-        else { maxLoss = maxLoss1; optionI = i1; flag = true;}
+        if(maxLoss1>maxLoss2){ maxLoss=maxLoss2; optionI = i2;iNum = iNum2; flag = false;}
+        else { maxLoss = maxLoss1; optionI = i1;iNum = iNum1; flag = true;}
         optionI.setType(1);
         addAttributesToDOption(optionI);
         //第三步
-        if(flag) rtn = hedgingBackTest(0,N,maxLoss,pAsset,T);
-        else rtn = hedgingBackTest(1,N,maxLoss,pAsset,T);
+        if(flag) rtn = hedgingBackTest(0,N0, a, maxLoss,pAsset,T);
+        else rtn = hedgingBackTest(1,N0,a, maxLoss,pAsset,T);
 
-        return new RecommendOption2(optionI, maxLoss, rtn);
+        return new RecommendOption2(optionI, maxLoss,iNum, rtn);
     }
 
     private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
@@ -1164,17 +1173,19 @@ public class RecommendServiceImpl implements RecommendService {
         return D.toArray(new Option[0]);
     }
 
-    private double calcaulateMaxLoss(Option i,double sExp, int N, double pAsset){
+    private double[] calcaulateMaxLoss(Option i, double sExp, int N0,double a, double pAsset){
+        int N = (int)(N0 * a);
         double cost;
         double iK = i.getK();
         double iDelta = i.getDelta();
         double iPrice1 = i.getPrice1();
         int iNum = (int)Math.ceil(N /(10000*Math.abs(iDelta)));
         cost = iNum*10000*iPrice1;
-        return ((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost;
+        return new double[]{((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost,iNum};
     }
 
-    private Option maxLoss(Option[] ListD,double sExp, int N, double pAsset){
+    private Option maxLoss(Option[] ListD,double sExp,int N0, double a, double pAsset){
+        int N = (int)(N0 * a);
         double cost;
         double maxLoss = Double.MAX_VALUE;
         Option rtn=null;
@@ -1184,20 +1195,21 @@ public class RecommendServiceImpl implements RecommendService {
             double iPrice1 = i.getPrice1();
             int iNum = (int)Math.ceil(N /(10000*Math.abs(iDelta)));
             cost = iNum*10000*iPrice1;
-            double temp = ((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost;
+            double temp = ((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost + N0 * (1-a) * (pAsset - sExp);
             if(temp<maxLoss){
                 maxLoss = temp;
                 rtn = i;
             }
-            logger.info("temp is " + temp);
-            logger.info("iPrice1 is " + iPrice1);
+//            logger.info("temp is " + temp);
+//            logger.info("iPrice1 is " + iPrice1);
 
         }
-        logger.info("maxLoss is " + maxLoss);
+//        logger.info("maxLoss is " + maxLoss);
         return rtn;
     }
 
-    private String[][] hedgingBackTest(int findType, int N, double iK, double pAsset, String T){
+    private String[][] hedgingBackTest(int findType, int N0,double a, double iK, double pAsset, String T){
+        int N = (int)(N0 * a);
         boolean flag1=false,flag2=false;
         int stage = calculateFirstFew(T);                            //得到是在第几个阶段
         logger.info("stage is " + stage);
@@ -1293,17 +1305,17 @@ public class RecommendServiceImpl implements RecommendService {
                         double backTestIDelta = backTestI.getDelta();
                         double backTestINum = (int) (N / (10000 * Math.abs(backTestIDelta))) + 1;
                         if (assetClose2 < backTestK) {
-                            totalLoss = N * backTestClose1 + (backTestINum * 10000 - N) * (backTestClose1 - backTestClose2) + N * (assetClose1 - backTestK);
+                            totalLoss = N * backTestClose1 + (backTestINum * 10000 - N) * (backTestClose1 - backTestClose2) + N * (assetClose1 - backTestK) + (N0-N) * (assetClose1-assetClose2);
                         } else {
-                            totalLoss = backTestClose1 * backTestINum * 10000 + N * (assetClose1 - assetClose2);
+                            totalLoss = backTestClose1 * backTestINum * 10000 + N * (assetClose1 - assetClose2)+ N * (assetClose1 - backTestK) + (N0-N) * (assetClose1-assetClose2);
                         }
                     }
                 }
             }
 
-            double holdDouble = N*(assetClose1-assetClose2);
-            double unholdDouble = totalLoss;
-            double lossDifferenceDouble = unholdDouble - holdDouble;
+            double holdDouble = totalLoss;
+            double unholdDouble = N0*(assetClose1-assetClose2);
+            double lossDifferenceDouble = holdDouble - unholdDouble;
 
             String hold = Double.toString(holdDouble);
             String unhold = Double.toString(totalLoss);
