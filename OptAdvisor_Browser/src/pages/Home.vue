@@ -333,7 +333,7 @@
     height: 100%;
     padding-top:8rem;
     padding-bottom:8rem;
-    background:linear-gradient(90deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 100%),url(../../static/graph/homeBack/7.jpg);
+    background:linear-gradient(90deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 100%),url(https://images.pexels.com/photos/926987/pexels-photo-926987.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260);
     background-position:center center;
     background-repeat:no-repeat;
     background-attachment: fixed;
@@ -443,7 +443,7 @@
   }
   .callout {
     padding:15rem 0;
-    background:linear-gradient(90deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 100%),url(../../static/graph/homeBack/2.jpg);
+    background:linear-gradient(90deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 100%),url(https://images.pexels.com/photos/590045/pexels-photo-590045.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260);
     background-position:center center;
     background-repeat:no-repeat;
     background-size:cover;
