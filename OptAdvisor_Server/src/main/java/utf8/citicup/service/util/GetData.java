@@ -221,28 +221,29 @@ public class GetData {
         }
 
 
-        return rtn;
+        return rtn / 100.0;
     }
 
     public double get_Sigma() throws IOException {
-        String url = "http://www.optbbs.com/d/csv/d/data.csv?v=";
-        Date d = new Date();
-        long time = d.getTime();
-        url = url + time;
-        String result = getDataFromURL(url);
-        String[] output = result.split(",");
-        String regex = ".*?\\..*?";
-        Pattern p=Pattern.compile(regex);
-
-        String s="0";
-        for(int i=output.length-1;i>=0;i--){
-            s = output[i];
-            Matcher m=p.matcher(s);
-            if(m.matches()){
-                break;
-            }
-        }
-        return Double.valueOf(s);
+//        String url = "http://www.optbbs.com/d/csv/d/data.csv?v=";
+//        Date d = new Date();
+//        long time = d.getTime();
+//        url = url + time;
+//        String result = getDataFromURL(url);
+//        String[] output = result.split(",");
+//        String regex = ".*?\\..*?";
+//        Pattern p=Pattern.compile(regex);
+//
+//        String s="0";
+//        for(int i=output.length-1;i>=0;i--){
+//            s = output[i];
+//            Matcher m=p.matcher(s);
+//            if(m.matches()){
+//                break;
+//            }
+//        }
+//        return Double.valueOf(s) / 100.0;
+        return 23.39 / 100.0;
     }
 
 
