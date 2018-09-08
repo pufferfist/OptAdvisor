@@ -49,21 +49,22 @@ public class Portfolio {
     private double pAsset;//套期保值中的pAsset
     private double sExp;
     private boolean flag;
+    private double iNum;
 
     @Column(columnDefinition = "TEXT")
     private String backTestData;
     @Column(columnDefinition = "TEXT")
     private String hedgeProfitHolden;
 
-    public Portfolio(String username,RecommendOption2 recommendOption2,int n, double pAsset, double sExp,boolean flag, Enum type) {
+    public Portfolio(String username,RecommendOption2 recommendOption2,int n, double pAsset, double sExp,boolean flag, double iNum, Enum type) {
             this.username = username;
             this.type = type;
-
             N = n;
             this.iK = recommendOption2.getiK();
             this.pAsset = pAsset;
             this.sExp = sExp;
             this.flag = flag;
+            this.iNum = iNum;
 
             options = new Option[1];
             options[0] = recommendOption2.getOption();
@@ -350,5 +351,9 @@ public class Portfolio {
 
     public void setHedgeProfitHolden(String hedgeProfitHolden) {
         this.hedgeProfitHolden = hedgeProfitHolden;
+    }
+
+    public double getiNum() {
+        return iNum;
     }
 }

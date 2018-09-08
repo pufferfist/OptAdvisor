@@ -19,7 +19,6 @@ import utf8.citicup.service.util.GetData;
 import utf8.citicup.service.util.PolySms;
 import utf8.citicup.service.util.StatusMsg;
 
-import javax.persistence.criteria.CriteriaBuilder;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -1090,40 +1089,49 @@ public class RecommendServiceImpl implements RecommendService {
 
 
         double maxLoss;
+        double iNum;
         Option optionI;
         String[][] rtn;
         if(i1==null && i2==null){
             return null;
         }
         if(i1 == null){
-            maxLoss = calcaulateMaxLoss(i2,sExp,N,pAsset);
+            double[] result = calcaulateMaxLoss(i2,sExp,N,pAsset);
+            maxLoss = result[0];
+            iNum = result[1];
             optionI = i2;
             optionI.setType(1);
             addAttributesToDOption(optionI);
             rtn = hedgingBackTest(1,N,maxLoss,pAsset,T);
-            return new RecommendOption2(optionI, maxLoss, rtn);
+            return new RecommendOption2(optionI, maxLoss,iNum, rtn);
         }
         if(i2 == null){
-            maxLoss = calcaulateMaxLoss(i1,sExp,N,pAsset);
+            double[] resule = calcaulateMaxLoss(i1,sExp,N,pAsset);
+            maxLoss = resule[0];
+            iNum = resule[1];
             optionI = i1;
             optionI.setType(1);
             addAttributesToDOption(optionI);
             rtn = hedgingBackTest(0,N,maxLoss,pAsset,T);
-            return new RecommendOption2(optionI, maxLoss, rtn);
+            return new RecommendOption2(optionI, maxLoss,iNum, rtn);
         }
 
-        double maxLoss1 = calcaulateMaxLoss(i1,sExp,N,pAsset);
-        double maxLoss2 = calcaulateMaxLoss(i2,sExp,N,pAsset);
+        double[] result1 = calcaulateMaxLoss(i1,sExp,N,pAsset);
+        double maxLoss1 = result1[0];
+        double iNum1 = result1[1];
+        double[] resutl2 = calcaulateMaxLoss(i2,sExp,N,pAsset);
+        double maxLoss2 = resutl2[0];
+        double iNum2 = resutl2[1];
         boolean flag;  //判断是第一种还是第二种情况
-        if(maxLoss1>maxLoss2){ maxLoss=maxLoss2; optionI = i2; flag = false;}
-        else { maxLoss = maxLoss1; optionI = i1; flag = true;}
+        if(maxLoss1>maxLoss2){ maxLoss=maxLoss2; optionI = i2;iNum = iNum2; flag = false;}
+        else { maxLoss = maxLoss1; optionI = i1;iNum = iNum1; flag = true;}
         optionI.setType(1);
         addAttributesToDOption(optionI);
         //第三步
         if(flag) rtn = hedgingBackTest(0,N,maxLoss,pAsset,T);
         else rtn = hedgingBackTest(1,N,maxLoss,pAsset,T);
 
-        return new RecommendOption2(optionI, maxLoss, rtn);
+        return new RecommendOption2(optionI, maxLoss,iNum, rtn);
     }
 
     private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
@@ -1142,14 +1150,14 @@ public class RecommendServiceImpl implements RecommendService {
         return D.toArray(new Option[0]);
     }
 
-    private double calcaulateMaxLoss(Option i,double sExp, int N, double pAsset){
+    private double[] calcaulateMaxLoss(Option i, double sExp, int N, double pAsset){
         double cost;
         double iK = i.getK();
         double iDelta = i.getDelta();
         double iPrice1 = i.getPrice1();
         int iNum = (int)Math.ceil(N /(10000*Math.abs(iDelta)));
         cost = iNum*10000*iPrice1;
-        return ((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost;
+        return new double[]{((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost,iNum};
     }
 
     private Option maxLoss(Option[] ListD,double sExp, int N, double pAsset){
