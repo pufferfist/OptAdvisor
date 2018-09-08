@@ -1,17 +1,17 @@
 package utf8.citicup.domain.historyEntity;
 
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.annotations.ColumnDefault;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
 
 /**
  * 对应OptionETF_TimeSeriesData20180416
  */
 @Entity
-public class OptionTsd {
+@Table(indexes = {
+        @Index(name = "index_latest_date", columnList = "latestDate"),
+        @Index(name = "index_code_name", columnList = "codeName")
+})
+public class OptionTsd implements Serializable {
     @Id
     private Long id;
 
