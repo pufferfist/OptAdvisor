@@ -74,15 +74,15 @@
             </tr>
             <tr>
               <td>delta</td>
-              <td>{{data.z_delta}}</td>
+              <td>{{data.z_delta.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>gamma</td>
-              <td>{{data.z_gamma}}</td>
+              <td>{{data.z_gamma.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>theta</td>
-              <td>{{data.z_theta}}</td>
+              <td>{{data.z_theta.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>vega</td>
@@ -90,11 +90,11 @@
             </tr>
             <tr>
               <td>rho</td>
-              <td>{{data.z_rho}}</td>
+              <td>{{data.z_rho.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>组合期望收益率</td>
-              <td>{{data.em.toFixed(4)}}</td>
+              <td>{{(data.em*100).toFixed(2)}}%</td>
             </tr>
             <tr>
               <td>组合风险值</td>
@@ -108,7 +108,7 @@
           <table class="w-100 tl">
             <tr>
               <td>资产期望收益率</td>
-              <td>{{data.returnOnAssets.toFixed(4)}}</td>
+              <td>{{(data.returnOnAssets*100).toFixed(2)}}%</td>
             </tr>
             <tr>
               <td>资产风险值</td>
