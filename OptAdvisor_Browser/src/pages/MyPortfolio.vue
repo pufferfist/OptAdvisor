@@ -75,6 +75,14 @@
           showInfo:false
         }
       },
+      beforeCreate:function () {
+        this.axios.post("backend/auth")
+          .then((res)=>{
+            if(res.data.code===1008){
+              this.$router.push("/login");
+            }
+          });
+      },
       methods:{
         //该方法还未集成
         click_left(name){

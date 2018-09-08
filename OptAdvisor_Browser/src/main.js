@@ -14,12 +14,15 @@ import VueAxios from 'vue-axios'
 import echarts from 'echarts'
 import contentmenu from 'v-contextmenu'
 import 'v-contextmenu/dist/index.css'
+import { Slider } from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.use(iView);
 Vue.use(Cookies);
 Vue.use(VueAxios,axios);
-Vue.prototype.$echarts = echarts
-Vue.use(contentmenu)
+Vue.prototype.$echarts = echarts;
+Vue.use(contentmenu);
+Vue.use(Slider);
 
 Vue.config.productionTip = false;
 

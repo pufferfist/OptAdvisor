@@ -18,12 +18,14 @@
       </div>
     </transition>
     <transition name="fade">
-      <Spin v-if="loading" fix class="spin">
+      <Spin v-if="loading" fix class="spin" style="z-index: 1002">
         <div class="loader">
           <svg class="circular" viewBox="25 25 50 50">
             <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"></circle>
           </svg>
         </div>
+        <br/>
+        <p>组合生成时间较长,请耐心等待</p>
       </Spin>
     </transition>
     <transition name="move-right">
@@ -53,6 +55,12 @@
             </FormItem>
           </Form>
         </Modal>
+        <Modal
+          v-model="askSave"
+          @on-ok="okSave"
+          @on-cancel="cancelSave">
+          <h3>是否保存当前组合?</h3>
+        </Modal>
       </div>
     </transition>
   </div>
@@ -79,13 +87,22 @@
           trackingStatus: false
         },
         modal: false,
-        modelLoading:true,
+        askSave: false,
+        modelLoading: true,
         rule: {
           name: [
             {required: true, message: '组合名不得为空', trigger: 'blur'}
           ]
         },
       }
+    },
+    beforeCreate:function () {
+      this.axios.post("backend/auth")
+        .then((res)=>{
+          if(res.data.code===1008){
+            this.$router.push("/login");
+          }
+        });
     },
     components: {ResultDisplay, AlForm, NineGrid},
     methods: {
@@ -103,41 +120,52 @@
             setTimeout(() => {
               this.resultStep = true;
             }, 200);
+          })
+          .catch((error) => {
+            if (error.response.status === 500) {
+              this.loading = false;
+              this.$Message.error("参数不全或格式错误");
+            } else {
+              this.$Message.error("网络错误或预料外的错误");
+            }
           });
       },
       lastStep: function () {
-        this.resultStep = false;
-        setTimeout(() => {
-          this.infoStep = true;
-        }, 200);
+        this.askSave = true;
+      },
+      okSave: function () {
+        this.modal = true;
+      },
+      cancelSave: function () {
+        window.location.href = "/allocation";
       },
       addPortfolio: function () {
         let validation;
         this.$refs['formInline'].validate((valid) => {
-          validation=valid
+          validation = valid
         });
-        if(!validation) {
-          this.modelLoading=false;
-          setTimeout(()=>{
-            this.modelLoading=true;
-          },300);
+        if (!validation) {
+          this.modelLoading = false;
+          setTimeout(() => {
+            this.modelLoading = true;
+          }, 300);
           return;
         }
-        this.model=false;
+        this.modal = false;
         this.addPortfolioLoading = true;
         //异步请求添加组合并跳转到我的组合界面
         //理论上来说应该支持自定义组合名
         this.portfolio.options = this.portfolio.optionList;
         delete this.portfolio.optionList;
         this.portfolio.type = 0;
-        this.portfolio.trackingStatus=false;
-        this.portfolio.name=this.myPortfolio.name;
+        this.portfolio.trackingStatus = false;
+        this.portfolio.name = this.myPortfolio.name;
         this.axios.post("/backend/portfolio", this.portfolio)
           .then((res) => {
               this.addPortfolioLoading = false;
               if (res.data.code === 0) {
                 // this.$router.push('/myPortfolio');
-                window.location.href="/myPortfolio";
+                window.location.href = "/myPortfolio";
               } else {
                 this.$Message.error('发生了预料之外的错误');
               }
