@@ -1089,40 +1089,41 @@ public class RecommendServiceImpl implements RecommendService {
         Option i2 = maxLoss(ListD2,sExp,N,pAsset);
 
 
-        double iK;
+        double maxLoss;
         Option optionI;
         String[][] rtn;
         if(i1==null && i2==null){
             return null;
         }
         if(i1 == null){
-            iK = i2.getK();
+            maxLoss = calcaulateMaxLoss(i2,sExp,N,pAsset);
             optionI = i2;
             optionI.setType(1);
             addAttributesToDOption(optionI);
-            rtn = hedgingBackTest(1,N,iK,pAsset,T);
-            return new RecommendOption2(optionI, iK, rtn);
+            rtn = hedgingBackTest(1,N,maxLoss,pAsset,T);
+            return new RecommendOption2(optionI, maxLoss, rtn);
         }
         if(i2 == null){
-            iK = i1.getK();
+            maxLoss = calcaulateMaxLoss(i1,sExp,N,pAsset);
             optionI = i1;
             optionI.setType(1);
             addAttributesToDOption(optionI);
-            rtn = hedgingBackTest(0,N,iK,pAsset,T);
-            return new RecommendOption2(optionI, iK, rtn);
+            rtn = hedgingBackTest(0,N,maxLoss,pAsset,T);
+            return new RecommendOption2(optionI, maxLoss, rtn);
         }
 
-        double iK1 = i1.getK();
-        double iK2 = i2.getK();
+        double maxLoss1 = calcaulateMaxLoss(i1,sExp,N,pAsset);
+        double maxLoss2 = calcaulateMaxLoss(i2,sExp,N,pAsset);
         boolean flag;  //判断是第一种还是第二种情况
-        if(iK1>iK2){ iK=iK2; optionI = i2; flag = false;}
-        else { iK = iK1; optionI = i1; flag = true;}
+        if(maxLoss1>maxLoss2){ maxLoss=maxLoss2; optionI = i2; flag = false;}
+        else { maxLoss = maxLoss1; optionI = i1; flag = true;}
         optionI.setType(1);
         addAttributesToDOption(optionI);
         //第三步
-        if(flag) rtn = hedgingBackTest(0,N,iK,pAsset,T);
-        else rtn = hedgingBackTest(1,N,iK,pAsset,T);
-        return new RecommendOption2(optionI, iK, rtn);
+        if(flag) rtn = hedgingBackTest(0,N,maxLoss,pAsset,T);
+        else rtn = hedgingBackTest(1,N,maxLoss,pAsset,T);
+
+        return new RecommendOption2(optionI, maxLoss, rtn);
     }
 
     private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
@@ -1141,6 +1142,16 @@ public class RecommendServiceImpl implements RecommendService {
         return D.toArray(new Option[0]);
     }
 
+    private double calcaulateMaxLoss(Option i,double sExp, int N, double pAsset){
+        double cost;
+        double iK = i.getK();
+        double iDelta = i.getDelta();
+        double iPrice1 = i.getPrice1();
+        int iNum = (int)Math.ceil(N /(10000*Math.abs(iDelta)));
+        cost = iNum*10000*iPrice1;
+        return ((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost;
+    }
+
     private Option maxLoss(Option[] ListD,double sExp, int N, double pAsset){
         double cost;
         double maxLoss = Double.MAX_VALUE;
@@ -1156,8 +1167,11 @@ public class RecommendServiceImpl implements RecommendService {
                 maxLoss = temp;
                 rtn = i;
             }
-        }
+            logger.info("temp is " + temp);
+            logger.info("iPrice1 is " + iPrice1);
 
+        }
+        logger.info("maxLoss is " + maxLoss);
         return rtn;
     }
 

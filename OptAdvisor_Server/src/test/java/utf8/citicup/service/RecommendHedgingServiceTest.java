@@ -31,10 +31,16 @@ public class RecommendHedgingServiceTest {
     @Test
     public void test01() {
 
-        int N0 = 100000;
-        double a = 0.5;
-        double sExp = 2.1;
+//        int N0 = 100000;
+//        double a = 0.5;
+//        double sExp = 2.1;
+//        String T = "2018-10";
+        int N0 = 50;
+        double a = 0.25;
+        double sExp = 2.2;
         String T = "2018-10";
+
+
 
 
 //        recommendService.hedging(N0, a, sExp, T);
