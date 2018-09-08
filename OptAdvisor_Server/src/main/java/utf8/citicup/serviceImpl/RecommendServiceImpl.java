@@ -225,9 +225,9 @@ public class RecommendServiceImpl implements RecommendService {
         dataSource = new GetData();
         S = new double[21];
         int i = 0;
-        double temp = 2;
+        double temp = 2.0;
         DecimalFormat df = new DecimalFormat("0.00");
-        while(temp <= 3){
+        while(temp <= 3.0){
             temp = Double.valueOf(df.format(temp));
             S[i] = temp;
             temp += 0.05;
@@ -413,14 +413,13 @@ public class RecommendServiceImpl implements RecommendService {
         {
             val = 1- val;
         }
-
         return val;
     }
 
     /*正态分布概率函数*/
     private double p(double x) {
         double theta = Math.pow(((sigma1 + sigma2) / 2), 2);
-        return 1 / (Math.sqrt(2 * Math.PI) * theta) * Math.exp(-1 * Math.pow(x, 2) / (2 * Math.pow(theta, 2)));
+        return 1 / (Math.sqrt(2 * Math.PI * theta)) * Math.exp(-1 * Math.pow(x, 2) / (2 * theta));
     }
 
     private double normpdf(double x){
@@ -428,9 +427,10 @@ public class RecommendServiceImpl implements RecommendService {
         return 0;
     }
 
-    private double Options(int cp, double k) {
-        double d_1 = Math.log(S0 / k) + (r - dv + 0.5 * Math.pow(sigma, 2) * t) / sigma / Math.pow(t, 0.5);
-        double d_2 = d_1 - (sigma * (Math.pow(t, 0.5)));
+    private double Options(int cp, double S0, double k) {
+        double t = this.t / 365.0;
+        double d_1 = Math.log(S0 / k) + (r - dv + 0.5 * Math.pow(sigma, 2) * t) / sigma / Math.sqrt(t);
+        double d_2 = d_1 - (sigma * (Math.sqrt(t)));
         return cp * S0 * Math.exp(-1 * dv * t) * normcdf(cp * d_1) -
                 cp * k * Math.exp(-1 * r * t) * normcdf(cp * d_2);
     }
@@ -459,7 +459,7 @@ public class RecommendServiceImpl implements RecommendService {
         double[] C = new double[n];
         if (t != 0) {
             for (int i = 0; i < n; i++) {
-                double temp = Options(cp, k);
+                double temp = Options(cp, S[i], k);
                 C[i] = 10000 * (temp - price);
             }
         } else {
@@ -519,8 +519,8 @@ public class RecommendServiceImpl implements RecommendService {
         this.M0 = M0;
         this.p1 = p1;
         this.p2 = p2;
-        this.sigma1 = sigma1;
-        this.sigma2 = sigma2;
+        this.sigma1 = sigma1 / 100.0;
+        this.sigma2 = sigma2 / 100.0;
         this.w1 = w1 / 100.0;
         this.w2 = w2 / 100.0;
         k = k / 100.0;
@@ -824,13 +824,17 @@ public class RecommendServiceImpl implements RecommendService {
                     price = z.optionCombination[i].getPrice2();
                 z.beta += z.buyAndSell[i] * betaValue(z.optionCombination[i].getDelta(), price);
             }
+            z.beta = Math.abs(z.beta);
             if(z.beta > max_beta)
                 max_beta = z.beta;
             if(z.beta < min_beta)
                 min_beta = z.beta;
         }
         for (structD z : D) {
-            z.goal = goalValue(z.num, z.E, this.M, z.beta, min_beta, max_beta, max_numE, min_numE);
+            if(z.E < 0)
+                z.goal = 0;
+            else
+                z.goal = goalValue(z.num, z.E, this.M, z.beta, min_beta, max_beta, max_numE, min_numE);
         }
         //对 goal 排序(从高到低)
         D.sort((o1, o2) -> Double.compare(o2.goal, o1.goal));
@@ -1457,5 +1461,11 @@ public class RecommendServiceImpl implements RecommendService {
         warning();
         logger.info("警报检测完成");
         logger.info("-------------------");
+//        this.S = new double[]{2.391};
+//        this.sigma = 23.98 / 100.0;
+//        this.t = 46;
+//        double x = Interest(1, 2.3, 0.2175)[0];
+//        double y = Interest(1, 2.55, 0.061)[0];
+//        double a = x - 2 * y;
     }
 }
