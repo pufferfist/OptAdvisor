@@ -3,7 +3,9 @@
     <Row class="middle">
       <i-col span="8" offset="8">
         <div id="form" class="login-form animated fadeInLeft tc">
-          <Logo class="pb3"></Logo>
+          <div style="height:100px; width:500px;">
+            <img style="width: 300px;height:70px;" src="../../static/graph/OptLogo.png" alt="">
+          </div>
           <login-form class="pt3-l pl4 pr4"></login-form>
         </div>
       </i-col>
@@ -38,7 +40,7 @@
   }
 
   #login{
-    background-image: url("../../static/graph/back1.jpg");
+    background-image: url("../../static/graph/homeBack/10.jpg");
     background-size:1920px 1200px;
     background-repeat:no-repeat;
     height: 1080px;
@@ -50,8 +52,9 @@
     -moz-box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
     -o-box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
     box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
-    background: #ffffff;
+    background: #eeeeeebb;
     position: fixed;
+    border-radius: 5%;
   }
 
   #login {position: relative;}
@@ -66,4 +69,5 @@
     height: 50%;
     margin: auto;
   }
+
 </style>
