@@ -183,7 +183,6 @@
               </tr>
             </table>
             <div id="myChart" style="width: 100%;height: 325px">
-              <span style=" margin:auto">暂无数据</span>
             </div>
             <Spin v-if="showPreview" fix>
               <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
