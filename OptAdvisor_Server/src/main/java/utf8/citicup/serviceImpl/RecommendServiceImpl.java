@@ -1171,6 +1171,7 @@ public class RecommendServiceImpl implements RecommendService {
             double iDelta = i.getDelta();
             double iPrice1 = i.getPrice1();
             int iNum = (int)Math.ceil(N /(10000*Math.abs(iDelta)));
+            logger.info("iNum is" + iNum);
             cost = iNum*10000*iPrice1;
             double temp = ((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost + N0 * (1-a) * (pAsset - sExp);
             if(temp<maxLoss){
