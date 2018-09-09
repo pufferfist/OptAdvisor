@@ -43,7 +43,7 @@
         </Menu>
         <div style="float: left;width: 1px;height: 800px;background-color: #E7E8EB"></div>
       </div>
-      <div style="float: left;width: 75%;min-height: 500px;">
+      <div style="float: left;width: 75%;min-height: 800px;">
         <div class="demo-spin-container">
           <Right ref="portfolio" id="right" v-bind:style="{display:showRight}"></Right>
           <Spin v-if="showInfo" fix>
@@ -74,14 +74,6 @@
           showRight:'none',
           showInfo:false
         }
-      },
-      beforeCreate:function () {
-        this.axios.post("backend/auth")
-          .then((res)=>{
-            if(res.data.code===1008){
-              this.$router.push("/login");
-            }
-          });
       },
       methods:{
         //该方法还未集成

@@ -1,11 +1,11 @@
 <template>
-    <div>
+    <div style="padding-top: 7%">
       <Form ref="formItem" :model="formItem" :label-width="100">
         <p style="font-size: 25px;font-weight: bold">套期保值信息设置&nbsp &nbsp</p><br><br>
         <Timeline>
           <TimelineItem color="green">
             <FormItem label="持仓量" prop="OpenInterest">
-              <Input v-model="formItem.OpenInterest" placeholder="请输入持仓量"></Input>
+              <InputNumber :min="10000" v-model="formItem.OpenInterest" placeholder="请输入持仓量" style="width: 100%"></InputNumber>
             </FormItem>
           </TimelineItem>
           <TimelineItem color="green">
@@ -25,7 +25,8 @@
           </TimelineItem>
           <TimelineItem color="red">
             <FormItem style="text-align: left" label="预测价格最低值" prop="min_price">
-              ¥&nbsp&nbsp<InputNumber :max="10" :min="0" v-model="formItem.min_price"></InputNumber>
+              ¥&nbsp&nbsp<InputNumber :max="this.latestPrice" :min="0" v-model="formItem.min_price" style="width: 50%"></InputNumber>
+              &nbsp&nbsp<span style="font-size: 13px">华夏上证50ETF <span style="-webkit-text-fill-color: rgb(178,0,0)">({{this.latestPrice}}/{{this.rate}}%)</span></span>
             </FormItem>
           </TimelineItem>
         </Timeline>
@@ -38,16 +39,19 @@
         name: "hedging_collect_info",
       created:function(){
         this.getDeadLine()
+        this.getLatestPrice()
       },
       data(){
         return {
           formItem: {
             rate:25,
-            min_price:1,
-            OpenInterest: '',
+            min_price:0,
+            OpenInterest: 10000,
             deadline: '',
             month:''
           },
+          latestPrice:'',
+          rate:''
         }
       },
       methods:{
@@ -57,7 +61,14 @@
                 var temp=re.data.result.data.contractMonth
                 this.formItem.month=[temp[1],temp[2],temp[3],temp[4]]
               })
-          }
+          },
+        getLatestPrice(){
+            this.axios.get('/sse/snap/510050')
+              .then(re=>{
+                this.latestPrice=parseFloat(re.data.snap[5])
+                this.rate=parseFloat(re.data.snap[7])
+              })
+        }
       }
     }
 </script>

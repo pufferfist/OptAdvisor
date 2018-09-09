@@ -1,23 +1,19 @@
 <template>
-  <div style="height: 100%">
-    <div class="demo-split" v-bind:style="{height:demo_spilt_height}">
-      <Split v-model="split1">
-        <div slot="left" class="demo-split-pane">
-          <collect_info ref="info"></collect_info>
-          <p style="font-size: 10px;" v-bind:style="{'-webkit-text-fill-color':warn_color}">{{this.warn_data}}</p>
-          <Button type="primary" @click="search">查询结果</Button>
-        </div>
-        <div slot="right" class="demo-split-pane">
-          <div class="demo-spin-container">
-            <no_input ref="blank" v-bind:style="{display:ispage1}"></no_input>
-            <display_result ref="result" v-bind:style="{display:ispage2}"></display_result>
-            <Spin v-if="showResult" fix>
-              <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-              <div>Loading</div>
-            </Spin>
-          </div>
-        </div>
-      </Split>
+  <div>
+    <div  v-bind:style="{display:ispage1}">
+      <collect_info ref="info" style="padding-left: 20%;padding-right: 20%"></collect_info>
+      <br>
+      <Button type="primary" style="width: 20%" @click="search">查询结果</Button>
+      <p style="font-size: 10px;" v-bind:style="{'-webkit-text-fill-color':warn_color}">{{this.warn_data}}</p>
+    </div>
+    <div  v-bind:style="{display:ispage2}">
+      <display_result ref="result"></display_result>
+    </div>
+    <div>
+      <Spin v-if="showResult" fix>
+      <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+      <div>Loading</div>
+      </Spin>
     </div>
   </div>
 
@@ -41,14 +37,6 @@
           showResult:false
         }
       },
-      beforeCreate:function () {
-        this.axios.post("backend/auth")
-          .then((res)=>{
-            if(res.data.code===1008){
-              this.$router.push("/login");
-            }
-          });
-      },
       methods:{
           search(){
             var array=this.$refs.info.$refs.formItem.fields
@@ -69,16 +57,17 @@
               var param={n0:OpenInterest,a:rate/100,s_exp:min_price.toFixed(2),t:deadline_value}
               this.axios.post('/backend/recommend/hedging',param).then((response)=>{
                 if(response.data.msg=='No eligible options'){
-                  this.$refs.blank.text='没有合适的期权'
+                  //this.$refs.blank.text='没有合适的期权'
                 }
                 else if(response.data.msg=='IOException occurs'){
-                  this.$refs.blank.text='输入输出报错，请您稍后重试'
+                 // this.$refs.blank.text='输入输出报错，请您稍后重试'
                 }
                 else if(response.data.msg=='Hedging success'){
-                  this.$refs.blank.text='暂无数据，等待输入'
+                  //this.$refs.blank.text='暂无数据，等待输入'
                   this.$refs.result.originData=response.data.data
 
                   var data=response.data.data
+                  console.log(data)
                   //1.填充表格
                   var forms={
                     optionCode:data.option.optionCode, //期权代码
@@ -136,12 +125,6 @@
 </script>
 
 <style scoped>
-  .demo-split{
-    border: 1px solid #dcdee2;
-  }
-  .demo-split-pane{
-    padding: 10px;
-  }
   .demo-spin-icon-load{
     animation: ani-demo-spin 1s linear infinite;
   }
