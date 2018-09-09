@@ -66,11 +66,11 @@
           <table class="w-100 tl">
             <tr>
               <td>成本</td>
-              <td>{{data.cost}}</td>
+              <td>{{data.cost.toFixed(2)}}</td>
             </tr>
             <tr>
               <td>保证金</td>
-              <td>{{data.bond}}</td>
+              <td>{{data.bond.toFixed(2)}}</td>
             </tr>
             <tr>
               <td>delta</td>
