@@ -1,9 +1,11 @@
 <template>
   <div id="login">
     <Row class="middle">
-      <i-col span="8" offset="8">
+      <i-col>
         <div id="form" class="login-form animated fadeInLeft tc">
-          <Logo class="pb3"></Logo>
+          <div style="height:100px; width:100%;display:inline-block">
+            <img style="width: 100%;max-width:350px;height:70px;" src="../../static/graph/OptLogo.png" alt="">
+          </div>
           <login-form class="pt3-l pl4 pr4"></login-form>
         </div>
       </i-col>
@@ -38,7 +40,7 @@
   }
 
   #login{
-    background-image: url("../../static/graph/back1.jpg");
+    background-image: url("../../static/graph/homeBack/10.jpg");
     background-size:1920px 1200px;
     background-repeat:no-repeat;
     height: 1080px;
@@ -50,20 +52,31 @@
     -moz-box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
     -o-box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
     box-shadow: -4px 7px 46px 2px rgba(0, 0, 0, 0.1);
-    background: #ffffff;
-    position: fixed;
+    background: #eeeeeebb;
+    border-radius: 5%;
+    width: 30%;
+    margin: auto;
+    min-width: 350px;
   }
 
   #login {position: relative;}
 
   .middle {
-    position: absolute;
-    top: 0;
+    position: fixed;
+    top: 25%;
     bottom: 0;
     left: 0;
     right: 0;
-    width: 100%;
-    height: 50%;
-    margin: auto;
   }
+  @media screen and (max-width: 976px) {
+      .login-form{
+        width: 60%;
+      }
+    }
+  @media screen and (max-width: 500px) {
+    .login-form{
+      width: 70%;
+    }
+  }
+
 </style>

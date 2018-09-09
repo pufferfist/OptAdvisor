@@ -108,7 +108,6 @@
       <section class="content-section bg-primary white tc" id="services">
         <div class="container">
           <div class="content-section-heading">
-            <h3 class="text-secondary mb0">服务</h3>
             <h2 class="mb5">我们的优势</h2>
           </div>
           <Row>
@@ -159,7 +158,6 @@
       <section class="content-section" id="portfolio">
         <div class="container">
           <div class="content-section-heading tc">
-            <h3 class="text-secondary mb0">功能</h3>
             <h2 class="mb5">开始使用</h2>
           </div>
           <Row class="flex">
@@ -333,7 +331,7 @@
     height: 100%;
     padding-top:8rem;
     padding-bottom:8rem;
-    background:linear-gradient(90deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 100%),url(../../static/graph/homeBack/7.jpg);
+    background:linear-gradient(90deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 100%),url(../../static/graph/homeBack/home-back.jpeg);
     background-position:center center;
     background-repeat:no-repeat;
     background-attachment: fixed;
@@ -443,7 +441,7 @@
   }
   .callout {
     padding:15rem 0;
-    background:linear-gradient(90deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 100%),url(../../static/graph/homeBack/2.jpg);
+    background:linear-gradient(90deg,rgba(255,255,255,.1) 0,rgba(255,255,255,.1) 100%),url(../../static/graph/homeBack/home-back1.jpeg);
     background-position:center center;
     background-repeat:no-repeat;
     background-size:cover;

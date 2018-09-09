@@ -1,17 +1,19 @@
 <template>
-  <div style="height: 100%">
-    <div class="demo-split" v-bind:style="{height:demo_spilt_height}">
-      <Split v-model="split1">
-        <div slot="left" class="demo-split-pane">
-          <collect_info ref="info"></collect_info>
-          <p style="font-size: 10px;" v-bind:style="{'-webkit-text-fill-color':warn_color}">信息填写不完整</p>
-          <Button type="primary" @click="search">查询结果</Button>
-        </div>
-        <div slot="right" class="demo-split-pane">
-          <no_input ref="blank" v-bind:style="{display:ispage1}"></no_input>
-          <display_result ref="result" v-bind:style="{display:ispage2}"></display_result>
-        </div>
-      </Split>
+  <div>
+    <div  v-bind:style="{display:ispage1}">
+      <collect_info ref="info" style="padding-left: 20%;padding-right: 20%"></collect_info>
+      <br>
+      <Button type="primary" style="width: 20%" @click="search">查询结果</Button>
+      <p style="font-size: 10px;" v-bind:style="{'-webkit-text-fill-color':warn_color}">{{this.warn_data}}</p>
+    </div>
+    <div  v-bind:style="{display:ispage2}">
+      <display_result ref="result"></display_result>
+    </div>
+    <div>
+      <Spin v-if="showResult" fix>
+      <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+      <div>Loading</div>
+      </Spin>
     </div>
   </div>
 
@@ -27,10 +29,12 @@
       data () {
         return {
           split1: 0.3,
-          demo_spilt_height:'500px',
+          demo_spilt_height:'700px',
           ispage1:'',
           ispage2:'none',
-          warn_color:'#ffffff'
+          warn_color:'#ffffff',
+          warn_data:'',
+          showResult:false
         }
       },
       methods:{
@@ -41,34 +45,29 @@
             var deadline=array[2].fieldValue
             var min_price=array[3].fieldValue
             if((OpenInterest=='')||(rate=='')||(deadline=='')||(min_price=='')){
+              this.warn_data='信息填写不完整'
               this.warn_color="#ed4014"
             }
             else{
+              this.showResult=true
+              this.warn_data=''
               this.warn_color="#ffffff"
               var deadline_value=this.$refs.info.formItem.month[deadline.substr(5)-1]
               //写入数据
               var param={n0:OpenInterest,a:rate/100,s_exp:min_price.toFixed(2),t:deadline_value}
               this.axios.post('/backend/recommend/hedging',param).then((response)=>{
                 if(response.data.msg=='No eligible options'){
-                  this.$refs.blank.text='没有合适的期权'
+                  //this.$refs.blank.text='没有合适的期权'
                 }
                 else if(response.data.msg=='IOException occurs'){
-                  this.$refs.blank.text='输入输出报错，请您稍后重试'
+                 // this.$refs.blank.text='输入输出报错，请您稍后重试'
                 }
                 else if(response.data.msg=='Hedging success'){
-                  this.$refs.blank.text='暂无数据，等待输入'
+                  //this.$refs.blank.text='暂无数据，等待输入'
                   this.$refs.result.originData=response.data.data
 
-
-
-                  this.$refs.result.n=OpenInterest
-                  this.$refs.result.pAsset=OpenInterest
-                  this.$refs.result.flag=OpenInterest
-                  this.$refs.result.sExp=OpenInterest
-
-
-
                   var data=response.data.data
+                  console.log(data)
                   //1.填充表格
                   var forms={
                     optionCode:data.option.optionCode, //期权代码
@@ -111,6 +110,9 @@
                   this.ispage2=""
                   this.demo_spilt_height="700px"
                 }
+                setTimeout(() => {
+                  this.showResult = false;
+                }, 200);
               })
 
             }
@@ -123,10 +125,18 @@
 </script>
 
 <style scoped>
-  .demo-split{
-    border: 1px solid #dcdee2;
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
   }
-  .demo-split-pane{
-    padding: 10px;
+  @keyframes ani-demo-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
+  }
+  .demo-spin-container{
+    display: inline-block;
+    width: 100%;
+    min-height: 700px;
+    position: relative;
   }
 </style>

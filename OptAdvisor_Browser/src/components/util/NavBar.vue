@@ -44,16 +44,18 @@
       </div>
 
       <div class="dib pl3 pr4" v-contextmenu:contextmenu>
-        <router-link v-if="isLogin" :to="'/profile/'+userName">
+        <a v-if="isLogin">
           <!--此头像应为用户自定义头像-->
           <Avatar style="background-color: #87d068" icon="ios-person"/>
-        </router-link>
+        </a>
         <router-link v-if="!isLogin" :to="'/login'">
           <Avatar style="background-color: #87d068" icon="ios-person"/>
         </router-link>
       </div>
     </div>
-    <v-contextmenu ref="contextmenu" style="z-index: 10000001">
+    <v-contextmenu ref="contextmenu" event-type="click" style="z-index: 10000001">
+      <v-contextmenu-item @click="profile">个人信息</v-contextmenu-item>
+      <v-contextmenu-item divider></v-contextmenu-item>
       <v-contextmenu-item @click="logout">登出</v-contextmenu-item>
     </v-contextmenu>
   </Menu>
@@ -96,6 +98,9 @@
               this.$router.push("/50ETF");
             }
           })
+      },
+      profile:function () {
+        this.$router.push('/profile/'+this.userName);
       }
     }
   }

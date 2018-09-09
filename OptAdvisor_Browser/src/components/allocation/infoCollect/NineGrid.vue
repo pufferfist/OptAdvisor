@@ -146,8 +146,8 @@
 
   .box {
     display: table;
-    height: 60px;
-    width: 60px;
+    height: 80px;
+    width: 80px;
   }
 
   .box span {
@@ -158,7 +158,7 @@
 
   .boxLeft {
     display: table;
-    height: 60px;
+    height: 80px;
     width: 90px;
     padding-right: 20px;
   }
@@ -169,13 +169,13 @@
   }
 
   .outGrid {
-    height: 60px;
-    width: 60px;
+    height: 80px;
+    width: 80px;
   }
 
   .grid {
-    height: 30px;
-    width: 30px;
+    height: 40px;
+    width: 40px;
     background-color: #9eebcf;
     border: #F8F8FF;
     border-style: solid;
@@ -194,24 +194,24 @@
 
   @keyframes bop {
     0% {
-      width: 30px;
-      height: 30px
-    }
-    25% {
-      width: 35px;
-      height: 35px
-    }
-    50% {
       width: 40px;
       height: 40px
     }
+    25% {
+      width: 47px;
+      height: 47px
+    }
+    50% {
+      width: 54px;
+      height: 54px
+    }
     75% {
-      width: 45px;
-      height: 45px
+      width: 61px;
+      height: 61px
     }
     100% {
-      width: 50px;
-      height: 50px
+      width: 70px;
+      height: 70px
     }
   }
 

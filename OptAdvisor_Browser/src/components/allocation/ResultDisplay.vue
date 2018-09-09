@@ -66,39 +66,39 @@
           <table class="w-100 tl">
             <tr>
               <td>成本</td>
-              <td>{{data.cost}}</td>
+              <td>{{data.cost.toFixed(2)}}</td>
             </tr>
             <tr>
               <td>保证金</td>
-              <td>{{data.bond}}</td>
+              <td>{{data.bond.toFixed(2)}}</td>
             </tr>
             <tr>
               <td>delta</td>
-              <td>{{data.z_delta}}</td>
+              <td>{{data.z_delta.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>gamma</td>
-              <td>{{data.z_gamma}}</td>
+              <td>{{data.z_gamma.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>theta</td>
-              <td>{{data.z_theta}}</td>
+              <td>{{data.z_theta.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>vega</td>
-              <td>{{data.z_vega}}</td>
+              <td>{{data.z_vega.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>rho</td>
-              <td>{{data.z_rho}}</td>
+              <td>{{data.z_rho.toFixed(4)}}</td>
             </tr>
             <tr>
               <td>组合期望收益率</td>
-              <td>{{data.em}}</td>
+              <td>{{(data.em*100).toFixed(2)}}%</td>
             </tr>
             <tr>
               <td>组合风险值</td>
-              <td>{{data.beta}}</td>
+              <td>{{data.beta.toFixed(4)}}</td>
             </tr>
           </table>
         </div>
@@ -108,11 +108,11 @@
           <table class="w-100 tl">
             <tr>
               <td>资产期望收益率</td>
-              <td>{{data.returnOnAssets}}</td>
+              <td>{{(data.returnOnAssets*100).toFixed(2)}}%</td>
             </tr>
             <tr>
               <td>资产风险值</td>
-              <td>{{data.beta}}</td>
+              <td>{{data.beta.toFixed(4)}}</td>
             </tr>
           </table>
         </div>
@@ -153,7 +153,19 @@
             legend: {
               data: ['组合收益', '资产收益']
             },
-
+            tooltip : {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'cross',
+                label: {
+                  backgroundColor: '#6a7985'
+                }
+              },
+              // formatter: (params)=>{
+              //   console.log(params)
+              //   return params[0].seriesName+params[0].data+"/n";
+              // }
+            },
             xAxis: {
               type: 'category',
               boundaryGap: false,
@@ -171,13 +183,17 @@
                 name: '组合收益',
                 type: 'line',
                 // data: [11, 11, 15, 13, 12, 13, 10],
-                data:this.data.graph[1],
+                data:this.data.graph[1].map(function(item){
+                  return parseFloat(item).toFixed(2);
+                }),
               },
               {
                 name: '资产收益',
                 type: 'line',
                 // data: [1, -2, 2, 5, 3, 2, 0],
-                data:this.data.graph[2],
+                data:this.data.graph[2].map(function(item){
+                  return parseFloat(item).toFixed(2);
+                }),
               },
               // {
               //   name: 'ppp',

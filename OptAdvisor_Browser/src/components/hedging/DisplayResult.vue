@@ -1,19 +1,20 @@
 <template>
-    <div>
+    <div style="width: 100%">
       <p style="font-weight: bold;font-size: 25px">套期保值效果展示&nbsp&nbsp<Button type="primary" size="small" @click="addToMyGroup">添加至我的组合</Button></p>
       <div style="text-align: left">
         <div>
-          <p style="font-size: 20px;font-weight: bold;padding-left: 20px">展示期权：</p>
+          <p style="font-size: 20px;font-weight: bold;padding-left: 15%">展示期权：</p>
+          <br>
           <optionGroup ref="option_group"></optionGroup>
         </div>
         <br>
         <div>
-          <span style="font-size: 20px;font-weight: bold;padding-left: 20px">到达预期最大亏损：<p style="-webkit-text-fill-color: red;display: inline">{{expectedLoss}}</p></span>
+          <span style="font-size: 20px;font-weight: bold;padding-left:15%">到达预期最大亏损：<p style="-webkit-text-fill-color: red;display: inline">{{expectedLoss}}</p></span>
         </div>
         <br>
-        <div>
-          <p style="font-size: 20px;font-weight: bold;padding-left: 20px">组合表现：</p>
-          <div id="myChart" style="width: 700px;height: 300px"></div>
+        <div style="width: 100%;text-align: center">
+          <p style="font-size: 20px;font-weight: bold;padding-left: 15%;text-align: left">组合表现：</p>
+          <div id="myChart" style="width:800px;height: 300px;margin: auto"></div>
         </div>
       </div>
     </div>
@@ -100,7 +101,7 @@
               data.iK=this.originData.iK
               data.options=[this.originData.option]
 
-              console.log(data)
+              this.handleSpinCustom()
               this.axios.post('/backend/portfolio',data)
                 .then(re=>{
                   if(re.data.msg=='Add portfolio success'){
@@ -118,11 +119,32 @@
             }
           });
         },
+        handleSpinCustom () {
+          this.$Spin.show({
+            render: (h) => {
+              return h('div', [
+                h('Icon', {
+                  'class': 'demo-spin-icon-load',
+                  props: {
+                    type: 'ios-loading',
+                    size: 18
+                  }
+                }),
+                h('div', '加载中')
+              ])
+            }
+          });
+          setTimeout(() => {
+            this.$Spin.hide();
+          }, 3000);
+        }
       }
 
     }
 </script>
 
 <style scoped>
-
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
 </style>

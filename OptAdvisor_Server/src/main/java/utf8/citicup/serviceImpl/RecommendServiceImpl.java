@@ -31,8 +31,8 @@ import static utf8.citicup.service.util.StatusMsg.noEligibleOptions;
 @Service
 public class RecommendServiceImpl implements RecommendService {
 
-    private static final double eps = 0.025;
-    private static final double zero = 0.05;
+    private static final double eps = 0.1;
+    private static final double zero = 0.1;
     /*用户输入值*/
     private String T;//投资者预测价格有效时间
     private double M0;
@@ -69,9 +69,9 @@ public class RecommendServiceImpl implements RecommendService {
     private double eps1;
 
     /*判断是否正在获取网络信息*/
-    boolean isUpdataRunning;
+    private boolean isUpdataRunning;
 
-    public String[] getMonth() {
+    String[] getMonth() {
         return month;
     }
 
@@ -223,14 +223,14 @@ public class RecommendServiceImpl implements RecommendService {
 
     public RecommendServiceImpl(){
         dataSource = new GetData();
-        S = new double[21];
+        S = new double[5001];
         int i = 0;
-        double temp = 2;
-        DecimalFormat df = new DecimalFormat("0.00");
-        while(temp <= 3){
+        double temp = 0.0;
+        DecimalFormat df = new DecimalFormat("0.000");
+        while(temp <= 5.0){
             temp = Double.valueOf(df.format(temp));
             S[i] = temp;
-            temp += 0.05;
+            temp += 0.001;
             i++;
         }
         dv = 0;//股票分红率
@@ -240,6 +240,10 @@ public class RecommendServiceImpl implements RecommendService {
 
     /*从网络获取所需的数据*/
     public void upDataFromNet() throws IOException {
+        chigh.clear();
+        clow.clear();
+        phigh.clear();
+        plow.clear();
         r = dataSource.get_r();
 //        S0 = dataSource.get_S0();//实时标的价格
         sigma = dataSource.get_Sigma();//实时波动率
@@ -360,6 +364,13 @@ public class RecommendServiceImpl implements RecommendService {
         Option[] phigh_T = phigh.get(T).toArray(new Option[0]);
         Option[] plow_T = plow.get(T).toArray(new Option[0]);
 
+        cpar.clear();
+        ppar.clear();
+        chighShallow.clear();
+        plowShallow.clear();
+        chighDeep.clear();
+        plowDeep.clear();
+
         //平价看涨
         sievesImpl(cpar, chigh_T,S0 - eps, S0 + eps);
         sievesImpl(cpar, clow_T,S0 - eps, S0 + eps);
@@ -402,14 +413,13 @@ public class RecommendServiceImpl implements RecommendService {
         {
             val = 1- val;
         }
-
         return val;
     }
 
     /*正态分布概率函数*/
     private double p(double x) {
         double theta = Math.pow(((sigma1 + sigma2) / 2), 2);
-        return 1 / (Math.sqrt(2 * Math.PI) * theta) * Math.exp(-1 * Math.pow(x, 2) / (2 * Math.pow(theta, 2)));
+        return 1 / (Math.sqrt(2 * Math.PI * theta)) * Math.exp(-1 * Math.pow(x, 2) / (2 * theta));
     }
 
     private double normpdf(double x){
@@ -417,9 +427,10 @@ public class RecommendServiceImpl implements RecommendService {
         return 0;
     }
 
-    private double Options(int cp, double k) {
-        double d_1 = Math.log(S0 / k) + (r - dv + 0.5 * Math.pow(sigma, 2) * t) / sigma / Math.pow(t, 0.5);
-        double d_2 = d_1 - (sigma * (Math.pow(t, 0.5)));
+    private double Options(int cp, double S0, double k) {
+        double t = this.t / 365.0;
+        double d_1 = Math.log(S0 / k) + (r - dv + 0.5 * Math.pow((sigma1 + sigma2) / 2, 2) * t) / ((sigma1 + sigma2) / 2) / Math.sqrt(t);
+        double d_2 = d_1 - (((sigma1 + sigma2) / 2) * (Math.sqrt(t)));
         return cp * S0 * Math.exp(-1 * dv * t) * normcdf(cp * d_1) -
                 cp * k * Math.exp(-1 * r * t) * normcdf(cp * d_2);
     }
@@ -448,7 +459,7 @@ public class RecommendServiceImpl implements RecommendService {
         double[] C = new double[n];
         if (t != 0) {
             for (int i = 0; i < n; i++) {
-                double temp = Options(cp, k);
+                double temp = Options(cp, S[i], k);
                 C[i] = 10000 * (temp - price);
             }
         } else {
@@ -508,17 +519,19 @@ public class RecommendServiceImpl implements RecommendService {
         this.M0 = M0;
         this.p1 = p1;
         this.p2 = p2;
-        this.sigma1 = sigma1;
-        this.sigma2 = sigma2;
+        this.sigma1 = sigma1 / 100.0;
+        this.sigma2 = sigma2 / 100.0;
         this.w1 = w1 / 100.0;
         this.w2 = w2 / 100.0;
         k = k / 100.0;
         /*实时数据的获取*/
 
-        while(isUpdataRunning){
-//            logger.info("正在获取网络信息");
-        };
+//        while (isUpdataRunning);
 
+        if(isUpdataRunning){
+            upDataFromNet();
+            isUpdataRunning = false;
+        }
         parShallowDeep();
         t = Integer.parseInt(dataSource.get_expireAndremainder(T)[1]);
 
@@ -529,6 +542,7 @@ public class RecommendServiceImpl implements RecommendService {
         logger.info("first step is finished");
         System.out.println(D.size());
         structD maxGoalD;
+
         maxGoalD = secondStep(D);
 
         logger.info("second step is finished");
@@ -593,8 +607,8 @@ public class RecommendServiceImpl implements RecommendService {
                 buyAndSellOptions.add(plow.get(T).toArray(new Option[0]));
                 break;
 
-            //卖出一个低价看跌期权，买入两个高价看跌期权
-            case 'F':buyAndSell.add(2);buyAndSell.add(-1);
+            //卖出2个低价看跌期权，买入1个高价看跌期权
+            case 'F':buyAndSell.add(1);buyAndSell.add(-2);
                 buyAndSellOptions.add(phigh.get(T).toArray(new Option[0]));
                 buyAndSellOptions.add(plow.get(T).toArray(new Option[0]));
                 break;
@@ -711,8 +725,10 @@ public class RecommendServiceImpl implements RecommendService {
                 isInD = true;
             else if(choose == 'H')
                 isInD = Math.abs(sumDelta) < zero;
-            else if(choose == 'G' || choose == 'F')
+            else if(choose == 'G')
                 isInD = Math.abs(sumDelta) < zero && sumVega < 0;
+            else if(choose == 'F')
+                isInD = sumVega < 0;
             else
                 isInD = Math.abs(sumDelta) < zero && sumVega > 0;
             if(isInD){
@@ -803,19 +819,24 @@ public class RecommendServiceImpl implements RecommendService {
                 min_numE = z.num * z.E;
             }
             z.beta = 0;
+            z.E *= z.num;
             for(int i = 0;i < z.buyAndSell.length; i++){
                 double price = z.optionCombination[i].getPrice1();
                 if(z.buyAndSell[i] < 0)
                     price = z.optionCombination[i].getPrice2();
                 z.beta += z.buyAndSell[i] * betaValue(z.optionCombination[i].getDelta(), price);
             }
+            z.beta = Math.abs(z.beta);
             if(z.beta > max_beta)
                 max_beta = z.beta;
             if(z.beta < min_beta)
                 min_beta = z.beta;
         }
         for (structD z : D) {
-            z.goal = goalValue(z.num, z.E, this.M, z.beta, min_beta, max_beta, max_numE, min_numE);
+            if(z.E < 0)
+                z.goal = 0;
+            else
+                z.goal = goalValue(z.num, z.E, this.M, z.beta, min_beta, max_beta, max_numE, min_numE);
         }
         //对 goal 排序(从高到低)
         D.sort((o1, o2) -> Double.compare(o2.goal, o1.goal));
@@ -1070,6 +1091,10 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
+        if(isUpdataRunning){
+            upDataFromNet();
+            isUpdataRunning = false;
+        };
         this.T = T;
         upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
@@ -1451,5 +1476,11 @@ public class RecommendServiceImpl implements RecommendService {
         warning();
         logger.info("警报检测完成");
         logger.info("-------------------");
+//        this.S = new double[]{2.391};
+//        this.sigma = 23.98 / 100.0;
+//        this.t = 46;
+//        double x = Interest(1, 2.3, 0.2175)[0];
+//        double y = Interest(1, 2.55, 0.061)[0];
+//        double a = x - 2 * y;
     }
 }

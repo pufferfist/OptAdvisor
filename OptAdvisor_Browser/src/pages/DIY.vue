@@ -58,22 +58,32 @@
               <td style="padding-left: 20px" :class="getClassName(index,'down')" :id="getClassName(index,'checkbox_down_')" @click="refreshId"><Checkbox @on-change="changeColor"></Checkbox></td>
             </tr>
           </table>
-          <h4 style="margin:10px 0">已选择的组合</h4>
-          <Row>
-            <Col span="10" offset="2">
-              <li style="list-style-type:none;" v-for="(l,index) in leftValue" :key="index">
-                  {{l.name}}
-                  <InputNumber style="width:45px;" size="small" type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')"></InputNumber >份
-                </li>
-            </Col>
-            <Col span="10" offset="2">
-              <li style="list-style-type:none;"  v-for="(r,index) in rightValue" :key="index">
-                  {{r.name}}
-                  <InputNumber style="width:45px;" size="small" type="number" v-model="r.value" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')"></InputNumber >份
-                </li>
-            </Col>
-          </Row>
-          <Button type="primary" style="width: 250px" @click="newGroupName">确认添加至我的组合</Button>
+          <Card style="margin:10px 0;">
+            <p slot="title">
+                已选择的组合
+            </p>
+            <Row >
+              <div v-if="leftValue.length === 0 && rightValue.length === 0">
+                请选择组合
+              </div>
+              <div v-else>
+                <Col span="10" offset="2">
+                  <div v-if="leftValue.length === 0">&nbsp;</div>
+                  <li style="list-style-type:none;" v-for="(l,index) in leftValue" :key="index">
+                    <Tag type="dot" >{{l.name}}</Tag> ×
+                    <InputNumber style="width:45px;" size="small" type="number" v-model="l.value" class="numberInput" value="1" :id="getClassName(index,'left_input_number_')"></InputNumber >份
+                  </li>
+                </Col>
+                <Col span="10" offset="2">
+                  <li style="list-style-type:none;"  v-for="(r,index) in rightValue" :key="index">
+                    <Tag type="dot" >{{r.name}}</Tag> ×
+                    <InputNumber style="width:45px;" size="small" type="number" v-model="r.value" class="numberInput" value="1" :id="getClassName(index,'right_input_number_')"></InputNumber >份
+                  </li>
+                </Col>
+              </div>
+            </Row>
+            <Row style="margin:10px 0;"><Button  @click="preview">预览</Button> <Button type="primary"  @click="newGroupName">添加至我的组合</Button></Row>
+          </Card>
         </div>
       </div>
       <br>
@@ -144,50 +154,40 @@
           </div>
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
-          <h3>组合表现展示&nbsp&nbsp&nbsp<Button type="info" size="small" @click="preview">预览</Button> </h3>
-          <table class="table3" style="margin: auto">
-            <tr>
-              <th>数量</th>
-              <td>{{this.resultTable.num}}</td>
-              <th>成本</th>
-              <td>{{this.resultTable.cost}}</td>
-              <th>保证金</th>
-              <td>{{this.resultTable.bond}}</td>
-              <th>EM</th>
-              <td>{{this.resultTable.em}}</td>
-            </tr>
-            <tr>
-              <th>beta</th>
-              <td>{{this.resultTable.beta}}</td>
-              <th>z_delta</th>
-              <td>{{this.resultTable.z_delta}}</td>
-              <th>z_gamma</th>
-              <td>{{this.resultTable.z_gamma}}</td>
-              <th>z_vega</th>
-              <td>{{this.resultTable.z_vega}}</td>
-            </tr>
-            <tr>
-              <th>z_theta</th>
-              <td>{{this.resultTable.z_theta}}</td>
-              <th>z_rho</th>
-              <td>{{this.resultTable.z_rho}}</td>
-              <th>M0</th>
-              <td>{{this.resultTable.m0}}</td>
-              <th>k</th>
-              <td>{{this.resultTable.k}}</td>
-            </tr>
-            <tr>
-              <th>sigma1</th>
-              <td>{{this.resultTable.sigma1}}</td>
-              <th>sigma2</th>
-              <td>{{this.resultTable.sigma2}}</td>
-              <th>p1</th>
-              <td>{{this.resultTable.p1}}</td>
-              <th>p2</th>
-              <td>{{this.resultTable.p2}}</td>
-            </tr>
-          </table>
-          <div id="myChart" style="width: 100%;height: 325px">
+          <h3>组合表现展示</h3>
+          <div class="demo-spin-container">
+            <table class="table3" style="margin: auto">
+              <tr>
+                <th>数量</th>
+                <td>{{this.resultTable.num}}</td>
+                <th>成本</th>
+                <td>{{this.resultTable.cost}}</td>
+                <th>保证金</th>
+                <td>{{this.resultTable.bond}}</td>
+                <th>EM</th>
+                <td>{{this.resultTable.em}}</td>
+                <th>beta</th>
+                <td>{{this.resultTable.beta}}</td>
+              </tr>
+              <tr>
+                <th>delta</th>
+                <td>{{this.resultTable.z_delta}}</td>
+                <th>gamma</th>
+                <td>{{this.resultTable.z_gamma}}</td>
+                <th>vega</th>
+                <td>{{this.resultTable.z_vega}}</td>
+                <th>theta</th>
+                <td>{{this.resultTable.z_theta}}</td>
+                <th>rho</th>
+                <td>{{this.resultTable.z_rho}}</td>
+              </tr>
+            </table>
+            <div id="myChart" style="width: 100%;height: 325px">
+            </div>
+            <Spin v-if="showPreview" fix>
+              <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
+              <div>加载中</div>
+            </Spin>
           </div>
         </div>
       </div>
@@ -234,8 +234,18 @@
           line2:[],
           resultTable:{},
           show1:false,
-          show2:false
+          show2:false,
+          showPreview:false,
+          interval: Number,
         }
+      },
+      beforeCreate:function () {
+        this.axios.post("backend/auth")
+          .then((res)=>{
+            if(res.data.code===1008){
+              this.$router.push("/login");
+            }
+          });
       },
       async mounted() {
         var months
@@ -246,7 +256,7 @@
         await this.setSelectedMonth(months);
         await this.getValue(months[1]);
         await this.getAllLeftRightValues()
-        setInterval(this.circle, 5000);
+        this.interval = setInterval(this.circle, 5000);
 
       },
       methods: {
@@ -512,6 +522,7 @@
           });
         },
         async confirm(name){
+          this.handleSpinCustom()
           var origin_data
           await this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
@@ -532,7 +543,6 @@
           data.type=2
           data.trackingStatus=false
 
-          console.log(data)
           await this.axios.post('/backend/portfolio',data)
             .then(re=>{
               if(re.data.msg=='Add portfolio success'){
@@ -579,7 +589,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultLeftCode[i].substr(7)
             op.expireTime=deadline
-            op.type=parseInt(document.getElementById("left_input_number_"+i).value)
+            op.type=this.leftValue[i].value
             op.cp=1
             options.push(op)
           }
@@ -587,7 +597,7 @@
             var op={}
             op.optionCode="CON_OP_"+this.resultRightCode[i].substr(7)
             op.expireTime=deadline
-            op.type=parseInt(document.getElementById("right_input_number_"+i).value)
+            op.type=this.rightValue[i].value
             op.cp=-1
             options.push(op)
           }
@@ -612,6 +622,7 @@
           return year+"-"+month+"-"+(Array(2).join(0)+day).slice(-2)
         },
         preview(){
+          this.showPreview=true
           this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{
               if(re.data.msg=='custom portfolio finished'){
@@ -638,9 +649,35 @@
               else{
                 this.$Message.error("未能")
               }
+
+              setTimeout(() => {
+                this.showPreview = false;
+              }, 2000);
             })
         },
-      }
+        handleSpinCustom () {
+          this.$Spin.show({
+            render: (h) => {
+              return h('div', [
+                h('Icon', {
+                  'class': 'demo-spin-icon-load',
+                  props: {
+                    type: 'ios-loading',
+                    size: 18
+                  }
+                }),
+                h('div', 'Loading')
+              ])
+            }
+          });
+          setTimeout(() => {
+            this.$Spin.hide();
+          }, 3000);
+        }
+      },
+      destroyed() {
+        clearInterval(this.interval);
+      },
     }
 </script>
 
@@ -705,6 +742,23 @@
     width: 40px;
   }
 
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
+  @keyframes ani-demo-spin {
+    from { transform: rotate(0deg);}
+    50%  { transform: rotate(180deg);}
+    to   { transform: rotate(360deg);}
+  }
+  .demo-spin-container{
+    display: inline-block;
+    width: 100%;
+    min-height: 400px;
+    position: relative;
+  }
 
+  .demo-spin-icon-load{
+    animation: ani-demo-spin 1s linear infinite;
+  }
 
 </style>

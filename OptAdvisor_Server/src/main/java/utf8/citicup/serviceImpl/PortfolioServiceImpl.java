@@ -104,21 +104,18 @@ public class PortfolioServiceImpl implements PortfolioService {
                         RECOMMEND_PORTFOLIO, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
 
-                double[] assertGraph = new double[portfolio.transformStringToStringlist().length];
-                String[] StringAssertGraph = new String[assertGraph.length];
-                double addThing = recommendOption1.getReturnOnAssets() * portfolio.getM0()
-                        - recommendOption1.getEM() * recommendOption1.getM0();
-                for(int i = 0; i < portfolio.transformStringToStringlist().length; i++){
-                    double value = Double.valueOf(portfolio.transformStringToStringlist()[i]);
-                    if(value != 0)
-                        assertGraph[i] = value + addThing;
-                    else
-                        assertGraph[i] = 0;
-                    StringAssertGraph[i] = Double.toString(assertGraph[i]);
-                }
+//                double[] assertGraph = new double[portfolio.transformStringToStringlist().length];
+//                String[] StringAssertGraph = new String[assertGraph.length];
+//                double addThing = recommendOption1.getReturnOnAssets() * portfolio.getM0()
+//                        - recommendOption1.getEM() * recommendOption1.getM0();
+//                for(int i = 0; i < portfolio.transformStringToStringlist().length; i++){
+//                    double value = Double.valueOf(portfolio.transformStringToStringlist()[i]);
+//                    assertGraph[i] = value + addThing;
+//                    StringAssertGraph[i] = Double.toString(assertGraph[i]);
+//                }
 
                 String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.transformStringToStringlist(),
-                                                    StringAssertGraph};
+                                                    portfolio.transformStringToStringlist1()};
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rnt);
                 map.put("graph", graph);
