@@ -61,11 +61,25 @@
         </div>
       </Col>
       <Col span="12" class="">
-        <h2>组合表现</h2>
+        <h2>资产收益</h2>
         <div class="w-60 center pt3">
           <table class="w-100 tl">
             <tr>
-              <td>成本</td>
+              <td>资产期望收益率</td>
+              <td>{{(data.returnOnAssets*100).toFixed(2)}}%</td>
+            </tr>
+            <tr>
+              <td>资产杠杆</td>
+              <td>{{data.beta.toFixed(4)}}</td>
+            </tr>
+          </table>
+        </div>
+        <div class="interval"></div>
+        <h2 class="pt3">组合特征</h2>
+        <div class="w-60 center pt3">
+          <table class="w-100 tl">
+            <tr>
+              <td>成本(不含保证金)</td>
               <td>{{data.cost.toFixed(2)}}</td>
             </tr>
             <tr>
@@ -97,21 +111,7 @@
               <td>{{(data.em*100).toFixed(2)}}%</td>
             </tr>
             <tr>
-              <td>组合风险值</td>
-              <td>{{data.beta.toFixed(4)}}</td>
-            </tr>
-          </table>
-        </div>
-        <div class="interval"></div>
-        <h2 class="pt3">资产收益</h2>
-        <div class="w-60 center pt3">
-          <table class="w-100 tl">
-            <tr>
-              <td>资产期望收益率</td>
-              <td>{{(data.returnOnAssets*100).toFixed(2)}}%</td>
-            </tr>
-            <tr>
-              <td>资产风险值</td>
+              <td>组合杠杆</td>
               <td>{{data.beta.toFixed(4)}}</td>
             </tr>
           </table>
@@ -136,6 +136,7 @@
       data() {
         return {
           currentOption:'',
+          selectedOptionIndex:[],
           myChart:{},
         }
       },
@@ -212,6 +213,10 @@
       methods:{
         switchOption:function (index) {
           this.currentOption=this.data.optionList[index];
+          for(let i=0;i<this.selectedOptionIndex.length;i++){
+            this.selectedOptionIndex[i]=false;
+          }
+          this.selectedOptionIndex[index]=true;
         },
         refreshChart:function () {
           this.myChart.setOption(this.chartOption);
@@ -223,6 +228,12 @@
         //绘图
         this.myChart = this.$echarts.init(this.$refs.myEchart);
         this.refreshChart();
+
+        //初始化位图
+        for(let i=0;i<this.data.optionList.length;i++){
+          this.selectedOptionIndex.push(false);
+        }
+       this.selectedOptionIndex[0]=true;
       },
       watch:{
         date(){this.refreshChart();},
@@ -252,6 +263,10 @@
     border-bottom: 1px solid rgba( 20, 99, 180, .7 );
   }
   .backRed:hover{
+    background: #FFEEEE;
+  }
+
+  .bgred{
     background: #FFEEEE;
   }
 
