@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div style="width: 40%;float: left;padding-top: 30px;padding-left: 30px">
+    <div style="width: 35%;float: left;padding-top: 30px;padding-left: 30px">
       <div style="width: 200px">
         <h3>期权及相关信息</h3>
         <table class="table2">
@@ -63,7 +63,7 @@
         </table>
       </div>
     </div>
-    <div style="width: 60%;float: left;padding: 30px;text-align: center">
+    <div style="width: 65%;float: left;padding: 30px;text-align: center">
       <h3>组合表现展示</h3>
       <table class="table1" style="margin: auto">
         <tr>
@@ -73,7 +73,7 @@
           <td style="-webkit-text-fill-color: #ed4014">{{text16}}</td>
         </tr>
       </table>
-      <div id="myChart" style="width: 450px;height: 325px">
+      <div id="myChart" style="width: 500px;height: 325px">
       </div>
     </div>
   </div>
@@ -224,8 +224,10 @@
   }
   .table2 td{
     text-align: left;
+    font-size: 15px;
   }
   .table2 th{
+    font-size: 15px;
     text-align: left;
     min-width: 130px;
     -webkit-text-fill-color: #808695;

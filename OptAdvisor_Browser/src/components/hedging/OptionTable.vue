@@ -10,36 +10,22 @@
           <td>{{this.TData.cp}}</td>
           <th>到期时间</th>
           <td>{{this.TData.expireTime}}</td>
-        </tr>
-        <tr>
           <th>成交价</th>
           <td>{{this.TData.transactionPrice}}</td>
+        </tr>
+        <tr>
           <th>前一天收盘价</th>
           <td>{{this.TData.yclose}}</td>
           <th>实时买入价格</th>
           <td>{{this.TData.price1}}</td>
           <th>实时卖出价格</th>
           <td>{{this.TData.price2}}</td>
-        </tr>
-        <tr>
           <th>行权价格</th>
           <td>{{this.TData.k}}</td>
           <th>实时价格</th>
           <td>{{this.TData.realTimePrice}}</td>
-          <th>delta</th>
-          <td>{{this.TData.delta}}</td>
-          <th>gamma</th>
-          <td>{{this.TData.gamma}}</td>
         </tr>
         <tr>
-          <th>vega</th>
-          <td>{{this.TData.vega}}</td>
-          <th>theta</th>
-          <td>{{this.TData.theta}}</td>
-          <th>rho</th>
-          <td>{{this.TData.rho}}</td>
-          <th>beta</th>
-          <td>{{this.TData.beta}}</td>
         </tr>
       </table>
     </div>
