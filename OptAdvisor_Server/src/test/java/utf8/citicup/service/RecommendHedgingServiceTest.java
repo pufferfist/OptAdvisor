@@ -35,7 +35,7 @@ public class RecommendHedgingServiceTest {
 //        double a = 0.5;
 //        double sExp = 2.1;
 //        String T = "2018-10";
-        int N0 = 50;
+        int N0 = 50000;
         double a = 0.25;
         double sExp = 2.2;
         String T = "2018-10";
