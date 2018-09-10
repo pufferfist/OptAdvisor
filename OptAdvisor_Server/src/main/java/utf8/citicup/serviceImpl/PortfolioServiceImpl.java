@@ -27,6 +27,8 @@ public class PortfolioServiceImpl implements PortfolioService {
     private PortfolioDataService dataService;
 //    private Logger logger = LoggerFactory.getLogger(PortfolioServiceImpl.class);
 
+    @Autowired
+    private RecommendServiceImpl recommendService;
     @Override
     public ResponseMsg addPortfolio(Portfolio portfolio) {
 //        logger.info(String.valueOf(portfolio.getOptions().length));
@@ -85,7 +87,6 @@ public class PortfolioServiceImpl implements PortfolioService {
         if (null == portfolio)
             return StatusMsg.portfolioNotExists;
         else if (portfolio.getUsername().equals(username)) {
-            RecommendServiceImpl recommendService = new RecommendServiceImpl();
             if(portfolio.getType() == RECOMMEND_PORTFOLIO){
                 recommendService.setP1(portfolio.getP1());
                 recommendService.setP2(portfolio.getP2());
@@ -104,21 +105,15 @@ public class PortfolioServiceImpl implements PortfolioService {
                         RECOMMEND_PORTFOLIO, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
 
-//                double[] assertGraph = new double[portfolio.transformStringToStringlist().length];
-//                String[] StringAssertGraph = new String[assertGraph.length];
-//                double addThing = recommendOption1.getReturnOnAssets() * portfolio.getM0()
-//                        - recommendOption1.getEM() * recommendOption1.getM0();
-//                for(int i = 0; i < portfolio.transformStringToStringlist().length; i++){
-//                    double value = Double.valueOf(portfolio.transformStringToStringlist()[i]);
-//                    assertGraph[i] = value + addThing;
-//                    StringAssertGraph[i] = Double.toString(assertGraph[i]);
-//                }
 
-                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.transformStringToStringlist(),
-                                                    portfolio.transformStringToStringlist1()};
+                String[][] assertPrice2Profit = recommendOption1.getAssertPrice2Profit();
+                String[][] profit2Probability = recommendOption1.getProfit2Probability();
+                String[][] historyProfit2Probability = recommendOption1.getHistoryProfit2Probability();
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rnt);
-                map.put("graph", graph);
+                map.put("assertPrice2Profit", assertPrice2Profit);
+                map.put("profit2Probability", profit2Probability);
+                map.put("historyProfit2Probability", historyProfit2Probability);
                 return new ResponseMsg(0, "Get portfolio information success", map);
             }
             else if(portfolio.getType() == DIY){
@@ -133,10 +128,12 @@ public class PortfolioServiceImpl implements PortfolioService {
                 Portfolio showPortfolio = new Portfolio(portfolio.getName(), portfolio.getUsername(),
                         recommendOption1, DIY, false);
                 Portfolio[] rnt = new Portfolio[]{portfolio, showPortfolio};
-                String[][] graph = new String[][]{recommendOption1.getGraph()[0], portfolio.transformStringToStringlist()};
+                String[][] assertPrice2Profit = recommendOption1.getAssertPrice2Profit();
+                String[][] historyProfit2Probability = recommendOption1.getHistoryProfit2Probability();
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rnt);
-                map.put("graph", graph);
+                map.put("assertPrice2Profit", assertPrice2Profit);
+                map.put("historyProfit2Probability", historyProfit2Probability);
                 return new ResponseMsg(0, "Get portfolio information success", map);
             }
             else if(portfolio.getType() == HEDGE){
@@ -193,8 +190,7 @@ public class PortfolioServiceImpl implements PortfolioService {
             return StatusMsg.portfolioNotMatchUser;
     }
 
-    @Scheduled(initialDelay = 1000, fixedRate = 5 * 1000)
+    @Scheduled(initialDelay = 100, fixedRate = 5 * 1000)
     public void task() {
-//        logger.info("task running");
     }
 }

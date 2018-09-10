@@ -15,6 +15,9 @@ public class RecommendOption1 {
     private double beta;//组合风险值
     private double returnOnAssets;//资产期望收益率
     private String[][] Graph;
+    private String[][] assertPrice2Profit;
+    private String[][] profit2Probability;
+    private String[][] historyProfit2Probability;
 
     private double M0;
     private double k;
@@ -25,7 +28,8 @@ public class RecommendOption1 {
 
     public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta,
                             double z_gamma, double z_vega, double z_theta, double z_rho, double EM,
-                            double returnOnAssets, double beta, String[][] graph, double m0, double k) {
+                            double returnOnAssets, double beta, String[][] assertPrice2Profit,String[][] profit2Probability,
+                            String[][] historyProfit2Probability, double m0, double k) {
         this.optionList = optionList;
         this.buyAndSell = buyAndSell;
         this.num = num;
@@ -39,14 +43,16 @@ public class RecommendOption1 {
         this.EM = EM;
         this.returnOnAssets = returnOnAssets;
         this.beta = beta;
-        Graph = graph;
         this.M0 = m0;
         this.k = k;
+        this.assertPrice2Profit = assertPrice2Profit;
+        this.profit2Probability = profit2Probability;
+        this.historyProfit2Probability = historyProfit2Probability;
     }
 
     public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta,
                             double z_gamma, double z_vega, double z_theta, double z_rho, double EM,
-                            double returnOnAssets, double beta, String[][] graph, double m0, double k,
+                            double returnOnAssets, double beta, double m0, double k,
                             double sigma1, double sigma2, double p1, double p2) {
         this.optionList = optionList;
         this.buyAndSell = buyAndSell;
@@ -61,7 +67,6 @@ public class RecommendOption1 {
         this.EM = EM;
         this.returnOnAssets = returnOnAssets;
         this.beta = beta;
-        Graph = graph;
         M0 = m0;
         this.k = k;
         this.sigma1 = sigma1;
@@ -69,6 +74,36 @@ public class RecommendOption1 {
         this.p1 = p1;
         this.p2 = p2;
     }
+
+    public RecommendOption1(Option[] optionList, int[] buyAndSell, int num, double cost, double bond, double z_delta,
+                            double z_gamma, double z_vega, double z_theta, double z_rho, double EM,
+                            double returnOnAssets, double beta, String[][] assertPrice2Profit, String[][] profit2Probability,
+                            String[][] historyProfit2Probability, double m0, double k, double sigma1, double sigma2,
+                            double p1, double p2) {
+        this.optionList = optionList;
+        this.buyAndSell = buyAndSell;
+        this.num = num;
+        this.cost = cost;
+        this.bond = bond;
+        this.z_delta = z_delta;
+        this.z_gamma = z_gamma;
+        this.z_vega = z_vega;
+        this.z_theta = z_theta;
+        this.z_rho = z_rho;
+        this.EM = EM;
+        this.beta = beta;
+        this.returnOnAssets = returnOnAssets;
+        this.assertPrice2Profit = assertPrice2Profit;
+        this.profit2Probability = profit2Probability;
+        this.historyProfit2Probability = historyProfit2Probability;
+        M0 = m0;
+        this.k = k;
+        this.sigma1 = sigma1;
+        this.sigma2 = sigma2;
+        this.p1 = p1;
+        this.p2 = p2;
+    }
+
 
     public Option[] getOptionList() {
         return optionList;
@@ -80,6 +115,10 @@ public class RecommendOption1 {
 
     public int getNum() {
         return num;
+    }
+
+    public String[][] getGraph() {
+        return Graph;
     }
 
     public double getCost() {
@@ -118,10 +157,6 @@ public class RecommendOption1 {
         return beta;
     }
 
-    public String[][] getGraph() {
-        return Graph;
-    }
-
     public double getM0() {
         return M0;
     }
@@ -148,5 +183,17 @@ public class RecommendOption1 {
 
     public double getReturnOnAssets() {
         return returnOnAssets;
+    }
+
+    public String[][] getAssertPrice2Profit() {
+        return assertPrice2Profit;
+    }
+
+    public String[][] getProfit2Probability() {
+        return profit2Probability;
+    }
+
+    public String[][] getHistoryProfit2Probability() {
+        return historyProfit2Probability;
     }
 }
