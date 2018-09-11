@@ -67,7 +67,6 @@
                   this.$refs.result.originData=response.data.data
 
                   var data=response.data.data
-                  console.log(data)
                   //1.填充表格
                   var forms={
                     optionCode:data.option.optionCode, //期权代码
