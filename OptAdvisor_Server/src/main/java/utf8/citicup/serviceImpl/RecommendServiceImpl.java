@@ -1161,10 +1161,12 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private RecommendOption2 mainHedging(int N0, double a, double sExp, String T) throws IOException {
+//        upDataFromNet();
         if(isUpdataRunning){
             upDataFromNet();
             isUpdataRunning = false;
-        };
+        }
+        this.sigma1 = this.sigma2 = this.sigma;
         this.T = T;
         upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
@@ -1191,24 +1193,10 @@ public class RecommendServiceImpl implements RecommendService {
             return null;
         }
         if(i1 == null){
-            double[] result = calcaulateMaxLoss(i2,sExp,N0,a,pAsset);
-            maxLoss = result[0];
-            iNum = result[1];
-            optionI = i2;
-            optionI.setType(1);
-            addAttributesToDOption(optionI);
-            rtn = hedgingBackTest(1,N0,a , maxLoss,pAsset,T);
-            return new RecommendOption2(optionI, maxLoss,iNum, rtn);
+            return calculateReconmmendOption2(i2,sExp,N0,a,pAsset);
         }
         if(i2 == null){
-            double[] resule = calcaulateMaxLoss(i1,sExp,N0,a,pAsset);
-            maxLoss = resule[0];
-            iNum = resule[1];
-            optionI = i1;
-            optionI.setType(1);
-            addAttributesToDOption(optionI);
-            rtn = hedgingBackTest(0,N0, a, maxLoss,pAsset,T);
-            return new RecommendOption2(optionI, maxLoss,iNum, rtn);
+            return calculateReconmmendOption2(i1,sExp,N0,a,pAsset);
         }
 
         double[] result1 = calcaulateMaxLoss(i1,sExp,N0,a,pAsset);
@@ -1217,15 +1205,27 @@ public class RecommendServiceImpl implements RecommendService {
         double[] resutl2 = calcaulateMaxLoss(i2,sExp,N0,a,pAsset);
         double maxLoss2 = resutl2[0];
         double iNum2 = resutl2[1];
-        boolean flag;  //判断是第一种还是第二种情况
-        if(maxLoss1>maxLoss2){ maxLoss=maxLoss2; optionI = i2;iNum = iNum2; flag = false;}
-        else { maxLoss = maxLoss1; optionI = i1;iNum = iNum1; flag = true;}
+        if(maxLoss1>maxLoss2){ maxLoss=maxLoss2; optionI = i2;iNum = iNum2;}
+        else { maxLoss = maxLoss1; optionI = i1;iNum = iNum1;}
         optionI.setType(1);
         addAttributesToDOption(optionI);
         //第三步
-        if(flag) rtn = hedgingBackTest(0,N0, a, maxLoss,pAsset,T);
-        else rtn = hedgingBackTest(1,N0,a, maxLoss,pAsset,T);
+        rtn = hedgingCalculate(optionI,N0,a,pAsset);
 
+
+        return new RecommendOption2(optionI, maxLoss,iNum, rtn);
+    }
+
+    private RecommendOption2 calculateReconmmendOption2(Option optionI, double sExp, int N0, double a, double pAsset) throws IOException {
+        String[][] rtn;
+        double maxLoss;
+        double iNum;
+        double[] result = calcaulateMaxLoss(optionI,sExp,N0,a,pAsset);
+        maxLoss = result[0];
+        iNum = result[1];
+        optionI.setType(1);
+        addAttributesToDOption(optionI);
+        rtn = hedgingCalculate(optionI,N0,a,pAsset);
         return new RecommendOption2(optionI, maxLoss,iNum, rtn);
     }
 
@@ -1280,148 +1280,62 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
-    private String[][] hedgingBackTest(int findType, int N0,double a, double iK, double pAsset, String T){
+    private String[][] hedgingCalculate(Option I, int N0, double a, double pAsset){
+//        logger.info("step into hedgingCalculate");
         int N = (int)(N0 * a);
-        boolean flag1=false,flag2=false;
-        int stage = calculateFirstFew(T);                            //得到是在第几个阶段
-        logger.info("stage is " + stage);
-        Calendar c= Calendar.getInstance();
-        int nowYear = c.get(Calendar.YEAR);
-        int nowMonth = c.get(Calendar.MONTH)+1;
-        int nowDay = c.get(Calendar.DATE);
-        int difference = calculateDifference(nowYear, nowMonth, nowDay);  //得到今天距离最近的第四个星期三所差的天数
+        double iK = I.getK();
+//        logger.info("iK is " + iK);
 
-        int length = month.length;
-        String[] holdList = new String[length];
-        String[] unholdList = new String[length];
-        String[] differenceList = new String[length];
+        double iDelta = I.getDelta();
+        int iNum = (int)Math.ceil(N / (10000 * Math.abs(iDelta)));
+//        logger.info("iNum is " + iNum);
+        double iPrice1 = I.getPrice1();
 
-        String[][] rtn; //返回四行的数组
-        int index = 0; //用于计算数组的角标
-        for (String m : month) {
-            String[] str = m.split("-");
-            int year = Integer.parseInt(str[0]);                //得到回测年月
-            int month = Integer.parseInt(str[1]);
+        List<Double> loss1 = new ArrayList<>();
+        List<Double> loss2 = new ArrayList<>();
+        List<Double> abscissa = new ArrayList<>();
 
+        int length = (int)(pAsset / 0.01);
+        for(int i=0; i<length; i++){
+            double temp = (double)(i)/100;
+            abscissa.add(temp);
+//            logger.info("i is" + temp);
+            loss1.add(N0 * (pAsset - temp));
 
-            String startDate = calculateDate(year, month, difference);       //得到回测月的起始日期
-
-            String endDate = calculateBackTestExpiryDate(startDate, stage);//得到回测的终止日期
-
-
-            String[] parse = startDate.split("/");
-            int comparativeYear = Integer.parseInt(parse[0]);
-            int comparativeMonth = Integer.parseInt(parse[1]);
-            int comparativeDay = Integer.parseInt(parse[2]);
-
-            TimeSeriesData ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(startDate);
-
-
-            double assetClose1,assetClose2;
-            int diff = difference;
-
-            int i=0;
-            while (ETF50findByLastTradeDate == null && i<5){
-                i++;
-                startDate = calculateDate(year, month, diff--);
-                logger.info("nullShowUp, assetClose1 is null, startDate is " + startDate);
-                ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(startDate);
-            }
-            if(i!=5) {
-                assetClose1 = ETF50findByLastTradeDate.getClosePrice();
+            Double temp1 = N*pAsset - (iNum * 10000) * Options(-1, temp, iK) - N* temp + iNum *10000 * iPrice1 + (N0-N)*(pAsset - temp);
+            Double temp2 = N*pAsset - (iNum * 10000 - N) * (iK - temp) - N* iK + iNum *10000 *iPrice1 + (N0-N)*(pAsset - iK);
+            if(temp > iK){
+                loss2.add(temp1);
+//                logger.info("temp1 is " + temp1);
             }else {
-                flag1 = true;
-                assetClose1 = 0;
+                loss2.add(temp2);
+//                logger.info("temp2 is " + temp2);
             }
-            i = 0;
+        }
 
+        int size = abscissa.size();
+        Double [] Abscissa = abscissa.toArray(new Double[size]);
+        Double [] Loss1 = loss1.toArray(new Double[size]);
+        Double [] Loss2 = loss2.toArray(new Double[size]);
 
-//            if(ETF50findByLastTradeDate != null) {
-//                assetClose1 = ETF50findByLastTradeDate.getClosePrice();    //查询ETF50timeSeries得到起始日和结束日的收盘价
-//            }else {
-//                logger.info("nullShowUp, assetClose1 is null, startDate is " + startDate);
-//                assetClose1 = 0;
-//            }
-//            logger.info("endDate 是" + endDate);
-            ETF50findByLastTradeDate = timeSeriesDataSerice.findByLastTradeDate(endDate);
-            if(ETF50findByLastTradeDate != null)
-                assetClose2 = ETF50findByLastTradeDate.getClosePrice();
-            else {
-                flag1 = true;
-                assetClose2 = 0;
-            }
+        String[] rtnAbscissa = new String[size];
+        String[] rtnLoss1 = new String[size];
+        String[] rtnLoss2 = new String[size];
 
-            List<OptionTsd> backTestOptions = optionTsdDataService.complexFind(startDate, endDate, false, findType);//0代表low 1代表high,找到符合条件的期权列表
-            double totalLoss = 0;
-            if (backTestOptions.isEmpty()) {
-                continue;
-            }
-            else{
-                for (OptionTsd backTestI : backTestOptions) {
-                    String backTestOptionCodeName = backTestI.getCodeName();    //得到期权代码
-                    OptionBasicInfo secondSearchByCodeName = optionBasicInfoDataService.findByCodeName(backTestOptionCodeName); //第二次查询得到i'_k行权价格,得到这一行信息
-                    double backTestK = secondSearchByCodeName.getPrice();    //得到i'_k
-
-                    double backTestClose1 = backTestI.getClosePrice();      //起始日期权收盘价
-                    OptionTsd endDateMsg = optionTsdDataService.findByCodeNameAndLatestDate(backTestOptionCodeName, endDate);
-
-                    double backTestClose2;
-                    if(endDateMsg != null)  backTestClose2= endDateMsg.getClosePrice();    //结束日期权收盘价
-                    else{
-                        logger.info("nullShowUp, backTestClose2 is null");
-                        flag2 = true;
-                        backTestClose2=0;
-                    }
-
-                    if ((iK - pAsset) - (backTestK - assetClose1) <= eps) {
-                        double backTestIDelta = backTestI.getDelta();
-                        double backTestINum = (int) (N / (10000 * Math.abs(backTestIDelta))) + 1;
-                        if (assetClose2 < backTestK) {
-                            totalLoss = N * backTestClose1 + (backTestINum * 10000 - N) * (backTestClose1 - backTestClose2) + N * (assetClose1 - backTestK) + (N0-N) * (assetClose1-assetClose2);
-                        } else {
-                            totalLoss = backTestClose1 * backTestINum * 10000 + N * (assetClose1 - assetClose2)+ N * (assetClose1 - backTestK) + (N0-N) * (assetClose1-assetClose2);
-                        }
-                    }
-                }
-            }
-
-            logger.info("totalLoss is " + totalLoss);
-            double holdDouble = totalLoss;
-            double unholdDouble = N0*(assetClose1-assetClose2);
-            double lossDifferenceDouble = holdDouble - unholdDouble;
-
-            String hold = Double.toString(holdDouble);
-            String unhold = Double.toString(totalLoss);
-            String lossDifference = Double.toString(lossDifferenceDouble);
-
-
-            if(flag1 || hold==null) holdList[index] = "0";
-            else holdList[index] = hold;
-            if(flag2 || unhold == null) unholdList[index] = unhold;
-            else unholdList[index] = unhold;
-            differenceList[index] = lossDifference;
-
-//            rtn[0][index] = m;
-//            if(flag1) rtn[1][index] = "0";
-//            else rtn[1][index] = hold;
-//            if(flag2) rtn[2][index] = "0";
-//            else rtn[2][index] = unhold;
-//            rtn[3][index] = lossDifference;
-            flag1 = false;
-            flag2 = false;
-            index++;
+        for(int j=0; j<size;j++){
+            rtnAbscissa[j] = Double.toString(Abscissa[j]);
+            rtnLoss1[j] = Double.toString(Loss1[j]);
+            rtnLoss2[j] = Double.toString(Loss2[j]);
         }
 
 
-        for(int i=0; i<holdList.length; i++){if(holdList[i] == null) holdList[i] = "0";}
-        for(int i=0; i<unholdList.length; i++){if(unholdList[i] == null) unholdList[i] = "0";}
-        for(int i=0; i<differenceList.length; i++){if(differenceList[i] == null) differenceList[i] = "0";}
-
-
-        rtn = new String[][]{month,holdList,unholdList,differenceList};
-
-        logger.info("rtn是:\n" + Arrays.deepToString(rtn));
+        String[][] rtn = new String[][]{rtnAbscissa,rtnLoss1,rtnLoss2};
+//        logger.info("first " + Arrays.deepToString(rtn[0]));
+//        logger.info("second " + Arrays.deepToString(rtn[1]));
+//        logger.info("third " + Arrays.deepToString(rtn[2]));
+//        logger.info("rtn is " + Arrays.deepToString(rtn));
         return rtn;
+
     }
 
     @Override
@@ -1590,11 +1504,11 @@ public class RecommendServiceImpl implements RecommendService {
         logger.info("警报检测");
         warning();
         logger.info("警报检测完成");
-        logger.info("-------------------");
     }
 
     @Scheduled(cron = "0 01 0 * * ?")
     public void task01() {
         historyDataFrequencyDistribution();
+
     }
 }
