@@ -61,11 +61,11 @@ public class RecommendServiceImpl implements RecommendService {
     private List<Option> plowShallow = new ArrayList<>();//浅度低价看跌
     private List<Option> chighDeep = new ArrayList<>();//深度低价看跌
     private List<Option> plowDeep = new ArrayList<>();//深度低价看跌
-//    private String[] expireTimeArray = {};//网上获取
+    private Map<String, Map<Double, Double>> frequencyDistribution = new HashMap<>(); //回测数据的价格 频率分布
 
     /*自设值*/
     private double dv;//股票分红率
-    private double S[];
+    private Double S[];
     private double eps1;
 
     /*判断是否正在获取网络信息*/
@@ -112,6 +112,8 @@ public class RecommendServiceImpl implements RecommendService {
         double beta;//组合风险值
         double goal;
         double returnOnAssets;
+        double[] C_new;
+        Double[] probability;
     }
 
     void setP1(double p1) {
@@ -221,9 +223,41 @@ public class RecommendServiceImpl implements RecommendService {
         return String.valueOf(year)+"/"+String.valueOf(month)+"/"+String.valueOf(expiryDay);
     }
 
+    private double[] Doubles2doubles(Double[] a){
+        double[] rtn = new double[a.length];
+        for(int i = 0;i < a.length;i++){
+            rtn[i] = a[i];
+        }
+        return rtn;
+    }
+
+    private Double[] doubles2Doubles(double[] a){
+        Double[] rtn = new Double[a.length];
+        for(int i = 0;i < a.length;i++){
+            rtn[i] = a[i];
+        }
+        return rtn;
+    }
+
+    private Map<Double, Double> Double2Map(Double[] a, Double[] b){
+        Map<Double, Double> rtn = new TreeMap<>();
+        for(int i = 0;i < a.length && i < b.length;i++){
+            rtn.put(a[i], b[i]);
+        }
+        return rtn;
+    }
+
+    private String[] Doubles2Strings(Double[] a){
+        String[] rtn = new String[a.length];
+        for(int i = 0;i < a.length;i++){
+            rtn[i] = a[i].toString();
+        }
+        return  rtn;
+    }
+
     public RecommendServiceImpl(){
         dataSource = new GetData();
-        S = new double[5001];
+        S = new Double[5001];
         int i = 0;
         double temp = 0.0;
         DecimalFormat df = new DecimalFormat("0.000");
@@ -239,7 +273,7 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     /*从网络获取所需的数据*/
-    public void upDataFromNet() throws IOException {
+    private void upDataFromNet() throws IOException {
         chigh.clear();
         clow.clear();
         phigh.clear();
@@ -454,7 +488,7 @@ public class RecommendServiceImpl implements RecommendService {
         return S0 * delta / price;
     }
 
-    private double[] Interest(int cp, double k, double price) {
+    private double[] Interest(int cp, double k, double price, Double[] S) {
         int n = S.length;
         double[] C = new double[n];
         if (t != 0) {
@@ -475,7 +509,7 @@ public class RecommendServiceImpl implements RecommendService {
         return C;
     }
 
-    private double Expected(double[] C_new){
+    private double Expected(double[] C_new, structD d){
         int n = S.length;
         double[] X = new double[n];
         for(int i = 0;i < n;i++){
@@ -484,9 +518,13 @@ public class RecommendServiceImpl implements RecommendService {
             X[i] = x;
         }
         double sum = 0;
+        List<Double> data = new ArrayList<>();
         for(int i = 0;i < n;i++){
-            sum += p(X[i]);//为了计算概率, p(x)是x处的概率密度
+            double px = this.p(X[i]);
+            data.add(px);
+            sum += px;//为了计算概率, p(x)是x处的概率密度
         }
+        d.probability = data.toArray(new Double[0]);
         double E = 0;
         for(int i = 0;i < n;i++){
             double c = C_new[i];
@@ -553,22 +591,29 @@ public class RecommendServiceImpl implements RecommendService {
             else
                 maxGoalD.optionCombination[i].setTransactionPrice(maxGoalD.optionCombination[i].getPrice1());
         }
-        List<Double> profits = thirdStep(maxGoalD, combination);
-        logger.info("third step back test finished");
-        double[] assertOnReturns = assertReturns(maxGoalD, profits);
-        String[] StringProfits = new String[profits.size()];
-        String[] StringAssertOnReturns = new String[profits.size()];
-        for(int i = 0; i < profits.size();i++){
-            StringProfits[i] = Double.toString(profits.get(i));
-            StringAssertOnReturns[i] = Double.toString(assertOnReturns[i]);
-        }
-        String[][] graph = new String[][]{month, StringProfits, StringAssertOnReturns};
-        System.out.println(Arrays.deepToString(graph[0]));
-        System.out.println(Arrays.deepToString(graph[1]));
-        System.out.println(Arrays.deepToString(graph[2]));
+        assertReturns(maxGoalD);
+        Map<Double, Double> assertPrice2Profit = Double2Map(this.S, doubles2Doubles(maxGoalD.C_new));
+        Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
+        Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD.optionCombination);
+
+
+        System.out.println((assertPrice2Profit));
+        System.out.println((profit2Probability));
+        System.out.println((historyProfit2Probability));
         return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
-                maxGoalD.E / M, maxGoalD.returnOnAssets,maxGoalD.beta,graph, M0, k, sigma1, sigma2, p1, p2);
+                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta,
+                new String[][]{Doubles2Strings(assertPrice2Profit.keySet().toArray(new Double[0])),
+                        Doubles2Strings(assertPrice2Profit.values().toArray(new Double[0]))},
+                new String[][]{Doubles2Strings(profit2Probability.keySet().toArray(new Double[0])),
+                        Doubles2Strings(profit2Probability.values().toArray(new Double[0]))},
+                new String[][]{Doubles2Strings(historyProfit2Probability.keySet().toArray(new Double[0])),
+                        Doubles2Strings(historyProfit2Probability.values().toArray(new Double[0]))},
+                M0, k, sigma1, sigma2, p1, p2);
+//        return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
+//                maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
+//                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, Graph,
+//                M0, k, sigma1, sigma2, p1, p2);
     }
 
     //期权组合第一步，计算出集合D及其相关内容
@@ -800,7 +845,7 @@ public class RecommendServiceImpl implements RecommendService {
                 double price = z.optionCombination[i].getPrice1();
                 if(z.buyAndSell[i] < 0)
                     price = z.optionCombination[i].getPrice2();
-                double[] C_i =Interest(z.optionCombination[i].getCp(), z.optionCombination[i].getK(), price);
+                double[] C_i =Interest(z.optionCombination[i].getCp(), z.optionCombination[i].getK(), price, this.S);
                 C.add(C_i);
             }
             double[] C_new = new double[C.get(0).length];
@@ -811,7 +856,8 @@ public class RecommendServiceImpl implements RecommendService {
                     C_new[i] += z.buyAndSell[j] * C.get(j)[i];
                 }
             }
-            z.E = Expected(C_new);
+            z.C_new = C_new;
+            z.E = Expected(C_new, z);
             if(max_numE < z.num * z.E){
                 max_numE = z.num * z.E;
             }
@@ -1062,15 +1108,39 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
-    private double[] assertReturns(structD goal, List<Double> profit){
+    private void assertReturns(structD goal){
         goal.returnOnAssets = (goal.E + (M0 - M) * r * Math.ceil(t / 30.0) / 12) / M0;
+    }
 
-        double[] assertGraph = new double[profit.size()];
-
-        for(int i = 0; i < profit.size();i++){
-            assertGraph[i] = profit.get(i) + (M0 - M) * r * Math.ceil(t / 30.0) / 12;
+    private Map<Double, Double> getHistoryProfit2Probability(Option[] options){
+        Map<Double, Double> TFrequencyDistribution;
+        TFrequencyDistribution = this.frequencyDistribution.get(this.T);
+        List<Double> needS = new ArrayList<>();
+        for(Double key: TFrequencyDistribution.keySet()){
+            Double s = this.S0 * Math.exp(key);
+            needS.add(s);
         }
-        return assertGraph;
+        List <double[]> C = new ArrayList<>();
+        for (Option option : options) {
+            double price = option.getPrice1();
+            if (option.getType() < 0)
+                price = option.getPrice2();
+            double[] C_i = Interest(option.getCp(), option.getK(), price, needS.toArray(new Double[0]));
+            C.add(C_i);
+        }
+        double[] C_new = new double[C.get(0).length];
+        List <Double> temp = new ArrayList<>();
+        Map<Double, Double> rtn = new TreeMap<>();
+        for(int i = 0;i < C.get(0).length; i++)
+        {
+            C_new[i] = 0;
+            for(int j = 0; j < C.size(); j++){
+                C_new[i] += options[j].getType() * C.get(j)[i];
+            }
+            temp.add(C_new[i]);
+            rtn.put(C_new[i], TFrequencyDistribution.values().toArray(new Double[0])[i]);
+        }
+        return rtn;
     }
 
     @Override
@@ -1183,7 +1253,7 @@ public class RecommendServiceImpl implements RecommendService {
         double iPrice1 = i.getPrice1();
         int iNum = (int)Math.ceil(N /(10000*Math.abs(iDelta)));
         cost = iNum*10000*iPrice1;
-        return new double[]{((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost,iNum};
+        return new double[]{((N * pAsset) - (((iNum * 10000) - N) * (iK - sExp)) - (N * iK)) + cost + N0 * (1-a) * (pAsset - sExp),iNum};
     }
 
     private Option maxLoss(Option[] ListD,double sExp,int N0, double a, double pAsset){
@@ -1202,11 +1272,11 @@ public class RecommendServiceImpl implements RecommendService {
                 maxLoss = temp;
                 rtn = i;
             }
-//            logger.info("temp is " + temp);
-//            logger.info("iPrice1 is " + iPrice1);
+            logger.info("temp is " + temp);
+            logger.info("iPrice1 is " + iPrice1);
 
         }
-//        logger.info("maxLoss is " + maxLoss);
+        logger.info("maxLoss is " + maxLoss);
         return rtn;
     }
 
@@ -1283,6 +1353,7 @@ public class RecommendServiceImpl implements RecommendService {
     //sigma1 2 and p1 2 没有初始化
     //type为零：正常的DIY组合计算，type为1,：查看我的DIY组合，type为2：查看我的期权组合
     RecommendOption1 mainTwoCustomPortfolio(Option[] list, int type, double k, double M0) throws IOException {
+        this.T = list[0].getExpireTime().split("-")[0] + "-" + list[0].getExpireTime().split("-")[1];
         r = dataSource.get_r();
         t = Integer.parseInt(dataSource.get_expireAndremainder(list[0].getExpireTime())[1]);
         sigma = dataSource.get_Sigma();//实时波动率
@@ -1306,24 +1377,25 @@ public class RecommendServiceImpl implements RecommendService {
         for(int i = 0;i < maxGoalD.optionCombination.length;i++){
             addAttributesToDOption(maxGoalD.optionCombination[i]);
         }
-        List<Double> profits = new ArrayList<>();
-        String[] StringProfits = new String[month.length];
-        if(type == 0){
-            profits = thirdStep(maxGoalD, 'W');
-            logger.info("back test finished");
-        }
-        for(int i = 0; i < profits.size();i++){
-            StringProfits[i] = Double.toString(profits.get(i));
-        }
+
+        Map<Double, Double> assertPrice2Profit = Double2Map(this.S, doubles2Doubles(maxGoalD.C_new));
+        Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
+        Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD.optionCombination);
+
         double M = 50000;
-        String[][] graph = new String[][]{month, StringProfits};
         if(type == 2){
             M = M0 * (r * Math.ceil(t / 30.0) / 12 + k) / (1 + r * Math.ceil(t / 30.0) / 12);
             maxGoalD.returnOnAssets = (maxGoalD.E + (M0 - M) * r * Math.ceil(t / 30.0) / 12) / M0;
         }
         return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
-                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, graph, M, k);
+                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta,
+                new String[][]{Doubles2Strings(assertPrice2Profit.keySet().toArray(new Double[0])),
+                        Doubles2Strings(assertPrice2Profit.values().toArray(new Double[0]))},
+                new String[][]{Doubles2Strings(profit2Probability.keySet().toArray(new Double[0])),
+                        Doubles2Strings(profit2Probability.values().toArray(new Double[0]))},
+                new String[][]{Doubles2Strings(historyProfit2Probability.keySet().toArray(new Double[0])),
+                        Doubles2Strings(historyProfit2Probability.values().toArray(new Double[0]))},M, k);
     }
 
     RecommendOption1 mainOneCustomPortfolio(Option[] list, int type) throws IOException {
@@ -1377,8 +1449,51 @@ public class RecommendServiceImpl implements RecommendService {
         }
     }
 
+    private void historyDataFrequencyDistribution() {
+        String dBegin = "2015/2/9";
+        String dEnd = "2018/4/16";
+        List<String> dates = dataSource.findDates(dBegin, dEnd);
+        DecimalFormat df = new DecimalFormat("0.00");
+        try {
+            this.expiredMonths = dataSource.get_T();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        for(String month: this.expiredMonths){
+            int nowt = 0;
+            try {
+                nowt = Integer.parseInt(dataSource.get_expireAndremainder(month)[1]);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            List<Double> Rs = new ArrayList<>();
+            Map<Double, Integer> Graph = new TreeMap<>();
+            for(int i = 0;i < dates.size() && i + nowt < dates.size();i++){
+                TimeSeriesData now = timeSeriesDataSerice.findByLastTradeDate(dates.get(i));
+                TimeSeriesData after = timeSeriesDataSerice.findByLastTradeDate(dates.get(i+ nowt));
+
+                if(now != null && after != null){
+                    Double temp = Double.valueOf(df.format(Math.log(after.getClosePrice() / now.getClosePrice())));
+                    Rs.add(temp);
+                    if(Graph.containsKey(temp)){
+                        Graph.put(temp, Graph.get(temp) + 1);
+                    }
+                    else
+                        Graph.put(temp, 1);
+                }
+            }
+            int num = Rs.size();
+            Map<Double, Double> RsFrequency = new TreeMap<>();
+            for(Double key: Graph.keySet()){
+                RsFrequency.put(key, (Graph.get(key) * 1.0) / num);
+            }
+            this.frequencyDistribution.put(month, RsFrequency);
+        }
+    }
+
     @Scheduled(initialDelay = 1000, fixedRate = 10 * 60 * 1000)
     public void task() throws IOException {
+        this.historyDataFrequencyDistribution();
         logger.info("-------------------");
         logger.info("正在更新网络数据");
         this.isUpdataRunning = true;
@@ -1389,19 +1504,11 @@ public class RecommendServiceImpl implements RecommendService {
         logger.info("警报检测");
         warning();
         logger.info("警报检测完成");
-        logger.info("-------------------");
+    }
 
-        int N0 = 50000;
-        double a = 0.25;
-        double sExp = 2.2;
-        String T = "2018-10";
+    @Scheduled(cron = "0 01 0 * * ?")
+    public void task01() {
+        historyDataFrequencyDistribution();
 
-        ResponseMsg rspMsg = hedging(N0, a, sExp, T);
-//        this.S = new double[]{2.391};
-//        this.sigma = 23.98 / 100.0;
-//        this.t = 46;
-//        double x = Interest(1, 2.3, 0.2175)[0];
-//        double y = Interest(1, 2.55, 0.061)[0];
-//        double a = x - 2 * y;
     }
 }
