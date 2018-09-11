@@ -72,3 +72,10 @@ character set utf8
 fields terminated by ','
 optionally enclosed by '"'
 lines terminated by '\n';
+
+load data local infile '/root/historyData/510050_(50ETF).csv' ignore
+into table time_series_data
+character set utf8
+fields terminated by ','
+optionally enclosed by '"'
+lines terminated by '\n';

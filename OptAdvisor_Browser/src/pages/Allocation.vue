@@ -30,7 +30,7 @@
     </transition>
     <transition name="move-right">
       <div v-if="resultStep">
-        <ResultDisplay class="pt4" :data="portfolio"></ResultDisplay>
+        <ResultDisplay class="pt4" :data="portfolio" v-on:loadOver="handleLoadOver"></ResultDisplay>
         <Row class="pt4">
           <Button size="large" type="warning" @click="lastStep" class="fl forwardButton" ghost>
             <Icon type="ios-arrow-back"/>
@@ -96,10 +96,10 @@
         },
       }
     },
-    beforeCreate:function () {
-      this.axios.post("backend/auth")
-        .then((res)=>{
-          if(res.data.code===1008){
+    beforeCreate: function () {
+      this.axios.post("/backend/auth")
+        .then((res) => {
+          if (res.data.code === 1008) {
             this.$router.push("/login");
           }
         });
@@ -112,14 +112,13 @@
       },
       handleNextStep: function (event) {
         this.loading = true;
-        this.axios.post("backend/recommend/recommendPortfolio", event)
+        this.axios.post("/backend/recommend/recommendPortfolio", event)
           .then((res) => {
             this.portfolio = res.data.data;
-            this.loading = false;
             this.infoStep = false;
             setTimeout(() => {
               this.resultStep = true;
-            }, 200);
+            }, 400);
           })
           .catch((error) => {
             if (error.response.status === 500) {
@@ -129,6 +128,9 @@
               this.$Message.error("网络错误或预料外的错误");
             }
           });
+      },
+      handleLoadOver: function (event) {
+          this.loading = false;
       },
       lastStep: function () {
         this.askSave = true;

@@ -123,7 +123,17 @@
       <div class="interval2"></div>
       <Card style="margin: 50px 0;">
         <div>
-          <div id="myEchart" style="height: 600px;" ref="myEchart"></div>
+          <div id="assertPriceProfit" style="height: 600px;" ref="assertPriceProfit"></div>
+        </div>
+      </Card>
+      <Card style="margin: 50px 0;">
+        <div>
+          <div id="profitProbability" style="height: 600px;" ref="profitProbability"></div>
+        </div>
+      </Card>
+      <Card style="margin: 50px 0;">
+        <div>
+          <div id="historyProfitProbability" style="height: 600px;" ref="historyProfitProbability"></div>
         </div>
       </Card>
     </Row>
@@ -131,150 +141,218 @@
 </template>
 
 <script>
-    export default {
-      name: "ResultDisplay",
-      data() {
+  export default {
+    name: "ResultDisplay",
+    data() {
+      return {
+        currentOption: '',
+        assertPriceProfit: {},
+        profitProbability: {},
+        historyProfitProbability: {}
+      }
+    },
+    props: [
+      'data',
+    ],
+    computed: {
+      //图表option
+      assertPriceOption: function () {
         return {
-          currentOption:'',
-          selectedOptionIndex:[],
-          myChart:{},
-        }
-      },
-      props: [
-        'data',
-        'date',
-        'portfolioProfit',
-        'assetsProfit'
-      ],
-      computed:{
-        //图表option
-        chartOption:function () {
-          // let that = this; //要是不对就用这个
-          return {
-            legend: {
-              data: ['组合收益', '资产收益']
+          title:{
+            text:'不同标的价格下的组合收益'
+          },
+          legend: {
+            data: ['收益']
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross',
+              label: {
+                backgroundColor: '#6a7985'
+              }
             },
-            tooltip : {
-              trigger: 'axis',
-              axisPointer: {
-                type: 'cross',
-                label: {
-                  backgroundColor: '#6a7985'
+          },
+          xAxis: {
+            name:'标的价格/元',
+            type: 'category',
+            boundaryGap: false,
+            data: this.data.assertPrice2Profit[0]
+          },
+          yAxis: {
+            name:'收益',
+            type: 'value',
+          },
+          series: [
+            {
+              name: '收益',
+              type: 'line',
+              data: this.data.assertPrice2Profit[1].map(function (item) {
+                return parseFloat(item).toFixed(2);
+              }),
+            }
+          ]
+        };
+      },
+      profitOption: function () {
+        return {
+          title:{
+            text:'组合收益在预期市场内的概率分布'
+          },
+          legend: {
+            data: ['概率']
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross',
+              label: {
+                backgroundColor: '#6a7985'
+              }
+            },
+          },
+          xAxis: {
+            name:'收益',
+            type: 'category',
+            boundaryGap: false,
+            data: this.data.profit2Probability[0].map(function (item) {
+              return parseFloat(item).toFixed(2);
+            }),
+          },
+          yAxis: {
+            name:'概率',
+            type: 'value',
+          },
+          series: [
+            {
+              name: '概率',
+              type: 'line',
+              itemStyle:{
+                normal:{
+                  color:'#FBB8A1',
+                  lineStyle: {
+                    color:'#FBB8A1',
+                    width:2
+                  },
                 }
               },
-              // formatter: (params)=>{
-              //   console.log(params)
-              //   return params[0].seriesName+params[0].data+"/n";
-              // }
-            },
-            xAxis: {
-              type: 'category',
-              boundaryGap: false,
-              // data: ['周一', '周二', '周三', '周四', '周五', '周六', '周日']
-              data:this.data.graph[0]
-            },
-            yAxis: {
-              type: 'value',
-              // axisLabel: {
-              //   formatter: '{value} °C'
-              // }
-            },
-            series: [
-              {
-                name: '组合收益',
-                type: 'line',
-                // data: [11, 11, 15, 13, 12, 13, 10],
-                data:this.data.graph[1].map(function(item){
-                  return parseFloat(item).toFixed(2);
-                }),
-              },
-              {
-                name: '资产收益',
-                type: 'line',
-                // data: [1, -2, 2, 5, 3, 2, 0],
-                data:this.data.graph[2].map(function(item){
-                  return parseFloat(item).toFixed(2);
-                }),
-              },
-              // {
-              //   name: 'ppp',
-              //   type: 'line',
-              //   data: [9, -12, 12, 15, 31, 20, 10],
-              //   markLine: {
-              //     data: [
-              //       {type: 'average', name: '平均值'},
-              //     ]
-              //   }
-              // }
-            ]
-          };
-        }
+              data: this.data.profit2Probability[1]
+            }
+          ]
+        };
       },
-      methods:{
-        switchOption:function (index) {
-          this.currentOption=this.data.optionList[index];
-          for(let i=0;i<this.selectedOptionIndex.length;i++){
-            this.selectedOptionIndex[i]=false;
-          }
-          this.selectedOptionIndex[index]=true;
-        },
-        refreshChart:function () {
-          this.myChart.setOption(this.chartOption);
-        }
+      historyProfitOption: function () {
+        return {
+          title:{
+            text:'组合收益在历史市场内的概率分布'
+          },
+          legend: {
+            data: ['概率']
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              type: 'cross',
+              label: {
+                backgroundColor: '#6a7985'
+              }
+            },
+          },
+          xAxis: {
+            name:'历史收益',
+            type: 'category',
+            boundaryGap: false,
+            data: this.data.historyProfit2Probability[0].map(function (item) {
+              return parseFloat(item).toFixed(2);
+            }),
+          },
+          yAxis: {
+            name:'概率',
+            type: 'value',
+          },
+          series: [
+            {
+              name: '概率',
+              type: 'line',
+              itemStyle: {
+                normal:{
+                  color:'#697883',
+                  lineStyle:{
+                    color:'#697883',
+                    width:2
+                  }
+                }
+              },
+              data: this.data.historyProfit2Probability[1]
+            }
+          ]
+        };
+      }
+    },
+    methods: {
+      switchOption: function (index) {
+        this.currentOption = this.data.optionList[index];
       },
-      mounted:function () {
-        this.currentOption=this.data.optionList[0];
+      refreshChart: function () {
+        this.assertPriceProfit.setOption(this.assertPriceOption);
+        this.profitProbability.setOption(this.profitOption);
+        this.historyProfitProbability.setOption(this.historyProfitOption);
+        this.$emit("loadOver");
+      }
+    },
+    mounted: function () {
+      this.currentOption = this.data.optionList[0];
 
-        //绘图
-        this.myChart = this.$echarts.init(this.$refs.myEchart);
+      //绘图
+      this.assertPriceProfit = this.$echarts.init(this.$refs.assertPriceProfit);
+      this.profitProbability = this.$echarts.init(this.$refs.profitProbability);
+      this.historyProfitProbability = this.$echarts.init(this.$refs.historyProfitProbability);
+      this.refreshChart();
+    },
+    watch: {
+      data() {
         this.refreshChart();
-
-        //初始化位图
-        for(let i=0;i<this.data.optionList.length;i++){
-          this.selectedOptionIndex.push(false);
-        }
-       this.selectedOptionIndex[0]=true;
-      },
-      watch:{
-        date(){this.refreshChart();},
-        portfolioProfit(){this.refreshChart();},
-        assetsProfit(){this.refreshChart();}
       }
     }
+  }
 </script>
 
 <style scoped>
-  .middleBorder{
-    border-right: 1px solid rgba( 0, 0, 0, .3 );
+  .middleBorder {
+    border-right: 1px solid rgba(0, 0, 0, .3);
   }
-  .bottomBorder{
-    border-bottom: 1px solid rgba( 0, 0, 0, .3 );
+
+  .bottomBorder {
+    border-bottom: 1px solid rgba(0, 0, 0, .3);
   }
-  .interval{
+
+  .interval {
     width: 80%;
     margin: auto;
     padding-top: 1.5rem;
-    border-bottom: 1px solid rgba( 0, 0, 0, .3 );
+    border-bottom: 1px solid rgba(0, 0, 0, .3);
   }
-  .interval2{
+
+  .interval2 {
     width: 90%;
     margin: auto;
     padding-top: 0.15rem;
-    border-bottom: 1px solid rgba( 20, 99, 180, .7 );
+    border-bottom: 1px solid rgba(20, 99, 180, .7);
   }
-  .backRed:hover{
+
+  .backRed:hover {
     background: #FFEEEE;
   }
 
-  .bgred{
+  .bgred {
     background: #FFEEEE;
   }
 
-  table{
+  table {
     line-height: 30px;
   }
 
-  h2{
+  h2 {
     color: #1463B4;
   }
 </style>

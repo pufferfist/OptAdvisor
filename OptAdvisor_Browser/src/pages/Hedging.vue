@@ -37,6 +37,14 @@
           showResult:false
         }
       },
+      beforeCreate:function () {
+        this.axios.post("/backend/auth")
+          .then((res)=>{
+            if(res.data.code===1008){
+              this.$router.push("/login");
+            }
+          });
+      },
       methods:{
           search(){
             var array=this.$refs.info.$refs.formItem.fields
