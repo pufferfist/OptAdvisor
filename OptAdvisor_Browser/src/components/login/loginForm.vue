@@ -11,7 +11,7 @@
       </i-input>
     </FormItem>
     <FormItem class="tl">
-      <p><span style="color:black">没有注册? </span><a href="/signUp">注册</a> | <a href="/forgetPassword">忘记密码?</a></p>
+      <p><span style="color:black">没有帐号? </span><a href="/signUp">注册</a> | <a href="/forgetPassword">忘记密码?</a></p>
     </FormItem>
     <FormItem class="tc">
       <Button id="loginButton" type="primary" @click="handleSubmit()" class="Button">登录</Button>

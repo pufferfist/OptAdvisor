@@ -95,7 +95,6 @@ public class Portfolio {
         EM = recommendOption1.getEM();
         beta = recommendOption1.getBeta();
         this.trackingStatus = trackingStatus;
-        transformStringlistToString(recommendOption1.getGraph()[1]);
     }
 
     public Portfolio(){}
