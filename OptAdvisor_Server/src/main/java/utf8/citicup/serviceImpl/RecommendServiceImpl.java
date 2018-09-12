@@ -1220,7 +1220,7 @@ public class RecommendServiceImpl implements RecommendService {
         rtn = hedgingCalculate(optionI,N0,a,pAsset);
 
 
-        return new RecommendOption2(optionI, maxLoss,iNum, rtn);
+        return new RecommendOption2(optionI, maxLoss,iNum, rtn, pAsset);
     }
 
     private RecommendOption2 calculateReconmmendOption2(Option optionI, double sExp, int N0, double a, double pAsset) throws IOException {
@@ -1233,7 +1233,7 @@ public class RecommendServiceImpl implements RecommendService {
         optionI.setType(1);
         addAttributesToDOption(optionI);
         rtn = hedgingCalculate(optionI,N0,a,pAsset);
-        return new RecommendOption2(optionI, maxLoss,iNum, rtn);
+        return new RecommendOption2(optionI, maxLoss,iNum, rtn, pAsset);
     }
 
     private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
