@@ -64,17 +64,10 @@
       </div>
     </div>
     <div style="width: 65%;float: left;padding: 30px;text-align: center">
-      <h3>组合表现展示</h3>
-      <table class="table1" style="margin: auto">
-        <tr>
-          <th>组合的期望收益率E/M</th>
-          <td style="-webkit-text-fill-color: #19be6b">{{text15}}</td>
-          <th>组合的风险值β</th>
-          <td style="-webkit-text-fill-color: #ed4014">{{text16}}</td>
-        </tr>
-      </table>
-      <div id="myChart" style="width: 500px;height: 325px">
+      <h3>组合表现展示&nbsp&nbsp<span style="font-size: 13px;font-weight: bold;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
+      <div id="myChart" style="width: 500px;height: 300px">
       </div>
+      <Page :total="totalPage" prev-text="Previous" next-text="Next" @on-change="ChangePage" />
     </div>
   </div>
 </template>
@@ -104,10 +97,70 @@
             line2:[],
             line3:[],
             line4:[],
-            lineName:[]
+            lineName:[],
+            totalPage:0,
+            graph1:[],
+            graph2:[],
+            graph3:[],
+            graphTitle:'',
+            type:''
           }
       },
       methods: {
+        ChangePage(page){
+          //资产配置，三张图
+          if(this.type=='0'){
+            if(page=='1'){
+              this.lineName=['收益']
+              this.graphTitle='不同标的价格下组合收益'
+              this.line1=this.graph1[0]
+              this.line2=this.graph1[1]
+            }
+            else if(page=='2'){
+              this.lineName=['概率']
+              this.graphTitle='组合收益在预期市场内的概率分布'
+              this.line1=this.graph2[0]
+              this.line2=this.graph2[1]
+            }
+            else if(page=='3'){
+              this.lineName=['概率']
+              this.graphTitle='组合收益在历史市场内的概率分布'
+              this.line1=this.graph3[0]
+              this.line2=this.graph3[1]
+            }
+            else{
+              alert("错了")
+            }
+          }
+          //套期保值，一张图
+          else if(this.type=='1'){
+            if(page=='1'){
+              this.lineName=['不持有的损失','持有的损失']
+              this.graphTitle=''
+              this.line1=this.graph1[0]
+              this.line2=this.graph1[1]
+              this.line3=this.graph1[2]
+            }
+          }
+
+          //DIY，两张图
+          else if(this.type=='2'){
+            if(page=='1'){
+              this.lineName=['收益']
+              this.graphTitle='不同标的价格下组合收益'
+              this.line1=this.graph1[0]
+              this.line2=this.graph1[1]
+            }
+            else if(page=='2'){
+              this.lineName=['概率']
+              this.graphTitle='组合收益在历史市场内的概率分布'
+              this.line1=this.graph2[0]
+              this.line2=this.graph2[1]
+            }
+          }
+
+          this.drawLine()
+        },
         drawLine(){
           // 基于准备好的dom，初始化echarts实例
           let myChart = this.$echarts.init(document.getElementById('myChart'))
