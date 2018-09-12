@@ -89,11 +89,11 @@ public class RecommendServiceImpl implements RecommendService {
     @Autowired
     private OptionBasicInfoDataService optionBasicInfoDataService;
     @Autowired
-    private TimeSeriesDataSerice timeSeriesDataSerice;
-    @Autowired
     private PortfolioDataService portfolioDataService;
     @Autowired
     private UserDataService userDataService;
+
+    final private TimeSeriesDataSerice timeSeriesDataSerice;
 
     /*新用到的结构类型*/
     class structD{
@@ -130,6 +130,10 @@ public class RecommendServiceImpl implements RecommendService {
 
     void setSigma2(double sigma2) {
         this.sigma2 = sigma2;
+    }
+
+    public double getSigma() {
+        return sigma;
     }
 
     //回测到某个月返回的日期
@@ -255,21 +259,24 @@ public class RecommendServiceImpl implements RecommendService {
         return  rtn;
     }
 
-    public RecommendServiceImpl(){
+    @Autowired
+    public RecommendServiceImpl(TimeSeriesDataSerice timeSeriesDataSerice){
+        this.timeSeriesDataSerice = timeSeriesDataSerice;
         dataSource = new GetData();
-        S = new Double[5001];
+        S = new Double[501];
         int i = 0;
         double temp = 0.0;
         DecimalFormat df = new DecimalFormat("0.000");
         while(temp <= 5.0){
             temp = Double.valueOf(df.format(temp));
             S[i] = temp;
-            temp += 0.001;
+            temp += 0.01;
             i++;
         }
         dv = 0;//股票分红率
         M = 10000;
         this.isUpdataRunning = true;
+        this.historyDataFrequencyDistribution();
     }
 
     /*从网络获取所需的数据*/
@@ -512,13 +519,13 @@ public class RecommendServiceImpl implements RecommendService {
     private double Expected(double[] C_new, structD d){
         int n = S.length;
         double[] X = new double[n];
+        List<Double> data = new ArrayList<>();
         for(int i = 0;i < n;i++){
             double s = S[i];
             double x = Math.log(s/S0)-Math.log((p1 + p2)/(2 * S0));
             X[i] = x;
         }
         double sum = 0;
-        List<Double> data = new ArrayList<>();
         for(int i = 0;i < n;i++){
             double px = this.p(X[i]);
             data.add(px);
@@ -1450,8 +1457,8 @@ public class RecommendServiceImpl implements RecommendService {
     }
 
     private void historyDataFrequencyDistribution() {
-        String dBegin = "2015/2/9";
-        String dEnd = "2018/4/16";
+        String dBegin = "2015/2/23";
+        String dEnd = "2018/4/5";
         List<String> dates = dataSource.findDates(dBegin, dEnd);
         DecimalFormat df = new DecimalFormat("0.00");
         try {
@@ -1493,7 +1500,6 @@ public class RecommendServiceImpl implements RecommendService {
 
     @Scheduled(initialDelay = 1000, fixedRate = 10 * 60 * 1000)
     public void task() throws IOException {
-        this.historyDataFrequencyDistribution();
         logger.info("-------------------");
         logger.info("正在更新网络数据");
         this.isUpdataRunning = true;
@@ -1504,11 +1510,15 @@ public class RecommendServiceImpl implements RecommendService {
         logger.info("警报检测");
         warning();
         logger.info("警报检测完成");
+        logger.info("-------------------");
     }
 
     @Scheduled(cron = "0 01 0 * * ?")
     public void task01() {
-        historyDataFrequencyDistribution();
-
+        logger.info("-------------------");
+        logger.info("历史数据加载更新");
+        this.historyDataFrequencyDistribution();
+        logger.info("历史数据加载完成");
+        logger.info("-------------------");
     }
 }

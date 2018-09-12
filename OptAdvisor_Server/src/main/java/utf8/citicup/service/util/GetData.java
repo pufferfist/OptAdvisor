@@ -251,7 +251,6 @@ public class GetData {
         return 23.39 / 100.0;
     }
 
-
     public double[] get_Attributes(String contract) throws IOException {
         String url = "http://hq.sinajs.cn/list="+contract;
         String result = getDataFromURL(url);
