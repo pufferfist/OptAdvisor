@@ -1175,7 +1175,6 @@ public class RecommendServiceImpl implements RecommendService {
         }
         this.sigma1 = this.sigma2 = this.sigma;
         this.T = T;
-        upDataFromNet();
         Option[] plowT = new Option[plow.get(T).size()];
 //        logger.info("plowT的长度是" + String.valueOf(plowT.length));
         Option[] phighT = new Option[phigh.get(T).size()];
@@ -1279,11 +1278,11 @@ public class RecommendServiceImpl implements RecommendService {
                 maxLoss = temp;
                 rtn = i;
             }
-            logger.info("temp is " + temp);
-            logger.info("iPrice1 is " + iPrice1);
+//            logger.info("temp is " + temp);
+//            logger.info("iPrice1 is " + iPrice1);
 
         }
-        logger.info("maxLoss is " + maxLoss);
+//        logger.info("maxLoss is " + maxLoss);
         return rtn;
     }
 
