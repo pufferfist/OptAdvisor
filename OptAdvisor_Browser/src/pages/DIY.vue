@@ -154,7 +154,7 @@
           </div>
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
-          <h3>组合表现展示</h3>
+          <h3>组合表现展示&nbsp&nbsp<span style="font-size: 13px;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
           <div class="demo-spin-container">
             <table class="table3" style="margin: auto">
               <tr>
@@ -182,8 +182,8 @@
                 <td>{{this.resultTable.z_rho}}</td>
               </tr>
             </table>
-            <div id="myChart" style="width: 100%;height: 325px">
-            </div>
+            <div id="myChart" style="width: 100%;height: 300px"></div>
+            <Page :total="20" prev-text="Previous" next-text="Next" @on-change="ChangePage" />
             <Spin v-if="showPreview" fix>
               <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
               <div>加载中</div>
@@ -227,16 +227,21 @@
           text12:'',
           text13:'',
           text14:'',
-          lineName:['回测收益'],
+          lineName:[],
           resultLeftCode:[],
           resultRightCode:[],
           line1:[],
           line2:[],
+          graph1:[],
+          graph2:[],
           resultTable:{},
           show1:false,
           show2:false,
           showPreview:false,
           interval: Number,
+          currentPage:1,
+          graphTitle:''
+
         }
       },
       beforeCreate:function () {
@@ -260,6 +265,23 @@
 
       },
       methods: {
+        ChangePage(page){
+            if(page=='1'){
+              this.line1=this.graph1[0]
+              this.line2=this.graph1[1]
+              this.graphTitle="不同标的价格下组合收益"
+              this.drawLine()
+            }
+            else if(page=='2'){
+              this.line1=this.graph2[0]
+              this.line2=this.graph2[1]
+              this.graphTitle="组合收益在历史市场内的概率分布"
+              this.drawLine()
+            }
+            else {
+              alert("错了")
+            }
+          },
         setSelectedMonth(months){
           this.selectMonth=months[1]
           var result=[]
@@ -642,8 +664,10 @@
                 this.resultTable.sigma2=re.data.data.sigma2.toFixed(4)
                 this.resultTable.p1=re.data.data.p1.toFixed(4)
                 this.resultTable.p2=re.data.data.p2.toFixed(4)
-                this.line1=re.data.data.graph[0]
-                this.line2=re.data.data.graph[1]
+                this.graph1=re.data.data.assertPrice2Profit
+                this.graph2=re.data.data.historyProfit2Probability
+                this.line1=this.graph1[0]
+                this.line2=this.graph1[1]
                 this.drawLine()
               }
               else{

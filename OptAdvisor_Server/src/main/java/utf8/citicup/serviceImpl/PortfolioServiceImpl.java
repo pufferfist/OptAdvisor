@@ -14,6 +14,7 @@ import utf8.citicup.service.PortfolioService;
 import utf8.citicup.service.util.StatusMsg;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -147,37 +148,26 @@ public class PortfolioServiceImpl implements PortfolioService {
                 }
                 double iK = newOption.getK();
                 double iNum = portfolio.getiNum();
-                int findType;
-                if(portfolio.isFlag()) findType=0;
-                else findType=1;
+                double pAsset = portfolio.getpAsset();
 
+                int length = (int)(pAsset / 0.01);
+                String[] abscissa = new String[length];
+                for(int i=0;i<length;i++) abscissa[i] = Double.toString((double)(i)/100);
 
-
-                String[] T1 = newOption.getExpireTime().split("-");
-                String T = T1[0]+'-'+T1[1];
-                String[][] tempRtn = new String[][]{recommendService.getMonth(),null};
-//                String[][] newRtn = recommendService.hedgingBackTest(findType,portfolio.getN(),portfolio.getiK(),portfolio.getpAsset(),T);
+                String[][] tempRtn = new String[][]{abscissa,null};
 
                 RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, iNum,tempRtn);
 
 
-                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(),portfolio.isFlag(), iNum, HEDGE);
+                Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(), true,iNum, HEDGE);
 
                 Portfolio[] rtn = new Portfolio[]{portfolio,showPortfolio};
 
                 String[] backTestData = portfolio.transformStringToStringlist();
                 String[] backTestData1 = portfolio.transformStringToStringlist1();
-                String[] difference = new String[backTestData.length];
 
-                for(int i=0; i<backTestData.length;i++){
-                    if("null".equals(backTestData[i])) break;
-                    double value = Double.valueOf(backTestData[i]);
-                    double value1 = Double.valueOf(backTestData1[i]);
-                    double vaule3 = value1 - value;
-                    difference[i] = Double.toString(vaule3);
-                }
 
-                String[][] graph = new String[][]{recommendOption2.getGraph()[0],backTestData,backTestData1,difference};
+                String[][] graph = new String[][]{recommendOption2.getGraph()[0],backTestData,backTestData1};
 
                 Map<String, Object> map = new HashMap<>();
                 map.put("portfolios", rtn);

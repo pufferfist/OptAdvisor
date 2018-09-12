@@ -17,6 +17,7 @@
             <th>合约代码</th>
             <th>合约名称</th>
             <th>成本价</th>
+            <th>份数</th>
             <th>最新价</th>
           </tr>
           <tr v-for="(item,index) in tdata" @click="choose(index)" :id="getName(index)">
@@ -105,8 +106,7 @@
             })
         },
         initial(optionData){
-          var graph=optionData.data.graph
-          console.log(graph)
+          var originData=optionData.data
           optionData=optionData.data.portfolios[0]
           this.options=optionData.options
           //1.初始化数据
@@ -121,19 +121,25 @@
           else{
             this.type='DIY'
           }
-          this.earnings=optionData.em.toFixed(4)
+          this.earnings=optionData.em.toFixed(2)
           this.tdata=[]
           for(var i=0;i<optionData.options.length;i++){
             var temp=[]
             temp.push(optionData.options[i].tradeCode)
             temp.push(optionData.options[i].name)
             temp.push(optionData.options[i].transactionPrice)
+            if(parseInt(optionData.options[i].type)>0){
+              temp.push("买 "+Math.abs(optionData.options[i].type))
+            }
+            else{
+              temp.push("卖 "+Math.abs(optionData.options[i].type))
+            }
             this.codes.push(optionData.options[i].optionCode)
             this.tdata.push(temp)
           }
           this.getLatestPrice()
-          this.tableData.cost=optionData.cost
-          this.tableData.bond=optionData.bond
+          this.tableData.cost=optionData.cost.toFixed(2)
+          this.tableData.bond=optionData.bond.toFixed(2)
           this.tableData.beta=optionData.beta.toFixed(4)
           this.tableData.returnOnAssets=optionData.returnOnAssets.toFixed(4)
           this.id=optionData.id
@@ -150,21 +156,35 @@
           this.$refs.result.text15=optionData.em.toFixed(4)
           this.$refs.result.text16=optionData.beta.toFixed(4)
           if(optionData.type=='0'){
-            this.$refs.result.lineName=['回测收益']
-            this.$refs.result.line1=graph[0]
-            this.$refs.result.line2=graph[1]
+            this.$refs.result.type=0
+            this.$refs.result.graph1=originData.assertPrice2Profit
+            this.$refs.result.graph2=originData.profit2Probability
+            this.$refs.result.graph3=originData.historyProfit2Probability
+            this.$refs.result.lineName=['收益']
+            this.$refs.result.line1=this.$refs.result.graph1[0]
+            this.$refs.result.line2=this.$refs.result.graph1[1]
+            this.$refs.result.totalPage=30
+            this.$refs.result.graphTitle='不同标的价格下组合收益'
           }
           else if(optionData.type=='1'){
+            this.$refs.result.type=1
+            this.$refs.result.graph1=originData.graph
             this.$refs.result.lineName=['不持有的损失','持有的损失']
-            this.$refs.result.line1=graph[0]
-            this.$refs.result.line2=graph[1]
-            this.$refs.result.line3=graph[2]
+            this.$refs.result.line1=this.$refs.result.graph1[0]
+            this.$refs.result.line2=this.$refs.result.graph1[1]
+            this.$refs.result.line3=this.$refs.result.graph1[2]
+            this.$refs.result.totalPage=10
+            this.$refs.result.graphTitle=''
           }
           else if(optionData.type=='2'){
-            this.$refs.result.lineName=['组合收益','资产收益']
-            this.$refs.result.line1=graph[0]
-            this.$refs.result.line2=graph[1]
-            this.$refs.result.line3=graph[2]
+            this.$refs.result.type=2
+            this.$refs.result.graph1=originData.assertPrice2Profit
+            this.$refs.result.graph2=originData.historyProfit2Probability
+            this.$refs.result.lineName=['收益']
+            this.$refs.result.line1=this.$refs.result.graph1[0]
+            this.$refs.result.line2=this.$refs.result.graph1[1]
+            this.$refs.result.totalPage=20
+            this.$refs.result.graphTitle='不同标的价格下组合收益'
           }
           this.$refs.result.drawLine()
 
