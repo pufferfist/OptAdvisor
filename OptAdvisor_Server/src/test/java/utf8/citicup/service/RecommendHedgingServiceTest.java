@@ -40,13 +40,6 @@ public class RecommendHedgingServiceTest {
         double sExp = 2.2;
         String T = "2018-10";
 
-
-
-
-//        recommendService.hedging(N0, a, sExp, T);
-
-
-
         ResponseMsg rspMsg = recommendService.hedging(N0, a, sExp, T);
 
 
