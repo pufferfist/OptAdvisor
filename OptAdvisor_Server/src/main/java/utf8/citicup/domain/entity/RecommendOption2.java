@@ -30,4 +30,8 @@ public class RecommendOption2 {
 
 
     public double getiNum() { return iNum; }
+
+    public double getpAsset() {
+        return pAsset;
+    }
 }
