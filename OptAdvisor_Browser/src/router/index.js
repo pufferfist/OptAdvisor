@@ -13,7 +13,6 @@ import Hedging from '../pages/Hedging'
 import DIY from '../pages/DIY'
 import MyPortfolio from '../pages/MyPortfolio'
 import Prompt from '../pages/Prompt'
-import test from '../pages/test'
 
 
 Vue.use(Router)
@@ -93,10 +92,6 @@ export default new Router({
         {
           path: 'prompt',
           component: Prompt
-        },
-        {
-          path:'test',
-          component:test
         }
       ]
     }
