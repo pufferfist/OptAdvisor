@@ -1,71 +1,77 @@
 <template>
   <div>
-    <div style="width: 35%;float: left;padding-top: 30px;padding-left: 30px">
-      <div style="width: 200px">
-        <h3>期权及相关信息</h3>
-        <table class="table2">
-          <tr>
-            <th>合约简称</th>
-            <td>{{text1}}</td>
-          </tr>
-          <tr>
-            <th>交易代码</th>
-            <td>{{text2}}</td>
-          </tr>
-          <tr>
-            <th>理论价值</th>
-            <td>{{text3}}</td>
-          </tr>
-          <tr>
-            <th>价值状态</th>
-            <td style="-webkit-text-fill-color: red">{{text4}}</td>
-          </tr>
-          <tr>
-            <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp内在价值</th>
-            <td style="-webkit-text-fill-color: red">{{text5}}</td>
-          </tr>
-          <tr>
-            <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp时间价值</th>
-            <td style="-webkit-text-fill-color: red">{{text6}}</td>
-          </tr>
-          <tr>
-            <th>成交量</th>
-            <td>{{text7}}</td>
-          </tr>
-          <tr>
-            <th>Delta</th>
-            <td>{{text8}}</td>
-          </tr>
-          <tr>
-            <th>Gamma</th>
-            <td>{{text9}}</td>
-          </tr>
-          <tr>
-            <th>Theta</th>
-            <td>{{text10}}</td>
-          </tr>
-          <tr>
-            <th>Vega</th>
-            <td>{{text11}}</td>
-          </tr>
-          <tr>
-            <th>隐含波动率</th>
-            <td>{{text12}}</td>
-          </tr>
-          <tr>
-            <th>最高价</th>
-            <td>{{text13}}</td>
-          </tr>
-          <tr>
-            <th>最低价</th>
-            <td>{{text14}}</td>
-          </tr>
-        </table>
+    <div style="width: 100%;float: left;padding-top: 30px;padding-left: 30px">
+      <div>
+        <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">期权及相关信息</h3>
+        <div style="width: 50%;float: left;text-align: center">
+          <table class="table2" style="margin: auto">
+            <tr>
+              <th>合约简称</th>
+              <td>{{text1}}</td>
+            </tr>
+            <tr>
+              <th>交易代码</th>
+              <td>{{text2}}</td>
+            </tr>
+            <tr>
+              <th>理论价值</th>
+              <td>{{text3}}</td>
+            </tr>
+            <tr>
+              <th>价值状态</th>
+              <td style="-webkit-text-fill-color: red">{{text4}}</td>
+            </tr>
+            <tr>
+              <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp内在价值</th>
+              <td style="-webkit-text-fill-color: red">{{text5}}</td>
+            </tr>
+            <tr>
+              <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp时间价值</th>
+              <td style="-webkit-text-fill-color: red">{{text6}}</td>
+            </tr>
+            <tr>
+              <th>成交量</th>
+              <td>{{text7}}</td>
+            </tr>
+          </table>
+        </div>
+        <div style="width: 50%;float: left;text-align: center">
+          <table class="table2" style="margin: auto">
+            <tr>
+              <th>Delta</th>
+              <td>{{text8}}</td>
+            </tr>
+            <tr>
+              <th>Gamma</th>
+              <td>{{text9}}</td>
+            </tr>
+            <tr>
+              <th>Theta</th>
+              <td>{{text10}}</td>
+            </tr>
+            <tr>
+              <th>Vega</th>
+              <td>{{text11}}</td>
+            </tr>
+            <tr>
+              <th>隐含波动率</th>
+              <td>{{text12}}</td>
+            </tr>
+            <tr>
+              <th>最高价</th>
+              <td>{{text13}}</td>
+            </tr>
+            <tr>
+              <th>最低价</th>
+              <td>{{text14}}</td>
+            </tr>
+          </table>
+        </div>
       </div>
     </div>
-    <div style="width: 65%;float: left;padding: 30px;text-align: center">
-      <h3>组合表现展示&nbsp&nbsp<span style="font-size: 13px;font-weight: bold;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
-      <div id="myChart" style="width: 500px;height: 300px">
+    <div style="width: 100%;float: left;padding: 30px;text-align: center">
+      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">组合表现展示&nbsp&nbsp<span style="font-size: 13px;font-weight: bold;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
+      <div id="myChart" style="width: 600px;height: 300px">
       </div>
       <Page :total="totalPage" prev-text="Previous" next-text="Next" @on-change="ChangePage" />
     </div>
