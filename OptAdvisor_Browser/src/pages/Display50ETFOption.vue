@@ -580,7 +580,7 @@
                         volumes:0,
                       },
                     ],
-                    buyList: [
+              buyList: [
                       {
                         id: 'buy1',
                         price: 0,
@@ -874,7 +874,7 @@
                       {
                         id: 'buy2',
                         price: data[24],
-                        volumes: data[55],
+                        volumes: data[25],
                       },
                       {
                         id: 'buy3',
@@ -967,15 +967,11 @@
                     count++;
                     return false;
                   } else {
-                    console.log(count);
                     return true
                   }
                 })
-                console.log(data);
                 data.splice(0, count);
                 this.lineData =data;
-                console.log(this.lineData, 12334444444444444444444);
-                
                 this.chartFresh();       
 
               });
