@@ -616,7 +616,7 @@ public class RecommendServiceImpl implements RecommendService {
                         Doubles2Strings(profit2Probability.values().toArray(new Double[0]))},
                 new String[][]{Doubles2Strings(historyProfit2Probability.keySet().toArray(new Double[0])),
                         Doubles2Strings(historyProfit2Probability.values().toArray(new Double[0]))},
-                M0, k, sigma1, sigma2, p1, p2);
+                M0, k, this.sigma1, this.sigma2, p1, p2);
 //        return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
 //                maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
 //                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, Graph,
