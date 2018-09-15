@@ -43,12 +43,12 @@
         </Menu>
         <div style="float: left;width: 1px;height: 800px;background-color: #E7E8EB"></div>
       </div>
-      <div style="float: left;width: 75%;min-height: 800px;">
+      <div style="float: left;width: 75%;min-height: 1500px;">
         <div class="demo-spin-container">
           <Right ref="portfolio" id="right" v-bind:style="{display:showRight}"></Right>
           <Spin v-if="showInfo" fix>
             <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-            <div>加载中</div>
+            <div>Loading</div>
           </Spin>
         </div>
       </div>
