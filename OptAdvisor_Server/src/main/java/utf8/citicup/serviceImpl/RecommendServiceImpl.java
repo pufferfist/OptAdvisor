@@ -11,7 +11,6 @@ import utf8.citicup.dataService.historyDataService.OptionBasicInfoDataService;
 import utf8.citicup.dataService.historyDataService.OptionTsdDataService;
 import utf8.citicup.dataService.historyDataService.TimeSeriesDataSerice;
 import utf8.citicup.domain.entity.*;
-import utf8.citicup.domain.historyEntity.OptionBasicInfo;
 import utf8.citicup.domain.historyEntity.OptionTsd;
 import utf8.citicup.domain.historyEntity.TimeSeriesData;
 import utf8.citicup.service.RecommendService;
@@ -603,6 +602,7 @@ public class RecommendServiceImpl implements RecommendService {
         Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
         Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD.optionCombination);
 
+        while (removePointsFromProfit2Probability(profit2Probability));
 
         System.out.println((assertPrice2Profit));
         System.out.println((profit2Probability));
@@ -1150,6 +1150,20 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
+    private boolean removePointsFromProfit2Probability(Map<Double, Double> profit2Probability){
+        boolean flag = false;
+        for(int i = 1;i < profit2Probability.keySet().size() - 1;i++){
+            if(profit2Probability.get(profit2Probability.keySet().toArray(new Double[0])[i]) <
+                    profit2Probability.get(profit2Probability.keySet().toArray(new Double[0])[i - 1])
+                    && profit2Probability.get(profit2Probability.keySet().toArray(new Double[0])[i]) <
+                    profit2Probability.get(profit2Probability.keySet().toArray(new Double[0])[i + 1])){
+                profit2Probability.remove(profit2Probability.keySet().toArray(new Double[0])[i]);
+                flag = true;
+            }
+        }
+        return flag;
+    }
+
     @Override
     public ResponseMsg hedging(int N0, double a, double sExp, String T) {
 
@@ -1387,6 +1401,10 @@ public class RecommendServiceImpl implements RecommendService {
         Map<Double, Double> assertPrice2Profit = Double2Map(this.S, doubles2Doubles(maxGoalD.C_new));
         Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
         Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD.optionCombination);
+
+        System.out.println((assertPrice2Profit));
+        System.out.println((profit2Probability));
+        System.out.println((historyProfit2Probability));
 
         double M = 50000;
         if(type == 2){
