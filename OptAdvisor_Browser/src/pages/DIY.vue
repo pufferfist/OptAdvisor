@@ -649,7 +649,7 @@
             .then(re=>{
               if(re.data.msg=='custom portfolio finished'){
                 this.resultTable.num=re.data.data.num
-                this.resultTable.cost=re.data.data.cost
+                this.resultTable.cost=re.data.data.cost.toFixed(4)
                 this.resultTable.bond=re.data.data.bond.toFixed(4)
                 this.resultTable.z_delta=re.data.data.z_delta.toFixed(4)
                 this.resultTable.z_gamma=re.data.data.z_gamma.toFixed(4)
@@ -668,6 +668,7 @@
                 this.graph2=re.data.data.historyProfit2Probability
                 this.line1=this.graph1[0]
                 this.line2=this.graph1[1]
+                this.graphTitle='不同标的价格下组合收益'
                 this.drawLine()
               }
               else{

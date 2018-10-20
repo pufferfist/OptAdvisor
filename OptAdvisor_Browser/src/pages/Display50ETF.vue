@@ -233,9 +233,11 @@ export default {
     },
     getStatus() {
       const a = new Date();
-      const day = a.getDate();
+      const day = a.getDay();
       const minutes = a.getMinutes();
       const hour = a.getHours();
+      console.log(day === 0, 1234);
+      
       if(day === 0 || day === 6) {
         return '休市';
       } else {

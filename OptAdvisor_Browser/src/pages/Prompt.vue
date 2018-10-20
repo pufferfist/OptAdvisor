@@ -62,6 +62,14 @@
           },
           on: {
             click: () => {
+              //请求服务器置为已读
+              let id = this.unreadMesList[params.index].id;
+              this.axios.post("/backend/message/setMessageRead",{id:id})
+                .then((res)=>{
+                  if(res.data.code!==0){
+                    this.$Message.error("something goes wrong")
+                  }
+                });
               this.hasreadMesList.unshift(this.currentMesList.splice(params.index, 1)[0]);
               this.$store.commit('setMessageCount', this.unreadMesList.length);
             }
@@ -114,16 +122,16 @@
                       this.mes.title = params.row.title;
                       this.mes.time = this.formatDate(params.row.time);
                       this.getContent(params.index);
-                      //添加到已读列表
-                      this.hasreadMesList.unshift(this.currentMesList.splice(params.index, 1)[0]);
                       //请求服务器置为已读
-                      let id = this.unreadMesList[this.selectedRow.index].id;
+                      let id = this.unreadMesList[params.index].id;
                       this.axios.post("/backend/message/setMessageRead",{id:id})
                         .then((res)=>{
                           if(res.data.code!==0){
                             this.$Message.error("something goes wrong")
                           }
                         });
+                      //添加到已读列表
+                      this.hasreadMesList.unshift(this.currentMesList.splice(params.index, 1)[0]);
                     }
                   }
                 }, params.row.title);
@@ -235,7 +243,6 @@
         this.mes.content = mesContent;
       },
       ok(){
-        this.hasreadMesList.splice(this.selectedRow.index, 1);
         let id = this.hasreadMesList[this.selectedRow.index].id;
         this.axios.post("/backend/message/deleteMessage",{id:id})
           .then((res)=>{
@@ -243,6 +250,7 @@
               this.$Message.error("something goes wrong")
             }
           });
+        this.hasreadMesList.splice(this.selectedRow.index, 1);
       }
     },
     mounted () {
