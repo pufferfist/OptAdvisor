@@ -552,11 +552,14 @@ public class RecommendServiceImpl implements RecommendService {
         } catch (IOException e) {
             e.printStackTrace();
             return new ResponseMsg(2000, "网络获取失败", null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseMsg(2001,"没有合适的组合",null);
         }
         return new ResponseMsg(0, "recommend Portfolio finished", recommendOption1);
     }
 
-    private RecommendOption1 mainRecommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) throws IOException {
+    private RecommendOption1 mainRecommendPortfolio(double M0, double k, String T, char combination, double p1, double p2, double sigma1, double sigma2, int w1, int w2) throws Exception {
         //参数都是由用户输入的
         /*用户输入数据*/
         this.T = T;
@@ -585,6 +588,9 @@ public class RecommendServiceImpl implements RecommendService {
         List<structD> D = firstStep(combination);
         logger.info("first step is finished");
         System.out.println(D.size());
+        if(D.size() == 0){
+            throw new Exception("没有合适的组合");
+        }
         structD maxGoalD;
 
         maxGoalD = secondStep(D);
@@ -602,18 +608,22 @@ public class RecommendServiceImpl implements RecommendService {
         Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
         Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD.optionCombination);
 
+        Map<Double, Double> second = getSecondGraph(maxGoalD);
+
+        System.out.print(second);
+
         while (removePointsFromProfit2Probability(profit2Probability));
 
-        System.out.println((assertPrice2Profit));
-        System.out.println((profit2Probability));
-        System.out.println((historyProfit2Probability));
+//        System.out.println((assertPrice2Profit));
+//        System.out.println((profit2Probability));
+//        System.out.println((historyProfit2Probability));
         return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
                 maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta,
                 new String[][]{Doubles2Strings(assertPrice2Profit.keySet().toArray(new Double[0])),
                         Doubles2Strings(assertPrice2Profit.values().toArray(new Double[0]))},
-                new String[][]{Doubles2Strings(profit2Probability.keySet().toArray(new Double[0])),
-                        Doubles2Strings(profit2Probability.values().toArray(new Double[0]))},
+                new String[][]{Doubles2Strings(second.keySet().toArray(new Double[0])),
+                        Doubles2Strings(second.values().toArray(new Double[0]))},
                 new String[][]{Doubles2Strings(historyProfit2Probability.keySet().toArray(new Double[0])),
                         Doubles2Strings(historyProfit2Probability.values().toArray(new Double[0]))},
                 M0, k, this.sigma1, this.sigma2, p1, p2);
@@ -621,6 +631,68 @@ public class RecommendServiceImpl implements RecommendService {
 //                maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
 //                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, Graph,
 //                M0, k, sigma1, sigma2, p1, p2);
+    }
+
+    //second graph
+    private Map<Double, Double> getSecondGraph(structD d){
+        Double[]S1 = new Double[5001];
+        int m = 0;
+        double temp = 0.0;
+        DecimalFormat df = new DecimalFormat("0.000");
+        while(temp <= 5.0){
+            temp = Double.valueOf(df.format(temp));
+            S1[m] = temp;
+            temp += 0.001;
+            m++;
+        }
+
+        List <double[]> C = new ArrayList<>();
+        for(int i = 0;i < d.buyAndSell.length;i++){
+            double price = d.optionCombination[i].getPrice1();
+            if(d.buyAndSell[i] < 0)
+                price = d.optionCombination[i].getPrice2();
+            double[] C_i =Interest(d.optionCombination[i].getCp(), d.optionCombination[i].getK(), price, S1);
+            C.add(C_i);
+        }
+        double[] C_new = new double[C.get(0).length];
+        for(int i = 0;i < C.get(0).length; i++)
+        {
+            C_new[i] = 0;
+            for(int j = 0; j < C.size(); j++){
+                C_new[i] += d.buyAndSell[j] * C.get(j)[i];
+            }
+        }
+        d.C_new = C_new;
+        
+        double preRange = (((int)((d.C_new[0] / d.p0) * 100))/1) * 1 / 100.0;
+        int preI = 0;
+        Map<Double, Double> rtn = new TreeMap<>();
+        for(int i = 1;i < d.C_new.length; i++){
+//            System.out.print(d.C_new[i]);
+//            System.out.print(' ');
+//            System.out.print(d.p0 );
+//            System.out.print(' ');
+            double range = (((int)((d.C_new[i] / d.p0) * 100))/1) * 1 / 100.0;
+//            System.out.println(range);
+            if(preRange != range){
+                double sBegin = S1[preI];
+                double sEnd = S1[i - 1];
+
+                double x1 = Math.log(sBegin/this.S0)-Math.log((this.p1 + this.p2)/(2 * this.S0));
+                double x2 = Math.log(sEnd/this.S0)-Math.log((this.p1 + this.p2)/(2 * this.S0));
+
+                double result = Math.abs(this.normcdf(x1 / ((this.sigma1 + this.sigma2) / 2))
+                        - this.normcdf(x2 / ((this.sigma1 + this.sigma2) / 2)));
+
+                if (rtn.containsKey(range))
+                    rtn.put(range, result + rtn.get(range));
+                else
+                    rtn.put(range, result);
+                preRange = range;
+                preI = i;
+            }
+        }
+        return  rtn;
     }
 
     //期权组合第一步，计算出集合D及其相关内容
