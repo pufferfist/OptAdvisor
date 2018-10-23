@@ -1,9 +1,9 @@
 <template>
   <div>
     <Row>
-      <h4 class="item" style="display:inline;line-height: 32px;text-align: left;">上交所</h4>
-      <h4 class="item" style="display:inline;line-height: 32px;text-align: left;">50ETF</h4>
-        <Select  class="item cover"  style="text-align:left;width:200px;" v-model="date" @on-change="handleSelect($event)">
+        <h4 class="item" style="display:inline;line-height: 32px;text-align: left;">上证50ETF期权</h4>
+        <h4 class="item" style="display:inline;line-height: 32px;text-align: left;margin:0">到期月份:</h4>
+        <Select  class="item cover"  style="text-align:left;width:200px;margin-left:0" v-model="date" @on-change="handleSelect($event)">
           <Option v-for="item in timeList" :value="item.date" :label="item.date" :key="item.date" style="height: 32px">
             <span>{{item.date}}</span>
           </Option>

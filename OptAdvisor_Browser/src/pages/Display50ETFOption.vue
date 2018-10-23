@@ -8,7 +8,7 @@
           </div>
         </Col>
         <Col span="11" offset="2">
-          <div style="text-align: left; border-bottom: 4px solid  #4bbc7c;">
+          <div style="text-align: left;margin:5px 0; border-bottom: 4px solid  #4bbc7c;">
             看跌合约
           </div>
         </Col>
@@ -42,11 +42,11 @@
             </Col>
           </Row>
         </Col>
-        <Col :span="2" style="color: grey">
+        <Col :span="2" style="color: grey;margin:5px 0;">
             行权价
         </Col>
         <Col span="11" >
-          <Row style="text-align: left; color: grey">
+          <Row style="text-align: left; margin:5px 0; color: grey">
             <Col span="3">
               买量
             </Col>
@@ -491,12 +491,12 @@
                         volumes: 0,
                       },
                       {
-                        id: 0,
+                        id: 'sale4',
                         price: 0,
                         volumes: 0,
                       },
                       {
-                        id: 0,
+                        id: 'sale3',
                         price:0,
                         volumes: 0,
                       },
@@ -553,60 +553,8 @@
             OptionsDownList: [],
             selectedItem: {
               name:'',
-              saleList: [
-                      {
-                        id: 'sale5',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 0,
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 0,
-                        price:0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'sale2',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'sale1',
-                        price: 0,
-                        volumes:0,
-                      },
-                    ],
-              buyList: [
-                      {
-                        id: 'buy1',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'buy2',
-                        price: 0,
-                        volumes:0,
-                      },
-                      {
-                        id: 'buy3',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'buy4',
-                        price:0,
-                        volumes:0,
-                      },
-                      {
-                        id: 'buy5',
-                        price: 0,
-                        volumes: 0,
-                      },
-                    ],
+              saleList: [new Object(),new Object(),new Object(),new Object(),new Object()],
+              buyList: [new Object(),new Object(),new Object(),new Object(),new Object()],
             },
             SO:{
               code: '0'
