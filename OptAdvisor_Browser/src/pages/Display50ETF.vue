@@ -99,7 +99,7 @@
 </template>
 
 <script >
-var echarts = require("echarts");
+const echarts = require("echarts");
 // import ETFChart from '../components/50ETFChart/50ETFChart';
 export default {
   name: "Display50ETF",
