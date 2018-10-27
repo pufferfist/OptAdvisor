@@ -1,20 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Login from '../pages/Login'
-import SignUp from '../pages/SignUp'
-import ForgetPassword from '../pages/ForgetPassword'
-import FatherPage from '../pages/FatherPage'
-import Home from '../pages/Home'
-import Display50ETF from '../pages/Display50ETF'
-import Display50ETFOption from '../pages/Display50ETFOption'
-import Profile from '../pages/Profile'
-import Allocation from '../pages/Allocation'
-import Hedging from '../pages/Hedging'
-import InfoCollect from '../pages/InfoCollect'
-import DIY from '../pages/DIY'
-import MyPortfolio from '../pages/MyPortfolio'
-import Prompt from '../pages/Prompt'
-import test from '../pages/test'
 
 
 Vue.use(Router)
@@ -41,67 +26,63 @@ export default new Router({
     {
       path: '/login',
       name: 'Login',
-      component : Login
+      component: () => import('../pages/Login')
     },
     {
       path: '/signUp',
       name: 'SignUp',
-      component: SignUp
+      component: () => import('../pages/SignUp')
     },
     {
       path: '/forgetPassword',
       name: 'ForgetPassword',
-      component: ForgetPassword
+      component: () => import('../pages/ForgetPassword')
     },
     {
       path: '/home',
-      component: Home
+      component: () => import('../pages/Home')
     },
     {
       path: '/',
       redirect: '/home',
       name: 'Father',
-      component: FatherPage,
+      component: () => import('../pages/FatherPage'),
       children :[
         {
           path:'50ETF',
-          component:Display50ETF
+          component:() => import('../pages/Display50ETF')
         },
         {
           path:'50ETFOption',
-          component:Display50ETFOption
+          component:() => import('../pages/Display50ETFOption')
         },
         {
           path:'profile/:id',
-          component:Profile
+          component:() => import('../pages/Profile')
         },
         {
           path: 'allocation',
-          component: Allocation
+          component: () => import('../pages/Allocation')
         },
         {
           path: 'hedging',
-          component: Hedging
+          component: () => import('../pages/Hedging')
         },
         {
           path: 'infoCollect',
-          component: InfoCollect
+          component: () => import('../pages/InfoCollect')
         },
         {
           path: 'diy',
-          component: DIY
+          component: () => import('../pages/DIY')
         },
         {
           path: 'myPortfolio',
-          component: MyPortfolio
+          component: () => import('../pages/MyPortfolio')
         },
         {
           path: 'prompt',
-          component: Prompt
-        },
-        {
-          path:'test',
-          component:test
+          component: () => import('../pages/Prompt')
         }
       ]
     }
