@@ -5,12 +5,14 @@ public class RecommendOption2 {
     private double iK;
     private String[][] graph;
     private double iNum;
+    private double pAsset;
 
-    public RecommendOption2(Option option, double iK, double iNum, String[][] graph) {
+    public RecommendOption2(Option option, double iK, double iNum, String[][] graph, double pAsset) {
         this.option = option;
         this.iK = iK;
         this.graph = graph;
         this.iNum = iNum;
+        this.pAsset = pAsset;
     }
 
     public Option getOption() {
@@ -28,4 +30,8 @@ public class RecommendOption2 {
 
 
     public double getiNum() { return iNum; }
+
+    public double getpAsset() {
+        return pAsset;
+    }
 }

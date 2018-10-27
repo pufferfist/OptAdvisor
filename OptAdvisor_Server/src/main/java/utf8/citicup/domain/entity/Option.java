@@ -33,6 +33,8 @@ public class Option {
     private double rho;
     private double beta;
 
+    private int dynamic;//0是静态，1是动态
+
     @ManyToOne
     @JoinColumn(name = "portfolio_id")
     @JsonIgnore
@@ -205,5 +207,13 @@ public class Option {
 
     public void setRealTimePrice(double realTimePrice) {
         this.realTimePrice = realTimePrice;
+    }
+
+    public int getDynamic() {
+        return dynamic;
+    }
+
+    public void setDynamic(int dynamic) {
+        this.dynamic = dynamic;
     }
 }

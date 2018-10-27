@@ -150,7 +150,9 @@
       <section class="callout">
         <div class="container tc">
           <h2 class="center mb5">现在就加入我们!</h2>
-          <a class="btn btn-primary btn-xl" href="/signUp">注册</a>
+          <!--<a class="btn btn-primary btn-xl" href="/signUp">注册</a>-->
+          <router-link class="btn btn-primary btn-xl" to="/signUp">注册</router-link>
+
         </div>
       </section>
 

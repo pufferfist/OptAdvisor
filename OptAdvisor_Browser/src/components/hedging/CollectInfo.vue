@@ -10,7 +10,15 @@
           </TimelineItem>
           <TimelineItem color="green">
             <FormItem label="套保比例" prop="rate">
-              <Slider v-model="formItem.rate" show-input></Slider>
+              <div>
+                <div style="float: left;width: 78%;height: 20px">
+                  <Slider v-model="formItem.rate"></Slider>
+                </div>
+                <div style="float: left;width: 5%;height: 20px"></div>
+                <div style="float: left;width: 17%;height:20px">
+                  <Input style="width: 80%;float: left" v-model="formItem.rate"/>%
+                </div>
+              </div>
             </FormItem>
           </TimelineItem>
           <TimelineItem color="blue">
@@ -24,9 +32,9 @@
             </FormItem>
           </TimelineItem>
           <TimelineItem color="red">
-            <FormItem style="text-align: left" label="预测价格最低值" prop="min_price">
+            <FormItem style="text-align: left" label="预测最低值" prop="min_price">
               ¥&nbsp&nbsp<InputNumber :max="this.latestPrice" :min="0" v-model="formItem.min_price" style="width: 50%"></InputNumber>
-              &nbsp&nbsp<span style="font-size: 13px">华夏上证50ETF <span style="-webkit-text-fill-color: rgb(178,0,0)">({{this.latestPrice}}/{{this.rate}}%)</span></span>
+              &nbsp&nbsp<span style="font-size: 13px">华夏上证50ETF <span  v-bind:style="{'-webkit-text-fill-color':infoColor}">({{this.latestPrice}}/{{this.rate}}%)</span></span>
             </FormItem>
           </TimelineItem>
         </Timeline>
@@ -40,18 +48,25 @@
       created:function(){
         this.getDeadLine()
         this.getLatestPrice()
+        if(this.rate>0){
+          this.infoColor='#ed4014'
+        }
+        else{
+          this.infoColor='#19be6b'
+        }
       },
       data(){
         return {
           formItem: {
             rate:25,
             min_price:0,
-            OpenInterest: 10000,
+            OpenInterest: '',
             deadline: '',
             month:''
           },
           latestPrice:'',
-          rate:''
+          rate:'',
+          infoColor:''
         }
       },
       methods:{

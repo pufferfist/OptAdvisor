@@ -12,7 +12,8 @@
       </v-contextmenu>
 
       <div style="float: left;width: 25%;min-height: 500px">
-        <Menu  :open-names="['资产配置']" accordion @on-select="click_left" style="float: left">
+        <!--<Menu  :open-names="['套期保值']" accordion @on-select="click_left" style="float: left">-->
+        <Menu accordion @on-select="click_left" style="float: left">
           <Submenu name="资产配置" id="ZiChan">
             <template slot="title">
               <Icon type="logo-bitcoin" />
@@ -41,14 +42,14 @@
             </div>
           </Submenu>
         </Menu>
-        <div style="float: left;width: 1px;height: 800px;background-color: #E7E8EB"></div>
+        <div style="float: left;width: 1px;height: 1500px;background-color: #E7E8EB"></div>
       </div>
-      <div style="float: left;width: 75%;min-height: 800px;">
-        <div class="demo-spin-container">
+      <div style="float: left;width: 75%;min-height: 1500px;">
+        <div class="demo-spin-container1">
           <Right ref="portfolio" id="right" v-bind:style="{display:showRight}"></Right>
           <Spin v-if="showInfo" fix>
             <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
-            <div>加载中</div>
+            <div>Loading</div>
           </Spin>
         </div>
       </div>
@@ -100,6 +101,7 @@
           }
           this.axios.get('/backend/portfolio/'+id)
             .then(re=>{
+              console.log(re.data)
               this.$refs.portfolio.initial(re.data)
               this.showRight=''
               setTimeout(() => {
@@ -282,7 +284,7 @@
     50%  { transform: rotate(180deg);}
     to   { transform: rotate(360deg);}
   }
-  .demo-spin-container{
+  .demo-spin-container1{
     display: inline-block;
     width: 100%;
     min-height: 500px;

@@ -156,7 +156,7 @@ public class PortfolioServiceImpl implements PortfolioService {
 
                 String[][] tempRtn = new String[][]{abscissa,null};
 
-                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, iNum,tempRtn);
+                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, iNum,tempRtn, pAsset);
 
 
                 Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(), true,iNum, HEDGE);

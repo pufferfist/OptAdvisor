@@ -22,25 +22,25 @@
 
 ​	Go to the home page of the website, as shown in Figure 1. Click on the `了解更多`button or scroll the mouse wheel to see the product introduction carousel (Figure 2).
 
-![1536396025442](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536396025442.png)
+![1536396025442](1536396025442.png)
 
 ​										Figure 1
 
-![1536396058100](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536396058100.png)
+![1536396058100](1536396058100.png)
 
 ​										Figure 3
 
 Click the `注册` button in Figure 3, or *Unregistered status* Click the function button in Figure 4 or the registration button in Figure 5, and enter the [Register](#Register) screen.
 
-![1536396083140](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536396083140.png)										
+![1536396083140](1536396083140.png)										
 
 ​											   Figure3
 
-![1536390367538](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536390367538.png)
+![1536390367538](1536390367538.png)
 
 ​											Figure4
 
-![1536390023084](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536390023084.png)
+![1536390023084](1536390023084.png)
 
 ​											Figure5
 
@@ -49,13 +49,13 @@ Login status click the `组合推荐` button in Figure 4 to enter the [allocatio
 
 click the `浏览行情` button to enter the [50ETF](#50ETF) page.
 
-Click the `登陆` in the upper right corner of the [Home](#Home) page to enter the [Login](#Login) page, as shown in Figure 6.![1536391555522](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536396276986.png) 
+Click the `登陆` in the upper right corner of the [Home](#Home) page to enter the [Login](#Login) page, as shown in Figure 6.![1536391555522](1536396276986.png) 
 
 ​											Figure6
 
 Click the` ^` button in the lower right corner to return to the top of the page, as shown in Figure 7.
 
-![1536396543650](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536396543650.png)
+![1536396543650](1536396543650.png)
 
 ​											Figure7
 
@@ -63,19 +63,19 @@ Click the` ^` button in the lower right corner to return to the top of the page,
 
 Register page is as shown in Figure 8.
 
-![1536396875186](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536396875186.png)
+![1536396875186](1536396875186.png)
 
 ​										         Figure8
 
 After filling in the registration information as prompted, click the `下一步` button to fill out the risk assessment questionnaire, as shown in Figure 9.
 
-![1536397189550](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536397189550.png)
+![1536397189550](1536397189550.png)
 
 ​											Figure9
 
 After completing the questionnaire, click `下一步` button to complete the registration and view the risk assessment results, as shown in Figure 10.
 
-![1536397274372](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536397274372.png)
+![1536397274372](1536397274372.png)
 
 ​											Figure10
 
@@ -85,7 +85,7 @@ On the risk assessment results page (Figure 10), click on the `快速进入Optad
 
 Login page is as shown as Figure 11.
 
-![1536396700162](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536396700162.png)
+![1536396700162](1536396700162.png)
 
 ​											Figure11
 
@@ -93,7 +93,7 @@ Enter the user name, password (user name and password obtained by [Registration]
 
 After the login fails, you can see the error message at the top of the page (the username does not exist, the password is incorrect...), as shown in Figure 12.
 
-![1536397775856](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536397775856.png)
+![1536397775856](1536397775856.png)
 
 ​											Figure12
 
@@ -107,7 +107,7 @@ Click the `忘记密码` button to enter the [Forgot Password](#Forgot Password)
 
 Foreget Password page is as shown in Figure 13，
 
-![1536398035823](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536398035823.png)
+![1536398035823](1536398035823.png)
 
 ​											Figure13
 
@@ -115,7 +115,7 @@ After filling in the information as prompted, click the `获取验证码` button
 
 
 
-![1536398317168](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536398317168.png)
+![1536398317168](1536398317168.png)
 
 ​											Figure14
 
@@ -131,25 +131,25 @@ Market contains [50ETF](#50ETF) and [50ETF Option](#50ETF Option)
 
 50ETF page is as shown as Figure 15
 
-![1536398657584](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536398657584.png)
+![1536398657584](1536398657584.png)
 
 ​											Figure15
 
 #### Option chart
 
-Option chart contain **Time share chart ** 和 **K Chart**，![1536398759234](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536398759234.png)button can switch between two charts。
+Option chart contain **Time share chart ** 和 **K Chart**，![1536398759234](1536398759234.png)button can switch between two charts。
 
 The chart is divided into a price line chart from top to bottom, a bar chart of volume, and three parts of the Time Zoom.
 
 The mouse is hovering in the line chart area or the volume area, and you can see the market information of the corresponding position, as shown in Figure 16.
 
-![1536399308906](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536399308906.png)
+![1536399308906](1536399308906.png)
 
 ​											Figure16
 
 In the line chart area, the volume area or the Time Zoom area, scroll the mouse wheel to zoom the chart, as shown in Figure 17.
 
-![1536407426889](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536407426889.png)
+![1536407426889](1536407426889.png)
 
 ​											Figure17
 
@@ -157,7 +157,7 @@ In the time period selection area, you can hold down the left mouse button and d
 
 In  K Line Chart, click on the legend below to hide or display the corresponding curve, as shown in Figure 18.
 
-![1536407588172](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536407588172.png)
+![1536407588172](1536407588172.png)
 
 ​											Figure18
 
@@ -171,7 +171,7 @@ Construct Portfolio is the core service provided by the system.，which contain
 
 Allocation page is as shown in Figure 19.
 
-![1536408040015](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536408040015.png)
+![1536768651733](1536768702202.png)
 
 ​											Figure19
 
@@ -181,7 +181,7 @@ After the preference is selected, fill in the principal according to the prompt 
 
 When the selection is complete, click the `下一步`button and wait for the system to calculate and view the recommended combination. The recommended combination interface is shown in Figure 20.
 
-![1536408536499](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536408536499.png)
+![1536408536499](1536408536499.png)
 
 ​											Figure20
 
@@ -193,13 +193,13 @@ In the bottom right corner of the page, click the `添加至我的组合` button
 
 The hedging page is as shown in Figure 21
 
-![1536408995218](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536408995218.png)
+![1536408995218](1536768738338.png)
 
 ​											Figure21
 
 On the left side, enter the amount of positions, the ratio of the hedging and the lowest value of the forecast price. After selecting the hedging period, the hedging effect will appear on the right side, as shown in Figure 22.
 
-![1536410139646](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536410139646.png)
+![1536768814666](1536768814666.png)
 
 ​											Figure22
 
@@ -211,7 +211,7 @@ Click on the `添加至我的组合` button and enter the portfolio name to succ
 
 In DIY page,  user can select existing options to combine and view the related attributes of the combination, as shown in Figure 23.
 
-![1536410447169](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536410447169.png)
+![1536410447169](1536410447169.png)
 
 ​											Figure23
 
@@ -219,17 +219,17 @@ In DIY page,  user can select existing options to combine and view the related a
 2. Check the option in the current list, and select the number of options in the "Selected combination" below, the negative number is the sell, the positive number is the buy, as shown in Figure 25.
 3. Click on an option to view option related information in the contract analysis bar below, as shown in Figure 25.
 
-![1536410737079](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536410737079.png)
+![1536410737079](1536410737079.png)
 
 ​											Figure24
 
-![1536411398902](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536411398902.png)
+![1536411398902](1536411398902.png)
 
 ​											Figure25
 
 After selecting the combination, click the `预览` button to view the selected combination performance, as shown in Figure 26.
 
-![1536411688088](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536411688088.png)
+![1536411688088](1536768890143.png)
 
 ​											Figure26
 
@@ -241,13 +241,13 @@ Click the `添加至我的组合` button and  after enter the portfolio name, it
 
 My Portfolio page is as shown in Figure27，the left side of the page is a combination of different added sources. Click the single combination with the left mouse button to view the combination details on the right side of the page.
 
-![1536412331248](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536412331248.png)
+![1536412331248](1536768970031.png)
 
 ​											Figure27
 
 
 
-The combination can be managed by right-clicking on a single portfolio. Figure 28![1536412488467](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536412488467.png)
+The combination can be managed by right-clicking on a single portfolio. Figure 28![1536412488467](1536768993406.png)
 
 ​											Figure28
 
@@ -259,7 +259,7 @@ In the portfolio details page, click the `添加跟踪` button to continuously t
 
 Prompt page is as shown in Figure 29
 
-![1536412757513](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536412757513.png)
+![1536412757513](1536412757513.png)
 
 
 
@@ -269,7 +269,7 @@ Prompt page is as shown in Figure 29
 
 Click the avatar button at the top right of the navigation to enter the personal information page, as shown in Figure 30.
 
-![1536412830179](C:/Users/marujun/Desktop/option_obj/OptAdvisor/Document/Graph/%E7%94%A8%E6%88%B7%E6%89%8B%E5%86%8C/1536412933000.png)
+![1536412830179](1536412933000.png)
 
 ​											Figure30
 

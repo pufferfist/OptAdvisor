@@ -1,72 +1,82 @@
 <template>
   <div>
-    <div style="width: 35%;float: left;padding-top: 30px;padding-left: 30px">
-      <div style="width: 200px">
-        <h3>期权及相关信息</h3>
-        <table class="table2">
-          <tr>
-            <th>合约简称</th>
-            <td>{{text1}}</td>
-          </tr>
-          <tr>
-            <th>交易代码</th>
-            <td>{{text2}}</td>
-          </tr>
-          <tr>
-            <th>理论价值</th>
-            <td>{{text3}}</td>
-          </tr>
-          <tr>
-            <th>价值状态</th>
-            <td style="-webkit-text-fill-color: red">{{text4}}</td>
-          </tr>
-          <tr>
-            <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp内在价值</th>
-            <td style="-webkit-text-fill-color: red">{{text5}}</td>
-          </tr>
-          <tr>
-            <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp时间价值</th>
-            <td style="-webkit-text-fill-color: red">{{text6}}</td>
-          </tr>
-          <tr>
-            <th>成交量</th>
-            <td>{{text7}}</td>
-          </tr>
-          <tr>
-            <th>Delta</th>
-            <td>{{text8}}</td>
-          </tr>
-          <tr>
-            <th>Gamma</th>
-            <td>{{text9}}</td>
-          </tr>
-          <tr>
-            <th>Theta</th>
-            <td>{{text10}}</td>
-          </tr>
-          <tr>
-            <th>Vega</th>
-            <td>{{text11}}</td>
-          </tr>
-          <tr>
-            <th>隐含波动率</th>
-            <td>{{text12}}</td>
-          </tr>
-          <tr>
-            <th>最高价</th>
-            <td>{{text13}}</td>
-          </tr>
-          <tr>
-            <th>最低价</th>
-            <td>{{text14}}</td>
-          </tr>
-        </table>
+    <div style="width: 100%;float: left;padding-left: 3%;padding-right: 3%">
+      <div>
+        <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">期权及相关信息</h3>
+        <br>
+        <div style="width: 100%;height: 190px;background-color: #f8f8f9">
+          <div style="width: 50%;float: left;text-align: center;background-color: #f8f8f9">
+            <table class="table2" style="margin: auto">
+              <tr>
+                <th>合约简称</th>
+                <td>{{text1}}</td>
+              </tr>
+              <tr>
+                <th>理论价值</th>
+                <td>{{text3}}</td>
+              </tr>
+              <tr>
+                <th>价值状态</th>
+                <td style="-webkit-text-fill-color: red">{{text4}}</td>
+              </tr>
+              <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp内在价值</th>
+                <td style="-webkit-text-fill-color: red">{{text5}}</td>
+              </tr>
+              <tr>
+                <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp时间价值</th>
+                <td style="-webkit-text-fill-color: red">{{text6}}</td>
+              </tr>
+              <tr>
+                <th>成交量</th>
+                <td>{{text7}}</td>
+              </tr>
+              <tr>
+                <th>隐含波动率</th>
+                <td>{{text12}}</td>
+              </tr>
+            </table>
+          </div>
+          <div style="width: 50%;float: left;text-align: center;background-color: #f8f8f9">
+            <table class="table2" style="margin: auto">
+              <tr>
+                <th>Delta</th>
+                <td>{{text8}}</td>
+              </tr>
+              <tr>
+                <th>Gamma</th>
+                <td>{{text9}}</td>
+              </tr>
+              <tr>
+                <th>Theta</th>
+                <td>{{text10}}</td>
+              </tr>
+              <tr>
+                <th>Vega</th>
+                <td>{{text11}}</td>
+              </tr>
+              <tr>
+                <th>最高价</th>
+                <td>{{text13}}</td>
+              </tr>
+              <tr>
+                <th>最低价</th>
+                <td>{{text14}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <br>
       </div>
     </div>
-    <div style="width: 65%;float: left;padding: 30px;text-align: center">
-      <h3>组合表现展示&nbsp&nbsp<span style="font-size: 13px;font-weight: bold;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
-      <div id="myChart" style="width: 500px;height: 300px">
+    <div style="width: 100%;float: left;padding-left:3%; padding-right:3%;text-align: center">
+      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">组合表现展示&nbsp&nbsp<span style="font-size: 13px;font-weight: bold;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
+      <br>
+      <div style="width: 100%;text-align: center;background-color: #f8f8f9">
+        <div id="myChart" style="width: 600px;height: 300px;margin: auto">
+        </div>
       </div>
+
       <Page :total="totalPage" prev-text="Previous" next-text="Next" @on-change="ChangePage" />
     </div>
   </div>
@@ -185,23 +195,23 @@
               type: 'value',
               boundaryGap: [0, '100%']
             },
-            dataZoom: [{
-              type: 'inside',
-              start: 0,
-              end: 10
-            }, {
-              start: 0,
-              end: 10,
-              handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-              handleSize: '80%',
-              handleStyle: {
-                color: '#fff',
-                shadowBlur: 3,
-                shadowColor: 'rgba(0, 0, 0, 0.6)',
-                shadowOffsetX: 2,
-                shadowOffsetY: 2
-              }
-            }],
+            // dataZoom: [{
+            //   type: 'inside',
+            //   start: 0,
+            //   end: 10
+            // }, {
+            //   start: 0,
+            //   end: 10,
+            //   handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
+            //   handleSize: '80%',
+            //   handleStyle: {
+            //     color: '#fff',
+            //     shadowBlur: 3,
+            //     shadowColor: 'rgba(0, 0, 0, 0.6)',
+            //     shadowOffsetX: 2,
+            //     shadowOffsetY: 2
+            //   }
+            // }],
             series: [
               {
                 name:this.lineName[0],
@@ -332,8 +342,9 @@
     font-size: 15px;
     text-align: left;
     min-width: 130px;
-    -webkit-text-fill-color: #808695;
-    font-weight: normal;
+    -webkit-text-fill-color: #515a6e;
+    padding-top: 3px;
+    padding-bottom: 3px;
   }
 
   .table1{

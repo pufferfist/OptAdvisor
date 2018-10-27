@@ -71,76 +71,19 @@
           <h3 style="margin-top:20px">盘口</h3>
           <Row style="margin-bottom:20px">
             <Col :xs="24" :sm="24" :md="24" :lg="11" >
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖5</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[8]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[8] === closingPrice ?  'black' : 'green')}" >{{saleList[8]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[9]}}</p></Col>
+                <Row v-for="i in 5" :key="i" class="dataList" >
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖{{6-i}}</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[10-2*i]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[10-2*i] === closingPrice ?  'black' : 'green')}" >{{saleList[10-2*i]}}</p></Col>
+                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[11-i*2]}}</p></Col>
                 </Row>
             </Col>
             <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}">
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖4</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[6]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[6] === closingPrice ?  'black' : 'green')}" >{{saleList[6]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[7]}}</p></Col>
+                <Row v-for="i in 5" :key="i" class="dataList" >
+                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买{{6-i}}</p></Col>
+                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[10-2*i]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[10-2*i] === closingPrice ?  'black' : 'green')}" >{{buyList[10-2*i]}}</p></Col>
+                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[11-i*2]}}</p></Col>
                 </Row>
             </Col>
-            <Col :xs="24" :sm="24" :md="24" :lg="11" >
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖3</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[4]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[4] === closingPrice ?  'black' : 'green')}" >{{saleList[4]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[5]}}</p></Col>
-                </Row>
-            </Col>
-            <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}">
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖2</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[2]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[2] === closingPrice ?  'black' : 'green')}" >{{saleList[2]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[3]}}</p></Col>
-                </Row>
-            </Col>
-            <Col :xs="24" :sm="24" :md="24" :lg="11" >
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 卖1</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  saleList[0]  > closingPrice ? 'rgb(187, 0, 0)' : (saleList[0] === closingPrice ?  'black' : 'green')}" >{{saleList[0]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[1]}}</p></Col>
-                </Row>
-            </Col>
-            <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}" >
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买1</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[0]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[0] === closingPrice ?  'black' : 'green')}" >{{buyList[0]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[1]}}</p></Col>
-                </Row>
-            </Col>
-            <Col :xs="24" :sm="24" :md="24"  :lg="11">
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买2</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[2]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[2] === closingPrice ?  'black' : 'green')}" >{{buyList[2]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[3]}}</p></Col>
-                </Row>
-            </Col>
-            <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}">
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买3</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[4]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[4] === closingPrice ?  'black' : 'green')}" >{{buyList[4]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[5]}}</p></Col>
-                </Row>
-            </Col>
-            <Col :xs="24" :sm="24" :md="24" :lg="11" >
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买4</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[6]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[6] === closingPrice ?  'black' : 'green')}" >{{buyList[6]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[7]}}</p></Col>
-                </Row>
-            </Col>
-            <Col :xs="24" :sm="24" :md="24" :lg="{span: 11, offset: 2}">
-                <Row class="dataList" >
-                  <Col span="8"><p style="font-size: 12px; text-align: left;"> 买5</p></Col>
-                  <Col span="8"><p style=" text-align: center;font-weight: 700;" v-bind:style="{ color:  buyList[8]  > closingPrice ? 'rgb(187, 0, 0)' : (buyList[8] === closingPrice ?  'black' : 'green')}" >{{buyList[8]}}</p></Col>
-                  <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[9]}}</p></Col>
-                </Row>
-            </Col>
-            
           </Row>
           <Row>
             <Card style="margin: 50px 0;">
@@ -156,7 +99,7 @@
 </template>
 
 <script >
-var echarts = require("echarts");
+const echarts = require("echarts");
 // import ETFChart from '../components/50ETFChart/50ETFChart';
 export default {
   name: "Display50ETF",
@@ -233,9 +176,11 @@ export default {
     },
     getStatus() {
       const a = new Date();
-      const day = a.getDate();
+      const day = a.getDay();
       const minutes = a.getMinutes();
       const hour = a.getHours();
+      console.log(day === 0, 1234);
+      
       if(day === 0 || day === 6) {
         return '休市';
       } else {
