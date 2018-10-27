@@ -9,6 +9,7 @@ import utf8.citicup.dao.OptionRepository;
 import utf8.citicup.dataService.OptionDataService;
 import utf8.citicup.domain.entity.Option;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -34,5 +35,15 @@ public class OptionDataServiceImpl implements OptionDataService{
     @Cacheable(value = "option")
     public Option findById(long id) {
         return optionRepository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<Option> findByExpireTime(String expireTime) {
+        return optionRepository.findByExpireTime(expireTime);
+    }
+
+    @Override
+    public List<Option> saveAll(List<Option> list) {
+        return optionRepository.saveAll(list);
     }
 }

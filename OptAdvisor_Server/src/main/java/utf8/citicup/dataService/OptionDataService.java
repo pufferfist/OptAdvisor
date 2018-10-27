@@ -10,4 +10,6 @@ public interface OptionDataService {
     public void delete(long id);
     public Option findById(long id);
     //额外操作
+    public List<Option> findByExpireTime(String expireTime);
+    public List<Option> saveAll(List<Option> list);
 }
