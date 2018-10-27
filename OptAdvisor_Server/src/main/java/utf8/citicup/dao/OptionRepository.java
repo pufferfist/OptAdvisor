@@ -8,4 +8,5 @@ import java.util.List;
 
 @Component
 public interface OptionRepository extends JpaRepository<Option,Long>{
+    List<Option> findByExpireTime(String expireTime);
 }
