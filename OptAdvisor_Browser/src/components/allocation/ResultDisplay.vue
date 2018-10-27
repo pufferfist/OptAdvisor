@@ -15,7 +15,7 @@
             <div class="w-80 center">
               <p class="pt3 tl dib">无风险资产</p>
               <tooltip placement="top" content="注：此处无风险利率参考1年期shibor利率"><Icon type="md-help-circle" size="22"/></tooltip>
-              <p class="pt3 pl3 tl dib">金额：{{data.m0*(1-data.k)}}元</p>
+              <p class="pt3 pl3 tl dib">金额：{{(data.m0*(1-data.k)).toFixed(0)}}元</p>
             </div>
 
           </card>
@@ -68,13 +68,13 @@
               </tr>
             </table>
           </div>
-          <Poptip placement="right" width="800" class="db tr">
+          <Poptip placement="right" width="800" class="db tr" v-on:on-popper-show="handleChart()">
             <Button type="info" class="">
             查看更多
             <Icon type="ios-arrow-forward"></Icon>
           </Button>
-            <div class="api" slot="content">
-              <OptionChart :optionCode="this.currentOption.optionCode"></OptionChart>
+            <div slot="content">
+              <OptionChart :optionCode="currentOption.optionCode" ref="optionChart"></OptionChart>
             </div>
           </Poptip>
         </card>
@@ -91,7 +91,7 @@
               </tr>
               <tr>
                 <td>资产杠杆</td>
-                <td>{{data.beta.toFixed(4)}}</td>
+                <td>{{data.assertLeverage.toFixed(4)}}</td>
               </tr>
             </table>
           </div>
@@ -144,7 +144,7 @@
       </Col>
     </Row>
     <Row class="pt4">
-      <h2 class="w-90 tl center">回测收益图</h2>
+      <h2 class="w-90 tl center">组合表现</h2>
       <div class="interval2"></div>
       <Card style="margin: 50px 0;">
         <div>
@@ -199,6 +199,7 @@
                 backgroundColor: '#6a7985'
               }
             },
+            formatter: "{b}元<br/>收益率 : {c}%"
           },
           xAxis: {
             name:'标的价格/元',
@@ -207,7 +208,7 @@
             data: this.data.assertPrice2Profit[0]
           },
           yAxis: {
-            name:'收益/元',
+            name:'收益率(%)',
             type: 'value',
           },
           series: [
@@ -215,7 +216,7 @@
               name: '收益',
               type: 'line',
               data: this.data.assertPrice2Profit[1].map(function (item) {
-                return parseFloat(item).toFixed(4);
+                return (parseFloat(item)*100).toFixed(2);
               }),
             }
           ]
@@ -237,13 +238,14 @@
                 backgroundColor: '#6a7985'
               }
             },
+            formatter: "收益率 : {b}%<br/> 概率 : {c}",
           },
           xAxis: {
-            name:'收益',
+            name:'收益率(%)',
             type: 'category',
             boundaryGap: false,
             data: this.data.profit2Probability[0].map(function (item) {
-              return parseFloat(item).toFixed(2);
+              return (parseFloat(item)*100).toFixed(2);
             }),
           },
           yAxis: {
@@ -263,7 +265,7 @@
                 }
               },
               data: this.data.profit2Probability[1].map(function (item) {
-                return parseFloat(item).toFixed(3);
+                return parseFloat(item).toFixed(4);
               }),
             }
           ]
@@ -285,13 +287,14 @@
                 backgroundColor: '#6a7985'
               }
             },
+            formatter: "历史收益率 : {b}%<br/> 概率 : {c}",
           },
           xAxis: {
-            name:'历史收益',
+            name:'历史收益率(%)',
             type: 'category',
             boundaryGap: false,
             data: this.data.historyProfit2Probability[0].map(function (item) {
-              return parseFloat(item).toFixed(2);
+              return (parseFloat(item)*100).toFixed(2);
             }),
           },
           yAxis: {
@@ -311,7 +314,9 @@
                   }
                 }
               },
-              data: this.data.historyProfit2Probability[1]
+              data: this.data.historyProfit2Probability[1].map(function (item) {
+                return parseFloat(item).toFixed(5);
+              }),
             }
           ]
         };
@@ -326,6 +331,9 @@
         this.profitProbability.setOption(this.profitOption);
         this.historyProfitProbability.setOption(this.historyProfitOption);
         this.$emit("loadOver");
+      },
+      handleChart:function () {
+        this.$refs.optionChart.resize()
       }
     },
     created:function(){

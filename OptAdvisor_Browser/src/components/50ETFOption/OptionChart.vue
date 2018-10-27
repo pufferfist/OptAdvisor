@@ -203,6 +203,7 @@
 
             window.addEventListener("resize", function() {
                 that.myChart.resize();
+                console.log("test2");
               });
             this.myChart.hideLoading();
           },
@@ -492,6 +493,10 @@
               })
             }
           },
+          resize(){
+              setTimeout(this.myChart.resize,100);
+              // this.myChart.resize();
+          }
         },
         mounted() {
             this.myChart = echarts.init(this.$refs.myechart);
