@@ -103,7 +103,7 @@
         methods: {
             getOptionData(id) {
                 this.axios
-                .get('/sinaOption/list='+id.replace('hq_str_','').replace('OP','SO'))
+                .get('/sinaOption/list='+id.replace('OP','SO'))
                 .then(res => {
                     const tempSO = {};
                     [, , , ,tempSO.count,tempSO.delta, tempSO.gamma, tempSO.theta, tempSO.vega, tempSO.volatility, tempSO.high, tempSO.low, tempSO.code, tempSO.price , tempSO.timeP ,tempSO.value] = res.data.split(',');

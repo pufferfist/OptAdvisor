@@ -393,7 +393,6 @@
 </template>
 
 <script>
-    const echarts = require("echarts");
     import MonthSelecter from "../components/50ETFOption/MonthSelecter";
     import OptionDetail from "../components/50ETFOption/OptionDetail";
     import OptionChart from "../components/50ETFOption/OptionChart";
@@ -517,7 +516,7 @@
               .then(res => {
                 const resData  = res.data.split('"');
                 for(let i = 0; i< resData.length/2 -1 ;i++) {
-                  const name = resData[i].split(' ')[1].split('=')[0];
+                  const name = resData[i].split(' ')[1].split('=')[0].replace('hq_str_','');
                   const data = resData[++i].split(',')
                   tempOptionsUpList.push({
                     id: name,
@@ -602,7 +601,7 @@
                   });
                 }
                 for(let i = parseInt(resData.length/2) ; i< resData.length-1 ;i++) {
-                  const name = resData[i].split(' ')[1].split('=')[0];
+                  const name = resData[i].split(' ')[1].split('=')[0].replace('hq_str_','');
                   const data = resData[++i].split(',')
                   tempOptionsDownList.push({
                     id: name,
