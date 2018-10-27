@@ -69,10 +69,6 @@ export default new Router({
           component: () => import('../pages/Hedging')
         },
         {
-          path: 'infoCollect',
-          component: () => import('../pages/InfoCollect')
-        },
-        {
           path: 'diy',
           component: () => import('../pages/DIY')
         },
