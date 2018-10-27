@@ -52,6 +52,8 @@ public class Portfolio {
     private double sExp;
     private boolean flag;
     private double iNum;
+    private int n0; //持仓量
+    private double a; //比例
 
     @Column(columnDefinition = "TEXT")
     private String backTestData;
@@ -248,6 +250,22 @@ public class Portfolio {
     public String getHedgeProfitHolden() {
         return hedgeProfitHolden;
     }
+
+    public int getN0() {
+        return n0;
+    }
+
+    public double getA() {
+        return a;
+    }
+
+    public void setA(double a) {
+        this.a = a;
+    }
+    public void setN0(int n0) {
+        this.n0 = n0;
+    }
+
 
     public void setId(Long id) {
         this.id = id;
