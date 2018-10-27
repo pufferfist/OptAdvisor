@@ -504,6 +504,7 @@
                     clearInterval(this.interval);
                     this.handleClick('line');
                     this.getChartData();
+                    setTimeout(this.myChart.resize(),200);
                     this.interval = setInterval(this.getChartData(), 5000);
                 }
 
