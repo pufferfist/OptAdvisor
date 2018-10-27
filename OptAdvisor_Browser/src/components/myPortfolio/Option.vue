@@ -3,21 +3,47 @@
       <div>
         <h1>{{name}}
           <span style="font-size: 15px">
-          到期时间：{{time}} &nbsp&nbsp 分组类型：{{type}} &nbsp&nbsp 期望收益：{{earnings}} &nbsp&nbsp&nbsp
+          到期时间：{{time}} &nbsp&nbsp 分组类型：{{type}} &nbsp&nbsp {{earnings}} &nbsp&nbsp&nbsp
         </span>
           <Button type="primary" v-bind:style="{display:show1}" @click="track">添加跟踪</Button>
           <Button type="primary" disabled v-bind:style="{display:show2}">已添加跟踪</Button>
         </h1>
       </div>
 
-      <div style="width: 100%;text-align: center">
+      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;margin-left: 3%;margin-right: 3%">组合信息</h3>
+      <br>
+      <div v-bind:style="{display:showAllocation}" style="margin-bottom: 20px;width: 94%;margin-left:3%;background-color: #f8f8f9;height: 180px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
+        <div style="width: 47%;float: left">
+          <p style="padding: 10px">波动率：</p>
+          <p style="padding: 10px">价格：</p>
+          <p style="padding: 10px">本金：</p>
+          <p style="padding: 10px">允许最大损失：</p>
+        </div>
+        <div style="width: 47%;float: left">
+          <p style="padding: 10px">价格有效时间：</p>
+          <p style="padding: 10px">预测价格范围：</p>
+          <p style="padding: 10px">预测波动率范围：</p>
+        </div>
+      </div>
+      <div v-bind:style="{display:showHedging}" style="margin-bottom: 20px;width: 94%;margin-left:3%;background-color: #f8f8f9;height: 80px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
+        <div style="width: 47%;float: left">
+          <p style="padding: 10px">持仓量：</p>
+          <p style="padding: 10px">套保期限：</p>
+        </div>
+        <div style="width: 47%;float: left">
+          <p style="padding: 10px">套保比例：</p>
+          <p style="padding: 10px">预测最低值：</p>
+        </div>
+      </div>
+
+      <div style="width: 94%;text-align: center;background-color: #f8f8f9;margin-left: 3%;padding-top: 15px">
         <table style="margin: auto" class="table1">
           <tr>
             <th>序号</th>
-            <th>合约代码</th>
             <th>合约名称</th>
             <th>成本价</th>
-            <th>份数</th>
+            <th>买/卖</th>
+            <th>数量(手)</th>
             <th>最新价</th>
           </tr>
           <tr v-for="(item,index) in tdata" @click="choose(index)" :id="getName(index)">
@@ -26,19 +52,27 @@
           </tr>
         </table>
         <br>
-        <table style="margin: auto" class="table2">
-          <tr>
-            <th>成本</th>
-            <td>{{this.tableData.cost}}</td>
-            <th>保证金</th>
-            <td>{{this.tableData.bond}}</td>
-            <th>组合风险值</th>
-            <td>{{this.tableData.beta}}</td>
-            <th>资产收益率</th>
-            <td>{{this.tableData.returnOnAssets}}</td>
-          </tr>
-        </table>
+        <div>
+          <p></p>
+        </div>
+
+        <div v-bind:style="{display:showAllocation}" style="height: 35px">
+          <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
+          <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
+          <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">组合杠杆：{{this.tableData.beta}}</div>
+          <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">资产收益率：{{this.tableData.returnOnAssets}}</div>
+        </div>
+        <div v-bind:style="{display:showHedging}" style="height: 35px">
+          <div style="float: left;width: 50%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
+          <div style="float: left;width: 50%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
+        </div>
+        <div v-bind:style="{display:showDIY}" style="height: 35px">
+          <div style="float: left;width: 33%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
+          <div style="float: left;width: 33%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
+          <div style="float: left;width: 33%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">组合杠杆：{{this.tableData.beta}}</div>
+        </div>
       </div>
+      <br>
 
       <display_result ref="result"></display_result>
 
@@ -68,7 +102,17 @@
           },
           options:'',
           show1:'',
-          show2:''
+          show2:'',
+          showAllocation:'none',
+          showHedging:'none',
+          showDIY:'none',
+          fluctuation:'',
+          allocationFee:'',
+          allocationPrinciple:'',
+          largestLossAllowed:'',
+          validTimeInterval:'',
+          predictFeeInterval:'',
+          predictFluctuationInterval:''
         }
       },
       methods:{
@@ -114,25 +158,38 @@
           this.time=optionData.options[0].expireTime
           if(optionData.type=='0'){
             this.type='资产配置'
+            this.showAllocation=''
+            this.showHedging='none'
+            this.showDIY='none'
+            this.earnings='期望收益：'+(optionData.em*100).toFixed(2)+'%';
           }
           else if(optionData.type=='1'){
             this.type='套期保值'
+            this.showHedging=''
+            this.showAllocation='none'
+            this.showDIY='none'
+            this.earnings='到达预期最大减损比率：'+(optionData.iK).toFixed(2)
           }
           else{
             this.type='DIY'
+            this.showDIY='';
+            this.showAllocation='none'
+            this.showHedging='none'
+            this.earnings='期望收益：'+(optionData.em*100).toFixed(2)+'%';
           }
-          this.earnings=optionData.em.toFixed(2)
           this.tdata=[]
           for(var i=0;i<optionData.options.length;i++){
             var temp=[]
-            temp.push(optionData.options[i].tradeCode)
+            //temp.push(optionData.options[i].tradeCode)
             temp.push(optionData.options[i].name)
             temp.push(optionData.options[i].transactionPrice)
             if(parseInt(optionData.options[i].type)>0){
-              temp.push("买 "+Math.abs(optionData.options[i].type))
+              temp.push("买")
+              temp.push(Math.abs(optionData.options[i].type))
             }
             else{
-              temp.push("卖 "+Math.abs(optionData.options[i].type))
+              temp.push("卖")
+              temp.push(Math.abs(optionData.options[i].type))
             }
             this.codes.push(optionData.options[i].optionCode)
             this.tdata.push(temp)
@@ -140,8 +197,8 @@
           this.getLatestPrice()
           this.tableData.cost=optionData.cost.toFixed(2)
           this.tableData.bond=optionData.bond.toFixed(2)
-          this.tableData.beta=optionData.beta.toFixed(4)
-          this.tableData.returnOnAssets=optionData.returnOnAssets.toFixed(4)
+          this.tableData.beta=optionData.beta.toFixed(2)
+          this.tableData.returnOnAssets=(optionData.returnOnAssets*100).toFixed(2)+'%'
           this.id=optionData.id
           if(optionData.trackingStatus==false){
             this.show1=''
@@ -153,8 +210,8 @@
           }
 
           //2.同时画echarts
-          this.$refs.result.text15=optionData.em.toFixed(4)
-          this.$refs.result.text16=optionData.beta.toFixed(4)
+          this.$refs.result.text15=(optionData.em*100).toFixed(2)+'%'
+          this.$refs.result.text16=optionData.beta.toFixed(2)
           if(optionData.type=='0'){
             this.$refs.result.type=0
             this.$refs.result.graph1=originData.assertPrice2Profit
@@ -222,26 +279,15 @@
   .table1 td{
     padding-left: 5px;
     padding-right: 5px;
-    background-color: #ffeeee;
+    background-color: #ffffff;
   }
   .table1 th{
     padding-left: 5px;
     padding-right: 5px;
-    background-color: #f16643;
-    -webkit-text-fill-color: #ffffff;
+    background-color: #ffffff;
+    -webkit-text-fill-color: #515a6e;
   }
-  .table2{
-    border-collapse: collapse;
-  }
-  .table2 td{
-    padding-left: 5px;
-    padding-right: 5px;
-    -webkit-text-fill-color: #2baee9;
-  }
-  .table2 th{
-    padding-left: 5px;
-    padding-right: 5px;
-  }
+
   #tr0{
     border: 1px solid #2db7f5;
   }

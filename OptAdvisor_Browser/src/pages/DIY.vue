@@ -5,8 +5,7 @@
       <div style="margin: 10px 0">
         <div style="text-align: left;padding-bottom: 5px;padding-left: 40px">
           <p>
-            上交所 &nbsp;&nbsp;
-            50ETF  &nbsp;&nbsp;
+            上证50ETF期权&nbsp&nbsp
             <Select v-model="selectMonth" style="width: 100px" @on-change="changeMonth">
               <Option v-for="item in deadlineMonths" :value="item" :key="item">{{ item }}</Option>
             </Select>
@@ -60,7 +59,8 @@
           </table>
           <Card style="margin:10px 0;">
             <p slot="title">
-                已选择的组合
+              已选择的组合
+              <sapn style="font-weight: normal;font-size: 10px">(正买负卖)</sapn>
             </p>
             <Row >
               <div v-if="leftValue.length === 0 && rightValue.length === 0">
@@ -155,7 +155,7 @@
         </div>
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
           <h3>组合表现展示&nbsp&nbsp<span style="font-size: 13px;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
-          <div class="demo-spin-container">
+          <div class="demo-spin-container2">
             <table class="table3" style="margin: auto">
               <tr>
                 <th>数量</th>
@@ -775,7 +775,7 @@
     50%  { transform: rotate(180deg);}
     to   { transform: rotate(360deg);}
   }
-  .demo-spin-container{
+  .demo-spin-container2{
     display: inline-block;
     width: 100%;
     min-height: 400px;
