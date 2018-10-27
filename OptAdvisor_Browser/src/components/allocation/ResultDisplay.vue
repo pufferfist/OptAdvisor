@@ -13,8 +13,9 @@
             </CellGroup>
             <div class="interval"></div>
             <div class="w-80 center">
-              <p class="pt3 tl dib">无风险资产金额：{{data.m0*(1-data.k)}}元</p>
+              <p class="pt3 tl dib">无风险资产</p>
               <tooltip placement="top" content="注：此处无风险利率参考1年期shibor利率"><Icon type="md-help-circle" size="22"/></tooltip>
+              <p class="pt3 pl3 tl dib">金额：{{data.m0*(1-data.k)}}元</p>
             </div>
 
           </card>
@@ -214,7 +215,7 @@
               name: '收益',
               type: 'line',
               data: this.data.assertPrice2Profit[1].map(function (item) {
-                return parseFloat(item).toFixed(2);
+                return parseFloat(item).toFixed(4);
               }),
             }
           ]
