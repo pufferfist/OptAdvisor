@@ -7,6 +7,7 @@
       <p style="font-size: 10px;" v-bind:style="{'-webkit-text-fill-color':warn_color}">{{this.warn_data}}</p>
     </div>
     <div  v-bind:style="{display:ispage2}">
+      <br>
       <display_result ref="result"></display_result>
     </div>
     <div>
@@ -77,7 +78,7 @@
                   var data=response.data.data
                   //1.填充表格
                   var forms={
-                    optionCode:data.option.optionCode, //期权代码
+                    optionCode:data.option.name,
                     expireTime:data.option.expireTime,//到期时间
                     transactionPrice:data.option.transactionPrice,//成交价
                     yclose:data.option.yclose,//期权前一天收盘价
@@ -107,7 +108,7 @@
                   this.$refs.result.$refs.option_group.TData=forms
 
                   //2.填充预期最大亏损值
-                  this.$refs.result.expectedLoss=data.iK.toFixed(4)
+                  this.$refs.result.expectedLoss=data.iK.toFixed(2)
 
                   //3.填充折线图
                   this.$refs.result.graph=data.graph
@@ -139,11 +140,5 @@
     from { transform: rotate(0deg);}
     50%  { transform: rotate(180deg);}
     to   { transform: rotate(360deg);}
-  }
-  .demo-spin-container{
-    display: inline-block;
-    width: 100%;
-    min-height: 700px;
-    position: relative;
   }
 </style>

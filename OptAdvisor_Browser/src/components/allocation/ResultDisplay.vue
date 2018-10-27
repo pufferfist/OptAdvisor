@@ -1,24 +1,33 @@
 <template>
   <div>
     <Row>
-      <Col span="12">
-        <h2>推荐组合</h2>
-        <div class="middleBorder">
-          <CellGroup class="ph3 pt3" v-on:on-click="switchOption">
-            <Cell v-for="item in data.optionList" :title="item.name"
-                  :extra="item.type>0?'买'+item.type:'卖'+(-item.type)"
-                  :key="data.optionList.indexOf(item)" class="tl w-80 center" :class="{backRed:item.cp===1}"
-                  :name="data.optionList.indexOf(item)"/>
-          </CellGroup>
+      <Col span="11">
+
+          <card>
+            <h2 slot="title">组合详情</h2>
+            <CellGroup class="ph3" v-on:on-click="switchOption">
+              <Cell v-for="item in data.optionList" :title="item.name"
+                    :extra="item.type>0?'买'+item.type+'手':'卖'+(-item.type)+'手'"
+                    :key="data.optionList.indexOf(item)" class="tl w-80 center" :class="{backRed:item.cp===1}"
+                    :name="data.optionList.indexOf(item)"/>
+            </CellGroup>
+            <div class="interval"></div>
+            <div class="w-80 center">
+              <p class="pt3 tl dib">无风险资产金额：{{data.m0*(1-data.k)}}元</p>
+              <tooltip placement="top" content="注：此处无风险利率参考1年期shibor利率"><Icon type="md-help-circle" size="22"/></tooltip>
+            </div>
+
+          </card>
+
           <!--接下来写展示项目-->
-          <div class="interval"></div>
-          <h2 class="pt3">期权信息</h2>
-          <div class="w-80 ml-auto pt3">
+        <card class="mt3">
+          <h2 slot="title">期权信息</h2>
+          <div class="w-80 ml-auto">
             <p class="f4 tl pb1">{{currentOption.cp===1?'看涨':'看跌'}}期权</p>
             <table class="w-100 tl">
               <tr>
-                <td>交易代码</td>
-                <td>{{currentOption.tradeCode}}</td>
+                <td>合约简称</td>
+                <td>{{currentOption.name}}</td>
               </tr>
               <tr>
                 <td>到期时间</td>
@@ -58,64 +67,79 @@
               </tr>
             </table>
           </div>
-        </div>
+          <Poptip placement="right" width="800" class="db tr">
+            <Button type="info" class="">
+            查看更多
+            <Icon type="ios-arrow-forward"></Icon>
+          </Button>
+            <div class="api" slot="content">
+              <OptionChart :optionCode="this.currentOption.optionCode"></OptionChart>
+            </div>
+          </Poptip>
+        </card>
+
       </Col>
-      <Col span="12" class="">
-        <h2>资产收益</h2>
-        <div class="w-60 center pt3">
-          <table class="w-100 tl">
-            <tr>
-              <td>资产期望收益率</td>
-              <td>{{(data.returnOnAssets*100).toFixed(2)}}%</td>
-            </tr>
-            <tr>
-              <td>资产杠杆</td>
-              <td>{{data.beta.toFixed(4)}}</td>
-            </tr>
-          </table>
-        </div>
-        <div class="interval"></div>
-        <h2 class="pt3">组合特征</h2>
-        <div class="w-60 center pt3">
-          <table class="w-100 tl">
-            <tr>
-              <td>成本(不含保证金)</td>
-              <td>{{data.cost.toFixed(2)}}</td>
-            </tr>
-            <tr>
-              <td>保证金</td>
-              <td>{{data.bond.toFixed(2)}}</td>
-            </tr>
-            <tr>
-              <td>delta</td>
-              <td>{{data.z_delta.toFixed(4)}}</td>
-            </tr>
-            <tr>
-              <td>gamma</td>
-              <td>{{data.z_gamma.toFixed(4)}}</td>
-            </tr>
-            <tr>
-              <td>theta</td>
-              <td>{{data.z_theta.toFixed(4)}}</td>
-            </tr>
-            <tr>
-              <td>vega</td>
-              <td>{{data.z_vega.toFixed(4)}}</td>
-            </tr>
-            <tr>
-              <td>rho</td>
-              <td>{{data.z_rho.toFixed(4)}}</td>
-            </tr>
-            <tr>
-              <td>组合期望收益率</td>
-              <td>{{(data.em*100).toFixed(2)}}%</td>
-            </tr>
-            <tr>
-              <td>组合杠杆</td>
-              <td>{{data.beta.toFixed(4)}}</td>
-            </tr>
-          </table>
-        </div>
+      <Col span="11" offset="1" class="">
+        <card>
+          <h2 slot="title">资产收益</h2>
+          <div class="w-60 center">
+            <table class="w-100 tl">
+              <tr>
+                <td>资产期望收益率</td>
+                <td>{{(data.returnOnAssets*100).toFixed(2)}}%</td>
+              </tr>
+              <tr>
+                <td>资产杠杆</td>
+                <td>{{data.beta.toFixed(4)}}</td>
+              </tr>
+            </table>
+          </div>
+        </card>
+
+        <card class="mt3">
+          <h2 slot="title">组合特征</h2>
+          <div class="w-60 center">
+            <table class="w-100 tl">
+              <tr>
+                <td>成本(不含保证金)</td>
+                <td>{{data.cost.toFixed(2)}}</td>
+              </tr>
+              <tr>
+                <td>保证金</td>
+                <td>{{data.bond.toFixed(2)}}</td>
+              </tr>
+              <tr>
+                <td>delta</td>
+                <td>{{data.z_delta.toFixed(4)}}</td>
+              </tr>
+              <tr>
+                <td>gamma</td>
+                <td>{{data.z_gamma.toFixed(4)}}</td>
+              </tr>
+              <tr>
+                <td>theta</td>
+                <td>{{data.z_theta.toFixed(4)}}</td>
+              </tr>
+              <tr>
+                <td>vega</td>
+                <td>{{data.z_vega.toFixed(4)}}</td>
+              </tr>
+              <tr>
+                <td>rho</td>
+                <td>{{data.z_rho.toFixed(4)}}</td>
+              </tr>
+              <tr>
+                <td>组合期望收益率</td>
+                <td>{{(data.em*100).toFixed(2)}}%</td>
+              </tr>
+              <tr>
+                <td>组合杠杆</td>
+                <td>{{data.beta.toFixed(4)}}</td>
+              </tr>
+            </table>
+          </div>
+        </card>
+
       </Col>
     </Row>
     <Row class="pt4">
@@ -141,8 +165,10 @@
 </template>
 
 <script>
+  import OptionChart from "../50ETFOption/OptionChart";
   export default {
     name: "ResultDisplay",
+    components: {OptionChart},
     data() {
       return {
         currentOption: '',
@@ -180,7 +206,7 @@
             data: this.data.assertPrice2Profit[0]
           },
           yAxis: {
-            name:'收益',
+            name:'收益/元',
             type: 'value',
           },
           series: [
@@ -220,13 +246,12 @@
             }),
           },
           yAxis: {
-            name:'概率',
             type: 'value',
           },
           series: [
             {
               name: '概率',
-              type: 'line',
+              type: 'bar',
               itemStyle:{
                 normal:{
                   color:'#FBB8A1',
@@ -236,7 +261,9 @@
                   },
                 }
               },
-              data: this.data.profit2Probability[1]
+              data: this.data.profit2Probability[1].map(function (item) {
+                return parseFloat(item).toFixed(3);
+              }),
             }
           ]
         };
@@ -300,9 +327,10 @@
         this.$emit("loadOver");
       }
     },
-    mounted: function () {
+    created:function(){
       this.currentOption = this.data.optionList[0];
-
+    },
+    mounted: function () {
       //绘图
       this.assertPriceProfit = this.$echarts.init(this.$refs.assertPriceProfit);
       this.profitProbability = this.$echarts.init(this.$refs.profitProbability);
@@ -329,7 +357,7 @@
   .interval {
     width: 80%;
     margin: auto;
-    padding-top: 1.5rem;
+    padding-top: 1rem;
     border-bottom: 1px solid rgba(0, 0, 0, .3);
   }
 
@@ -355,4 +383,5 @@
   h2 {
     color: #1463B4;
   }
+
 </style>
