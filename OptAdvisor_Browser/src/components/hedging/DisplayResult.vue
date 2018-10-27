@@ -8,9 +8,9 @@
           <div style="width: 80%;height: 2px;background-color: #2b85e4;margin-left: 10%"></div>
           <br>
           <div style="height: 180px;margin-left: 10%;margin-right: 10%">
-            <optionGroup ref="option_group" style="width: 60%;float: left;background-color: #f8f8f9"></optionGroup>
+            <optionGroup ref="option_group" style="width: 60%;float: left;border:2px solid #f8f8f9"></optionGroup>
             <div style="width: 5%;float: left;height: 180px"></div>
-            <div style="width: 30%;float: left;-webkit-text-fill-color: #515a6e;font-size: 20px;background-color: #f8f8f9;height: 160px">
+            <div style="width: 30%;float: left;-webkit-text-fill-color: #515a6e;font-size: 20px;border:2px solid #f8f8f9;height: 160px">
               <p style="padding-top: 10px">到达预期最大减损比率：</p>
               <br>
               <p style="font-size: 50px;width: 80%;text-align: center;font-weight: bold;display: inline">{{expectedLoss}}</p><span>%</span>
@@ -22,7 +22,7 @@
           <p style="font-size: 20px;font-weight: bold;padding-left: 10%;text-align: left;-webkit-text-fill-color: #2b85e4">套期保值效果展示：</p>
           <div style="width: 80%;height: 3px;background-color: #2b85e4;margin-left: 10%"></div>
           <br>
-          <div id="myChart" style="width:800px;height: 300px;margin: auto;background-color: #f8f8f9"></div>
+          <div id="myChart" style="width:800px;height: 300px;margin: auto;border:2px solid #f8f8f9"></div>
         </div>
       </div>
     </div>
