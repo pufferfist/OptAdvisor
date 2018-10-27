@@ -39,7 +39,7 @@ public class OptionDataServiceImpl implements OptionDataService{
 
     @Override
     public List<Option> findByExpireTime(String expireTime) {
-        return optionRepository.findByExpireTime(expireTime);
+        return optionRepository.findOptionByExpireTime(expireTime);
     }
 
     @Override
