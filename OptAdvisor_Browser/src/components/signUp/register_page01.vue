@@ -70,7 +70,7 @@
             this.axios.post('/backend/isUsernameUsed',{
               username:this.formValidate.username
             }).then(function (response) {
-              if(response.data==true){
+              if(response.data.data==true){
                 callback(new Error("用户名已存在，请修改用户名"))
               }
               else{
