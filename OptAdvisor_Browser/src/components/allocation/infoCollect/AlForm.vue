@@ -11,7 +11,7 @@
       </i-input>
     </Row>
     <Row class="pb4 border" style="z-index: 1002">
-      <Select v-model="time" placeholder="价格有效时间" style="width:200px" class="fl cover">
+      <Select v-model="time" placeholder="预期有效时间" style="width:200px" class="fl cover">
         <Option v-for="item in timeList" :value="item.time" :label="item.time" :key="item.time" style="height: 32px">
           <span style="float:left">{{item.time}}</span>
           <span style="float:right;color:#ccc">{{item.differ+"天"}}</span>
@@ -21,26 +21,30 @@
     <Row v-if="price===1" class="pt4">
       <h4 class="tl">预测价格范围</h4>
       <!--<Slider id="priceUp" v-model="priceForecast" :step="0.001" :tip-format="priceFormat" range :max="4" :min="currentPrice"></Slider>-->
-      <el-slider id="priceUp" v-model="priceForecast" :step="0.001" :format-tooltip="priceFormat" range :max="4" :min="currentPrice"></el-slider>
-      <p class="pt4">价格范围:{{priceForecast[0]}}~{{priceForecast[1]}}元</p>
+      <el-slider id="priceUp" v-model="priceForecast" v-on:change="priceInitStat=false" :step="0.001" :format-tooltip="priceFormat" range :max="4" :min="currentPrice"></el-slider>
+      <p class="pt4" v-if="!priceInitStat">价格范围:{{priceForecast[0]}}~{{priceForecast[1]}}元</p>
+      <p class="pt4" v-if="priceInitStat">拖动滑块以调节价格范围</p>
     </Row>
     <Row v-if="price===-1" class="pt4">
       <h4 class="tl">预测价格范围</h4>
       <!--<Slider id="priceDown" v-model="priceForecast" :step="0.001" :tip-format="priceFormat" range :max="currentPrice" :min="1"></Slider>-->
-      <el-slider id="priceDown" v-model="priceForecast" :step="0.001" :format-tooltip="priceFormat" range :max="currentPrice" :min="1"></el-slider>
-      <p class="pt4">价格范围:{{priceForecast[0]}}~{{priceForecast[1]}}元</p>
+      <el-slider id="priceDown" v-model="priceForecast" v-on:change="priceInitStat=false" :step="0.001" :format-tooltip="priceFormat" range :max="currentPrice" :min="1"></el-slider>
+      <p class="pt4" v-if="!priceInitStat">价格范围:{{priceForecast[0]}}~{{priceForecast[1]}}元</p>
+      <p class="pt4" v-if="priceInitStat">拖动滑块以调节价格范围</p>
     </Row>
     <Row v-if="volatility===1" class="pt4 pb5">
-      <h4 class="tl">预测波动率范围</h4>
+      <h4 class="tl">预测标的波动率范围</h4>
       <!--<Slider id="volatilityUp" v-model="volatilityForecast" :step="1" :tip-format="volatilityFormat" range :max="50" :min="currentVolatility"></Slider>-->
-      <el-slider id="volatilityUp" v-model="volatilityForecast" :step="1" :format-tooltip="volatilityFormat" range :max="50" :min="currentVolatility"></el-slider>
-      <p class="pt4">波动率范围:{{volatilityForecast[0]}}~{{volatilityForecast[1]}}%</p>
+      <el-slider id="volatilityUp" v-model="volatilityForecast" v-on:change="volatilityInitStat=false" :step="1" :format-tooltip="volatilityFormat" range :max="50" :min="currentVolatility"></el-slider>
+      <p class="pt4" v-if="!volatilityInitStat">波动率范围:{{volatilityForecast[0]}}~{{volatilityForecast[1]}}%</p>
+      <p class="pt4" v-if="volatilityInitStat">拖动滑块以调节波动率范围</p>
     </Row>
     <Row v-if="volatility===-1" class="pt4 pb5">
       <h4 class="tl">预测波动率范围</h4>
       <!--<Slider id="volatilityDown" v-model="volatilityForecast" :step="1" :tip-format="volatilityFormat" range :max="currentVolatility" :min="0"></Slider>-->
-      <el-slider id="volatilityDown" v-model="volatilityForecast" :step="1" :format-tooltip="volatilityFormat" range :max="currentVolatility" :min="0"></el-slider>
-      <p class="pt4">波动率范围:{{volatilityForecast[0]}}~{{volatilityForecast[1]}}%</p>
+      <el-slider id="volatilityDown" v-model="volatilityForecast" v-on:change="volatilityInitStat=false" :step="1" :format-tooltip="volatilityFormat" range :max="currentVolatility" :min="0"></el-slider>
+      <p class="pt4" v-if="!volatilityInitStat">波动率范围:{{volatilityForecast[0]}}~{{volatilityForecast[1]}}%</p>
+      <p class="pt4" v-if="volatilityInitStat">拖动滑块以调节波动率范围</p>
     </Row>
     <Row class="pt5">
       <Button size="large" type="warning" @click="nextStep" class="fr forwardButton" ghost>
@@ -59,6 +63,8 @@
         principal: "",
         maxLost: "",
         time: "",
+        priceInitStat:true,
+        volatilityInitStat:true,
         volatilityForecast: [0,0],
         priceForecast: [0,0],
         currentPrice: 2,
@@ -201,7 +207,7 @@
             };
             this.timeList.sort(compare);
             if (this.isInFive()) {
-              this.timeList.slice(0, 1)
+              this.timeList.splice(0, 1)
             }
           })
         });
@@ -238,12 +244,16 @@
         this.volatilityForecast[1] = this.currentVolatility;
         this.priceForecast[0] = this.currentPrice;
         this.priceForecast[1] = this.currentPrice;
+        this.priceInitStat=true;
+        this.volatilityInitStat=true;
       },
       volatility: function () {
         this.volatilityForecast[0] = this.currentVolatility;
         this.volatilityForecast[1] = this.currentVolatility;
         this.priceForecast[0] = this.currentPrice;
         this.priceForecast[1] = this.currentPrice;
+        this.priceInitStat=true;
+        this.volatilityInitStat=true;
       }
     }
   }

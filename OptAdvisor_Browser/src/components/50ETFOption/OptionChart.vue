@@ -7,6 +7,7 @@
 <script>
     const echarts = require("echarts");
     export default {
+      name:"OptionChart",
         data(){
             return {
                 dayActive: false,
@@ -35,7 +36,7 @@
               this.lineActive = true;
               clearTimeout(this.timeout);
               this.timeout = setTimeout(this.initLine, 1000);
-            }   
+            }
           },
           initLine() {
             const that = this;
@@ -47,7 +48,7 @@
             });
             const volumeList = this.lineData.map((item) => {
               return item.v;
-            })            
+            })
             this.myChart.setOption({
                 color:['black'],
                 tooltip: {
@@ -119,7 +120,7 @@
                           value.max + value.min >= 2 * that.lineMiddle
                             ? value.max
                             : 2 * that.lineMiddle - value.min;
-                        return max.toFixed(4);  
+                        return max.toFixed(4);
                       } else {
                         return value.max.toFixed(4);
                       }
@@ -229,7 +230,7 @@
             this.dayKData.map(item => {
               data.dates.push(item.d);
               data.values.push([
-                parseFloat(item.o), parseFloat(item.c), parseFloat(item.l), parseFloat(item.h), 
+                parseFloat(item.o), parseFloat(item.c), parseFloat(item.l), parseFloat(item.h),
               ]);
               data.volumes.push(parseInt(item.v))
             });
@@ -267,7 +268,7 @@
                       } else if(item.seriesName === 'Volumn'){
                         str += `<br />${item.marker}成交量:${item.value}`
                       } else {
-                        str += `<br />${item.marker}${item.seriesName}:${item.value}` 
+                        str += `<br />${item.marker}${item.seriesName}:${item.value}`
                       }
                     });
                     return str;
@@ -456,7 +457,7 @@
               if(!this.optionCode){
                   return;
               }
-            const name = this.optionCode.replace('hq_str_','');
+            const name = this.optionCode;
             if(this.lineActive) {
               this.axios.get('/sinaTime/StockOptionDaylineService.getOptionMinline', {
               params: {
@@ -476,7 +477,7 @@
                 })
                 data.splice(0, count);
                 this.lineData =data;
-                this.chartFresh();       
+                this.chartFresh();
 
               });
             }
