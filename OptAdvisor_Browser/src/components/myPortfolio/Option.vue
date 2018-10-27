@@ -61,10 +61,6 @@
           <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">组合杠杆：{{this.tableData.beta}}</div>
           <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">资产收益率：{{this.tableData.returnOnAssets}}</div>
         </div>
-        <div v-bind:style="{display:showHedging}" style="height: 35px">
-          <div style="float: left;width: 50%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
-          <div style="float: left;width: 50%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
-        </div>
         <div v-bind:style="{display:showDIY}" style="height: 35px">
           <div style="float: left;width: 33%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
           <div style="float: left;width: 33%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
@@ -194,7 +190,7 @@
             this.showDIY='';
             this.showAllocation='none'
             this.showHedging='none'
-            this.earnings='期望收益：'+(optionData.em*100).toFixed(2)+'%';
+            //this.earnings='期望收益：'+(optionData.em*100).toFixed(2)+'%';
           }
           this.tdata=[]
           for(var i=0;i<optionData.options.length;i++){
@@ -233,20 +229,20 @@
           this.$refs.result.text16=optionData.beta.toFixed(2)
           if(optionData.type=='0'){
             this.$refs.result.type=0
-            this.$refs.result.graph1=originData.assertPrice2Profit
-            this.$refs.result.graph2=originData.profit2Probability
-            this.$refs.result.graph3=originData.historyProfit2Probability
+            this.$refs.result.graph1=this.fixArray(originData.assertPrice2Profit)
+            this.$refs.result.graph2=this.fixArray(originData.profit2Probability)
+            this.$refs.result.graph3=this.fixArray(originData.historyProfit2Probability)
             this.$refs.result.drawGraph('allocation');
           }
           else if(optionData.type=='1'){
             this.$refs.result.type=1
-            this.$refs.result.graph1=originData.graph
+            this.$refs.result.graph1=this.fixArray(originData.graph)
             this.$refs.result.drawGraph('hedging');
           }
           else if(optionData.type=='2'){
             this.$refs.result.type=2
-            this.$refs.result.graph1=originData.assertPrice2Profit
-            this.$refs.result.graph2=originData.historyProfit2Probability
+            this.$refs.result.graph1=this.fixArray(originData.assertPrice2Profit)
+            this.$refs.result.graph2=this.fixArray(originData.historyProfit2Probability)
             this.$refs.result.drawGraph('diy');
           }
 
@@ -271,6 +267,16 @@
                 this.$Message.error("追踪失败，请稍后重试")
               }
             })
+        },
+        fixArray(array){
+          var result=new Array();
+          for(var i=0;i<array.length;i++){
+            var temp=new Array();
+            for(var j=0;j<array[i].length;j++){
+              temp.push(array[i][j].toFixed(2))
+            }
+          }
+          return result;
         }
       }
 

@@ -8,26 +8,18 @@
           <td>{{this.TData.type}}</td>
         </tr>
         <tr>
-          <th>看涨\看跌</th>
-          <td>{{this.TData.cp}}</td>
+          <th>数量(手)</th>
+          <td>{{this.TData.iNum}}</td>
           <th>到期时间</th>
           <td>{{this.TData.expireTime}}</td>
         </tr>
         <tr>
           <th>成交价</th>
           <td>{{this.TData.transactionPrice}}</td>
-          <th>前一天收盘价</th>
-          <td>{{this.TData.yclose}}</td>
-        </tr>
-        <tr>
-          <th>实时买入价格</th>
-          <td>{{this.TData.price1}}</td>
-          <th>实时卖出价格</th>
-          <td>{{this.TData.price2}}</td>
-        </tr>
-        <tr>
           <th>行权价格</th>
           <td>{{this.TData.k}}</td>
+        </tr>
+        <tr>
           <th>实时价格</th>
           <td>{{this.TData.realTimePrice}}</td>
         </tr>

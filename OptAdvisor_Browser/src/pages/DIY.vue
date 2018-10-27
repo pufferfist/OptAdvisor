@@ -60,7 +60,7 @@
           <Card style="margin:10px 0;">
             <p slot="title">
               已选择的组合
-              <sapn style="font-weight: normal;font-size: 10px">(正买负卖)</sapn>
+              <!--<sapn style="font-weight: normal;font-size: 10px">(正买负卖)</sapn>-->
             </p>
             <Row >
               <div v-if="leftValue.length === 0 && rightValue.length === 0">
@@ -164,14 +164,12 @@
                 <td>{{this.resultTable.cost}}</td>
                 <th>保证金</th>
                 <td>{{this.resultTable.bond}}</td>
-                <th>EM</th>
-                <td>{{this.resultTable.em}}</td>
                 <th>beta</th>
                 <td>{{this.resultTable.beta}}</td>
-              </tr>
-              <tr>
                 <th>delta</th>
                 <td>{{this.resultTable.z_delta}}</td>
+              </tr>
+              <tr>
                 <th>gamma</th>
                 <td>{{this.resultTable.z_gamma}}</td>
                 <th>vega</th>
@@ -183,7 +181,7 @@
               </tr>
             </table>
             <div id="myChart" style="width: 100%;height: 300px"></div>
-            <Page :total="20" prev-text="Previous" next-text="Next" @on-change="ChangePage" />
+            <Page :total="20" :current=currentPreview prev-text="Previous" next-text="Next" @on-change="ChangePage" />
             <Spin v-if="showPreview" fix>
               <Icon type="ios-loading" size=18 class="demo-spin-icon-load"></Icon>
               <div>加载中</div>
@@ -240,7 +238,8 @@
           showPreview:false,
           interval: Number,
           currentPage:1,
-          graphTitle:''
+          graphTitle:'',
+          currentPreview:1
 
         }
       },
@@ -266,6 +265,7 @@
       },
       methods: {
         ChangePage(page){
+          this.currentPreview=page
             if(page=='1'){
               this.line1=this.graph1[0]
               this.line2=this.graph1[1]
@@ -644,6 +644,7 @@
           return year+"-"+month+"-"+(Array(2).join(0)+day).slice(-2)
         },
         preview(){
+          this.ChangePage(1)
           this.showPreview=true
           this.axios.post('/backend/recommend/customPortfolio',{options:this.getOptions()})
             .then(re=>{

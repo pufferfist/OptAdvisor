@@ -99,12 +99,13 @@
                   else if(data.option.type=='0'){
                     forms.type='卖出'
                   }
-                  if(data.option.cp=='1'){
-                    forms.cp='看涨'
-                  }
-                  else if(data.option.cp=='-1'){
-                    forms.cp='看跌'
-                  }
+                  // if(data.option.cp=='1'){
+                  //   forms.cp='看涨'
+                  // }
+                  // else if(data.option.cp=='-1'){
+                  //   forms.cp='看跌'
+                  // }
+                  forms.iNum=data.iNum
                   this.$refs.result.$refs.option_group.TData=forms
 
                   //2.填充预期最大亏损值
