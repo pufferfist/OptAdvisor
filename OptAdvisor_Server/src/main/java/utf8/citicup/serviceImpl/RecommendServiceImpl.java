@@ -1369,11 +1369,8 @@ public class RecommendServiceImpl implements RecommendService {
                 maxLoss = temp;
                 rtn = i;
             }
-//            logger.info("temp is " + temp);
-//            logger.info("iPrice1 is " + iPrice1);
 
         }
-//        logger.info("maxLoss is " + maxLoss);
         return rtn;
     }
 
@@ -1381,11 +1378,9 @@ public class RecommendServiceImpl implements RecommendService {
 //        logger.info("step into hedgingCalculate");
         int N = (int)(N0 * a);
         double iK = I.getK();
-//        logger.info("iK is " + iK);
 
         double iDelta = I.getDelta();
         int iNum = (int)Math.ceil(N / (10000 * Math.abs(iDelta)));
-//        logger.info("iNum is " + iNum);
         double iPrice1 = I.getPrice1();
 
         List<Double> loss1 = new ArrayList<>();
@@ -1396,17 +1391,14 @@ public class RecommendServiceImpl implements RecommendService {
         for(int i=0; i<length; i++){
             double temp = (double)(i)/100;
             abscissa.add(temp);
-//            logger.info("i is" + temp);
             loss1.add(N0 * (pAsset - temp));
 
             Double temp1 = N*pAsset - (iNum * 10000) * Options(-1, temp, iK) - N* temp + iNum *10000 * iPrice1 + (N0-N)*(pAsset - temp);
             Double temp2 = N*pAsset - (iNum * 10000 - N) * (iK - temp) - N* iK + iNum *10000 *iPrice1 + (N0-N)*(pAsset - iK);
             if(temp > iK){
-                loss2.add(temp1);
-//                logger.info("temp1 is " + temp1);
+                loss2.add(temp1/(N0 * S0));
             }else {
-                loss2.add(temp2);
-//                logger.info("temp2 is " + temp2);
+                loss2.add(temp2/(N0 * S0));
             }
         }
 
