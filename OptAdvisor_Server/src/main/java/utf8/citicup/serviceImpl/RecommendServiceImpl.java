@@ -606,11 +606,10 @@ public class RecommendServiceImpl implements RecommendService {
         assertReturns(maxGoalD);
         Map<Double, Double> assertPrice2Profit = Double2Map(this.S, doubles2Doubles(maxGoalD.C_new));
         Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
-        Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD.optionCombination);
+        Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD);
 
         Map<Double, Double> second = getSecondGraph(maxGoalD);
 
-        System.out.print(second);
 
         while (removePointsFromProfit2Probability(profit2Probability));
 
@@ -1191,7 +1190,7 @@ public class RecommendServiceImpl implements RecommendService {
         goal.returnOnAssets = (goal.E + (M0 - M) * r * Math.ceil(t / 30.0) / 12) / M0;
     }
 
-    private Map<Double, Double> getHistoryProfit2Probability(Option[] options){
+    private Map<Double, Double> getHistoryProfit2Probability(structD maxD){
         Map<Double, Double> TFrequencyDistribution;
         TFrequencyDistribution = this.frequencyDistribution.get(this.T);
         List<Double> needS = new ArrayList<>();
@@ -1200,7 +1199,7 @@ public class RecommendServiceImpl implements RecommendService {
             needS.add(s);
         }
         List <double[]> C = new ArrayList<>();
-        for (Option option : options) {
+        for (Option option : maxD.optionCombination) {
             double price = option.getPrice1();
             if (option.getType() < 0)
                 price = option.getPrice2();
@@ -1214,10 +1213,10 @@ public class RecommendServiceImpl implements RecommendService {
         {
             C_new[i] = 0;
             for(int j = 0; j < C.size(); j++){
-                C_new[i] += options[j].getType() * C.get(j)[i];
+                C_new[i] += maxD.optionCombination[j].getType() * C.get(j)[i];
             }
             temp.add(C_new[i]);
-            rtn.put(C_new[i], TFrequencyDistribution.values().toArray(new Double[0])[i]);
+            rtn.put(C_new[i] / maxD.p0, TFrequencyDistribution.values().toArray(new Double[0])[i]);
         }
         return rtn;
     }
@@ -1472,7 +1471,7 @@ public class RecommendServiceImpl implements RecommendService {
 
         Map<Double, Double> assertPrice2Profit = Double2Map(this.S, doubles2Doubles(maxGoalD.C_new));
         Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
-        Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD.optionCombination);
+        Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD);
 
         System.out.println((assertPrice2Profit));
         System.out.println((profit2Probability));
