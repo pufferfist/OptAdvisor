@@ -695,6 +695,13 @@ public class RecommendServiceImpl implements RecommendService {
                 preI = i;
             }
         }
+
+        Double[] keys = rtn.keySet().toArray(new Double[0]);
+        for(double key: keys){
+            if(rtn.containsKey(key) && rtn.get(key) < Math.pow(10,-4)){
+                rtn.remove(key);
+            }
+        }
         return  rtn;
     }
 
@@ -1482,14 +1489,13 @@ public class RecommendServiceImpl implements RecommendService {
             returnOnAssets[i] = (maxGoalD.C_new[i] + (M0 - (maxGoalD.p0 + maxGoalD.pb)) * this.r) / M0;
         }
         Map<Double, Double> assertPrice2Profit = Double2Map(this.S, doubles2Doubles(returnOnAssets));
-        Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
         Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD);
 
-        Map<Double, Double> second = getSecondGraph(maxGoalD);
-        while (removePointsFromProfit2Probability(profit2Probability));
+        Map<Double, Double> second = new TreeMap<>();
+        if(type == 2)
+            second = getSecondGraph(maxGoalD);
 
         System.out.println((assertPrice2Profit));
-        System.out.println((profit2Probability));
         System.out.println((historyProfit2Probability));
 
         double M = 50000;
