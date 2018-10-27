@@ -8,7 +8,7 @@
           </div>
         </Col>
         <Col span="11" offset="2">
-          <div style="text-align: left; border-bottom: 4px solid  #4bbc7c;">
+          <div style="text-align: left;margin:5px 0; border-bottom: 4px solid  #4bbc7c;">
             看跌合约
           </div>
         </Col>
@@ -42,11 +42,11 @@
             </Col>
           </Row>
         </Col>
-        <Col :span="2" style="color: grey">
+        <Col :span="2" style="color: grey;margin:5px 0;">
             行权价
         </Col>
         <Col span="11" >
-          <Row style="text-align: left; color: grey">
+          <Row style="text-align: left; margin:5px 0; color: grey">
             <Col span="3">
               买量
             </Col>
@@ -150,72 +150,10 @@
         </div>
         <Row>
           <Col style="margin-top: 25px;min-width:300px;" offset="1" span="6">
-            <table>
-              <thead>
-                <th style="width:150px;"></th>
-                <th></th>
-              </thead>
-              <tbody style="line-height:30px;">
-                <tr>
-                  <td>交易代码</td>
-                  <td>{{SO.code}}</td>
-                </tr>
-                <tr>
-                  <td>理论价值</td>
-                  <td>{{parseFloat(SO.value) !== 0 ? SO.value : '--'}}</td>
-                </tr>
-                <tr>
-                  <td>价值状态</td>
-                  <td>{{SOActual.priceMark}}</td>
-                </tr>
-                <tr>
-                  <td style="text-align: right; padding-right:40px; ">内在价值</td>
-                  <td>{{SOActual.innerPrice}}</td>
-                </tr>
-                <tr>
-                  <td style="text-align: right; padding-right:40px; ">时间价值</td>
-                  <td>{{SOActual.timeP}}</td>
-                </tr>
-                <tr>
-                  <td>成交量</td>
-                  <td>{{SO.count}}</td>
-                </tr>
-                <tr>
-                  <td>Delta</td>
-                  <td>{{SO.delta}}</td>
-                </tr>
-                <tr>
-                  <td>Gamma</td>
-                  <td>{{SO.gamma}}</td>
-                </tr>
-                <tr>
-                  <td>Theta</td>
-                  <td>{{SO.theta}}</td>
-                </tr>
-                <tr>
-                  <td>Vega</td>
-                  <td>{{SO.vega}}</td>
-                </tr>
-                <tr>
-                  <td>隐含波动率</td>
-                  <td>{{SO.volatility}}</td>
-                </tr>
-                <tr>
-                  <td>最高价</td>
-                  <td>{{SO.high}}</td>
-                </tr>
-                <tr>
-                  <td>最低价</td>
-                  <td>{{SO.low}}</td>
-                </tr>
-              </tbody>
-            </table>
+            <option-detail :time="time" :optionCode="selectedItem.id"/>
           </Col>
           <Col offset="2" span="13">
-              <div style="text-align:left">
-                <div id="selecter"> <span  v-on:click="handleClick('line')" v-bind:class="{ active: lineActive }" class="selectItem" >分时线</span> <span  v-on:click="handleClick('day')" v-bind:class="{ active: dayActive }" class="selectItem">日 k 线</span> </div>
-                <div id="myEchart" ref="myechart"></div>
-              </div>
+              <option-chart :optionCode="selectedItem.id" />
           </Col>
         </Row>
       </div>
@@ -397,55 +335,55 @@
             <Col offset="1" span="10">
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买5</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[4].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[4].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[4].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[4].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买4</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[3].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[3].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[3].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[3].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买3</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[2].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[2].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[2].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[2].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买2</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[1].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[1].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[1].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[1].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 买1</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.buyList[0].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.buyList[0].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[0].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[0].price}}</p></Col>
               </Row>
             </Col>
             <Col offset="3" span="9">
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖5</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[0].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[0].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[0].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[0].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖4</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[1].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[1].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[1].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[1].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖3</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[2].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[2].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[2].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[2].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖2</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[3].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[3].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[3].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[3].price}}</p></Col>
               </Row>
               <Row class="dataList" >
                 <Col span="8"><p style=" text-align: left;"> 卖1</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{selectedItem.saleList[4].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{selectedItem.saleList[4].price}}</p></Col>
+                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[4].volumes}}</p></Col>
+                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[4].price}}</p></Col>
               </Row>
             </Col>
           </Row>
@@ -456,10 +394,12 @@
 
 <script>
     const echarts = require("echarts");
-    import MonthSelecter from "../components/MonthSelecter/MonthSelecter";    
+    import MonthSelecter from "../components/50ETFOption/MonthSelecter";
+    import OptionDetail from "../components/50ETFOption/OptionDetail";
+    import OptionChart from "../components/50ETFOption/OptionChart";
     export default {
         name: "Display50ETFOption",
-        components: {MonthSelecter},
+        components: {MonthSelecter, OptionDetail, OptionChart},
         data() {
           return {
             time: {
@@ -469,145 +409,9 @@
             },
             upList: [],
             downList: [],
-            OptionsUpList: [{
-                    id: 0,
-                    buyVolumes: 1,
-                    buyPrice: 0,
-                    newPrice:0,
-                    salePrice: 0,
-                    saleVolumes: 0,
-                    openInterest:0,
-                    increase: 0,
-                    strikePrice: 0,
-                    isActual: -1,
-                    closePrice:0,
-                    openPrice: 0,
-                    hardenPrice: 0,
-                    limitPrice: 0,
-                    saleList: [
-                      {
-                        id: 'sale5',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 0,
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 0,
-                        price:0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'sale2',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'sale1',
-                        price: 0,
-                        volumes:0,
-                      },
-                    ],
-                    buyList: [
-                      {
-                        id: 'buy1',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'buy2',
-                        price: 0,
-                        volumes:0,
-                      },
-                      {
-                        id: 'buy3',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'buy4',
-                        price:0,
-                        volumes:0,
-                      },
-                      {
-                        id: 'buy5',
-                        price: 0,
-                        volumes: 0,
-                      },
-                    ],
-                    time: 0,
-                    isMain: 0,
-                    status: 0,
-                    targetType: 0,
-                    targetShares: 0,
-                    name:0,
-                    amplitude: 0,
-                    hightPrice: 0,
-                    lowPrice:0,
-                    volumes:0,
-                    turnover:0,
-                  }],
+            OptionsUpList: [],
             OptionsDownList: [],
-            selectedItem: {
-              name:'',
-              saleList: [
-                      {
-                        id: 'sale5',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 0,
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 0,
-                        price:0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'sale2',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'sale1',
-                        price: 0,
-                        volumes:0,
-                      },
-                    ],
-              buyList: [
-                      {
-                        id: 'buy1',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'buy2',
-                        price: 0,
-                        volumes:0,
-                      },
-                      {
-                        id: 'buy3',
-                        price: 0,
-                        volumes: 0,
-                      },
-                      {
-                        id: 'buy4',
-                        price:0,
-                        volumes:0,
-                      },
-                      {
-                        id: 'buy5',
-                        price: 0,
-                        volumes: 0,
-                      },
-                    ],
-            },
+            selectedItem: {},
             SO:{
               code: '0'
             },
@@ -620,35 +424,14 @@
             timeout: 1,
             isLoading: true,
             mainDownOption: {code: '0'},
-            mainUpOption: {code: '0'}
+            mainUpOption: {code: '0'},
+            saleList: [{price:0, volume:0},{price:0, volume:0},{price:0, volume:0},{price:0, volume:0},{price:0, volume:0},],
+            buyList: [{price:0, volume:0},{price:0, volume:0},{price:0, volume:0},{price:0, volume:0},{price:0, volume:0},]
           }
         },
 
         computed: {
-          SOActual: function() {
-            console.log(this.SO.price,3333333);
-            
-            const POC  = this.SO.code[6];
-            if(POC === 'C') {
-              const priceMark =  this.time.ETFPrice - parseFloat(this.SO.price);
-              const innerPrice = priceMark > 0 ? (priceMark).toFixed(4) : 0;
-              const timeP = parseFloat(this.SO.timeP) - innerPrice > 0 ?( parseFloat(this.SO.timeP) - innerPrice).toFixed(4) : 0; 
-              return {
-                priceMark: priceMark > 0? '实值' : priceMark <0 ? '虚值' : '平值',
-                innerPrice: innerPrice == 0? '-' : innerPrice,
-                timeP : timeP == 0 ? '-' : timeP,
-              }
-            } else {
-              const priceMark =  this.time.ETFPrice - parseFloat(this.SO.price);
-              const innerPrice = priceMark < 0 ? -priceMark.toFixed(4) : 0
-              const timeP = (parseFloat(this.SO.timeP) - innerPrice).toFixed(4); 
-              return {
-                priceMark: priceMark < 0? '实值' : priceMark >0 ? '虚值' : '平值',
-                innerPrice: innerPrice == 0? '-' : innerPrice,
-                timeP : timeP == 0 ? '-' : timeP,
-              }
-            }
-          },
+          
           mainUpOptionActual: function() {
             const POC  = this.mainUpOption.code[6];
             if(POC === 'C') {
@@ -673,8 +456,6 @@
             }
           },
           mainDownOptionActual: function() {
-            console.log(this.mainDownOption.price,444444444444);
-            
             const POC  = this.mainDownOption.code[6];
             if(POC === 'C') {
               const priceMark =  this.time.ETFPrice - parseFloat(this.mainDownOption.price);
@@ -702,7 +483,7 @@
           selectedTime(e) {
             this.time = e;
             this.getOptionsList(e.date);
-            this.selectedItem = { name: ''};
+            this.selectedItem = {id:'', name: ''};
             this.isLoading = true;
           },
           getOptionsList(time) {
@@ -909,11 +690,10 @@
               this.OptionsDownList = tempOptionsDownList;
               if(this.selectedItem.name === '') {
                 this.selectedItem = tempOptionsUpList[0];
-                this.handleClick('line');
+                this.saleList = tempOptionsUpList[0].saleList;
+                this.buyList = tempOptionsUpList[0].buyList;
               }
-              this.getOptionData(this.selectedItem.id);
               this.getMainOptionData();
-              this.getChartData();
               }
             );
           },
@@ -924,11 +704,8 @@
             const tempmainDownOption = this.OptionsDownList.find(item => {
                 return item.isMain!=='0';
             });
-            console.log(tempmainUpOption, 11, tempmainDownOption);
-            
             this.axios.get('/sinaOption/list='+ tempmainUpOption.id.replace('hq_str_CON_OP','CON_ZL'))
                 .then(res => {
-                  console.log(res.data.split(','));
                   const tempOption = {};
                   [, , , ,tempOption.openInterest,tempOption.openInterestRate, tempOption.new, tempOption.increase, tempOption.buyPrice, tempOption.salePrice, tempOption.high, tempOption.low, tempOption.volume, tempOption.delta , tempOption.gamma ,tempOption.theta, tempOption.vega, tempOption.volatility, tempOption.code, tempOption.price, tempOption.value] = res.data.split(',');
                   this.mainUpOption = tempOption;
@@ -936,70 +713,20 @@
             this.axios.get('/sinaOption/list='+ tempmainDownOption.id.replace('hq_str_CON_OP','CON_ZL'))
                 .then(res => {
                   const tempOption = {};
-                  console.log(res.data.split(','));
                   
                   [, , , ,tempOption.openInterest,tempOption.openInterestRate, tempOption.new, tempOption.increase, tempOption.buyPrice, tempOption.salePrice, tempOption.high, tempOption.low, tempOption.volume, tempOption.delta , tempOption.gamma ,tempOption.theta, tempOption.vega, tempOption.volatility, tempOption.code, tempOption.price, tempOption.value] = res.data.split(',');
                   this.mainDownOption = tempOption;
                 })
           },
-          getOptionData(id) {
-            this.axios
-              .get('/sinaOption/list='+id.replace('hq_str_','').replace('OP','SO'))
-              .then(res => {
-                const tempSO = {};
-                [, , , ,tempSO.count,tempSO.delta, tempSO.gamma, tempSO.theta, tempSO.vega, tempSO.volatility, tempSO.high, tempSO.low, tempSO.code, tempSO.price , tempSO.timeP ,tempSO.value] = res.data.split(',');
-                this.SO = tempSO;
-            })
-          },
-          getChartData(needDay=false) {
-            const name = this.selectedItem.id.replace('hq_str_','');
-            if(this.lineActive) {
-              this.axios.get('/sinaTime/StockOptionDaylineService.getOptionMinline', {
-              params: {
-                symbol: name,
-                random: new Date().getTime(),
-              }
-              }).then(res => {
-                let data = res.data.result.data;
-                let count = 0;
-                data.find((item) => {
-                  if(parseFloat(item.a) === 0) {
-                    count++;
-                    return false;
-                  } else {
-                    return true
-                  }
-                })
-                data.splice(0, count);
-                this.lineData =data;
-                this.chartFresh();       
-
-              });
-            }
-            if(!this.dayKData.length || needDay) {
-              this.axios.get('/sinaTime/StockOptionDaylineService.getSymbolInfo', {
-                params: {
-                  symbol: name,
-                  random: new Date().getTime(),
-                }
-              }).then(res => {
-                this.dayKData = res.data.result.data;
-              })
-            }
-          },
           handleOptionChange(e) {
             this.selectedItem = e;
-            console.log(e);
-            
-            this.getOptionData(this.selectedItem.id);
-            this.getChartData(true);
-            this.handleClick('line');
+            this.saleList = e.saleList;
+            this.buyList = e.buyList;
             this.scrollInterval = setInterval(()=> {
               const scrollTop = document.scrollingElement.scrollTop;
               const offsetTop = this.$refs.Contracting.offsetTop;
               const clientHeight = this.$refs.Contracting.clientHeight;
               const innerHeight = window.innerHeight;
-
               if(scrollTop >= offsetTop + clientHeight - innerHeight) {
                 clearInterval(this.scrollInterval);
                 return ;
@@ -1008,448 +735,6 @@
               document.scrollingElement.scrollTop = speed + document.scrollingElement.scrollTop;
             }, 15);
           },
-          handleClick(ms) {
-            const that = this;
-            this.myChart.showLoading();
-            if (ms === "day") {
-              this.dayActive = true;
-              this.lineActive = false;
-              clearTimeout(this.timeout);
-              this.timeout = setTimeout(function(){
-                that.initDayK();
-              },1500);
-            } else {
-              this.dayActive = false;
-              this.lineActive = true;
-              clearTimeout(this.timeout);
-              this.timeout = setTimeout(this.initLine, 1000);
-            }   
-          },
-          initLine() {
-            const that = this;
-            const XDate = this.lineData.map(item => {
-                   return item.i;
-                  })
-            const priceList = this.lineData.map((item) => {
-              return item.p;
-            });
-            const volumeList = this.lineData.map((item) => {
-              return item.v;
-            })            
-            this.myChart.setOption({
-                color:['black'],
-                tooltip: {
-                  trigger: "axis",
-                  axisPointer: {
-                    type: "cross"
-                  },
-                  backgroundColor: "rgba(245, 245, 245, 0.8)",
-                  borderWidth: 1,
-                  borderColor: "#ccc",
-                  padding: 10,
-                  textStyle: {
-                    color: "#000"
-                  },
-                  extraCssText: "width: 170px",
-                  formatter(params, ticket, callback) {
-                    return `${params[0].name}<br/> <span style="color:${
-                      params[0].color
-                    }">● </span>${params[0].seriesName}:${params[0].value}<br />
-                                            <span style="color:${
-                                              params[1].color
-                                            }">● </span>${params[1].seriesName}:${
-                      params[1].value
-                    }`;
-                  }
-                },
-                axisPointer: {
-                  link: { xAxisIndex: "all" }
-                },
-                grid: [
-                  {
-                    left: "10%",
-                    right: "8%",
-                    height: "50%"
-                  },
-                  {
-                    left: "10%",
-                    right: "8%",
-                    bottom: "20%",
-                    height: "15%"
-                  }
-                ],
-                xAxis: [
-                  {
-                    type: "category",
-                    data: XDate,
-                  },
-                  {
-                    gridIndex: 1,
-                    type: "category",
-                    data: XDate,
-                    scale: true,
-                    boundaryGap: false,
-                    axisLine: { onZero: false },
-                    axisTick: { show: false },
-                    splitLine: { show: false },
-                    axisLabel: { show: false },
-                    splitNumber: 20
-                  }
-                ],
-                yAxis: [
-                  {
-                    name: "价格",
-                    type: "value",
-                    position: "left",
-                    max: function(value) {
-                      if(that.lineMiddle) {
-                        const max =
-                          value.max + value.min >= 2 * that.lineMiddle
-                            ? value.max
-                            : 2 * that.lineMiddle - value.min;
-                        return max.toFixed(4);  
-                      } else {
-                        return value.max.toFixed(4);
-                      }
-
-                    },
-                    min: function(value) {
-                      if (that.lineMiddle ) {
-                        const min =
-                          value.max + value.min >= 2 * that.lineMiddle
-                            ? 2 * that.lineMiddle - value.max
-                            : value.min;
-                        return min.toFixed(4);
-                      } else {
-                        return value.min.toFixed(4)
-                      }
-                    }
-                  },
-                  {
-                    scale: true,
-                    gridIndex: 1,
-                    splitNumber: 2,
-                    axisLabel: { show: false },
-                    axisLine: { show: false },
-                    axisTick: { show: false },
-                    splitLine: { show: false }
-                  }
-                ],
-                dataZoom: [
-                  {
-                    type: "inside",
-                    xAxisIndex: [0, 1],
-                    start: 0,
-                    end: 100
-                  },
-                  {
-                    show: true,
-                    xAxisIndex: [0, 1],
-                    type: "slider",
-                    top: "85%",
-                    start: 0,
-                    end: 100
-                  }
-                ],
-        
-                series: [
-                  {
-                    name: "价格",
-                    data: priceList,
-                    type: "line",
-                    itemStyle: {
-                      color: 'interval'
-                    },
-                    markLine: {
-                      name: "昨日收盘价",
-                      lineStyle: {
-                        type: "solid"
-                      },
-                      label: {
-                        data: 'heh'
-                      },
-                      data: [
-                        {
-                          yAxis: 2.45,
-                        }
-                      ]
-                    }
-                  },
-                  {
-                    xAxisIndex: 1,
-                    yAxisIndex: 1,
-                    name: "成交量",
-                    data: volumeList,
-                    type: "bar",
-                    itemStyle: {
-                      color: '#25258e',
-                      opacity: 0.5,
-                    },
-                  },
-                ]
-              },true);
-            window.addEventListener("resize", function() {
-                that.myChart.resize();
-              });
-            this.myChart.hideLoading();
-          },
-          initDayK() {
-            const data = {
-              values: [],
-              dates: [],
-              volumes: [],
-            }
-            function calculateMA(dayCount, data) {
-              const result = [];
-              for (let i = 0, len = data.values.length; i < len; i++) {
-                      if (i < dayCount) {
-                          result.push('-');
-                          continue;
-                      }
-                      let sum = 0;
-                      for (let j = 0; j < dayCount; j++) {
-                          sum += data.values[i - j][1];
-                      }
-                      result.push(+(sum / dayCount).toFixed(3));
-                  }
-                  return result;
-              };
-            this.dayKData.map(item => {
-              data.dates.push(item.d);
-              data.values.push([
-                parseFloat(item.o), parseFloat(item.c), parseFloat(item.l), parseFloat(item.h), 
-              ]);
-              data.volumes.push(parseInt(item.v))
-            });
-            this.dayKOption = {
-              animation: false,
-              legend: {
-                  bottom: 10,
-                  left: 'center',
-                  data: [, 'MA5', 'MA10', 'MA20', 'MA30']
-              },
-              tooltip: {
-                  trigger: 'axis',
-                  axisPointer: {
-                      type: 'cross'
-                  },
-                  backgroundColor: "rgba(245, 245, 245, 0.8)",
-                  borderWidth: 1,
-                  borderColor: "#ccc",
-                  padding: 10,
-                  textStyle: {
-                    color: "#000"
-                  },
-                  extraCssText: "width: 170px",
-                  formatter(params, ticket, callback) {
-                    let str = '' ;
-                    str  += params[0].name;
-                    params.map((item)=> {
-                      let temp = '';
-                      if(item.seriesType === "candlestick") {
-                        str += `<br />${item.marker}<span style="font-size: 15px;">${item.seriesName}</span>
-                                <br />开盘:${item.value[1]}
-                                <br />收盘:${item.value[2]}
-                                <br />最低:${item.value[3]}
-                                <br />最高:${item.value[4]}`
-                      } else if(item.seriesName === 'Volumn'){
-                        str += `<br />${item.marker}成交量:${item.value}`
-                      } else {
-                        str += `<br />${item.marker}${item.seriesName}:${item.value}` 
-                      }
-                    });
-                    return str;
-                }
-              },
-              axisPointer: {
-                  link: {xAxisIndex: 'all'},
-                  label: {
-                      backgroundColor: '#777'
-                  }
-              },
-              grid: [
-                  {
-                      left: '10%',
-                      right: '8%',
-                      height: '50%'
-                  },
-                  {
-                      left: '10%',
-                      right: '8%',
-                      bottom: '20%',
-                      height: '15%'
-                  }
-              ],
-              xAxis: [
-                  {
-                      type: 'category',
-                      data: data.dates,
-                      scale: true,
-                      boundaryGap : false,
-                      axisLine: {onZero: false},
-                      splitLine: {show: false},
-                      splitNumber: 20,
-                      min: 'dataMin',
-                      max: 'dataMax',
-                      axisPointer: {
-                          z: 100
-                      }
-                  },
-                  {
-                      type: 'category',
-                      gridIndex: 1,
-                      data: data.dates,
-                      scale: true,
-                      boundaryGap : false,
-                      axisLine: {onZero: false},
-                      axisTick: {show: false},
-                      splitLine: {show: false},
-                      axisLabel: {show: false},
-                      splitNumber: 20,
-                      min: 'dataMin',
-                      max: 'dataMax',
-
-                  }
-              ],
-              yAxis: [
-                  {
-                      scale: true,
-                      splitArea: {
-                          show: true
-                      }
-                  },
-                  {
-                      scale: true,
-                      gridIndex: 1,
-                      splitNumber: 2,
-                      axisLabel: {show: false},
-                      axisLine: {show: false},
-                      axisTick: {show: false},
-                      splitLine: {show: false}
-                  }
-              ],
-              dataZoom: [
-                  {
-                      type: 'inside',
-                      xAxisIndex: [0, 1],
-                      start: 50,
-                      end: 100
-                  },
-                  {
-                      show: true,
-                      xAxisIndex: [0, 1],
-                      type: 'slider',
-                      top: '85%',
-                      start: 50,
-                      end: 100
-                  }
-              ],
-              series: [
-                  {
-                      name: this.selectedItem.name,
-                      type: 'candlestick',
-                      data: data.values,
-                      itemStyle: {
-                          normal: {
-                              color0: '#FA0000',
-                              color: '#06B800',
-                              borderColor: null,
-                              borderColor0: null
-                          }
-                      },
-                  },
-                  {
-                      name: 'MA5',
-                      type: 'line',
-                      data: calculateMA(5, data),
-                      smooth: true,
-                      lineStyle: {
-                          normal: {opacity: 0.5}
-                      }
-                  },
-                  {
-                      name: 'MA10',
-                      type: 'line',
-                      data: calculateMA(10, data),
-                      smooth: true,
-                      lineStyle: {
-                          normal: {opacity: 0.5}
-                      }
-                  },
-                  {
-                      name: 'MA20',
-                      type: 'line',
-                      data: calculateMA(20, data),
-                      smooth: true,
-                      lineStyle: {
-                          normal: {opacity: 0.5}
-                      }
-                  },
-                  {
-                      name: 'MA30',
-                      type: 'line',
-                      data: calculateMA(30, data),
-                      smooth: true,
-                      lineStyle: {
-                          normal: {opacity: 0.5}
-                      }
-                  },
-                  {
-                      name: 'Volumn',
-                      type: 'bar',
-                      xAxisIndex: 1,
-                      yAxisIndex: 1,
-                      data: data.volumes
-                  }
-              ]
-            };
-            this.myChart.setOption(this.dayKOption,true);
-            this.myChart.hideLoading();
-
-          },
-          chartFresh() {
-            if(this.dayActive){
-              return false;
-            }
-            const that = this;
-            const XDate = this.lineData.map(item => {
-                   return item.i;
-                  })
-            const priceList = this.lineData.map((item) => {
-              return item.p;
-            });
-            const volumeList = this.lineData.map((item) => {
-              return item.v;
-            });
-            this.myChart.setOption({
-              xAxis: [
-                {
-                  data: XDate,
-                },
-                {
-                  data: XDate,
-                }
-              ],
-              series: [
-                {
-                  data: priceList,
-                },
-                {
-                  data: volumeList,
-                }
-              ]
-            });
-          },
-        },
-        created:function () {
-
-        },
-        watch: {
-
-        },
-        mounted() {
-         this.myChart = echarts.init(this.$refs.myechart);
-         this.initLine();
         },
         destroyed() {
           clearInterval(this.Interval);
@@ -1490,37 +775,5 @@
     right: 10%;
     top: 10%;
   }
-  #selecter {
-    font-size: 14px;
-  display: inline-block;
-  padding: 4px;
-  border: 1px solid #e1e1e1;
-  background-color: #fff;
-  border-radius: 2px;
-  margin: 10px;
-}
-.selectItem {
-  display: inline-block;
-  padding: 4px 12px;
-  cursor: pointer;
-}
-.selectItem:hover {
-  background-color: #e1e1e1;
-}
-.active {
-  background-color: #25258e !important;
-  color: white;
-}
-#myEchart{
-    height: 450px;
-  }
-.dataList {
-  border-top: 1px dotted grey;
-  line-height: 30px;
-}
-@media screen and (max-width: 1050px) {
-  #myEchart{
-    height: 300px;
-  }
-}
+
 </style>
