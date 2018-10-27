@@ -36,6 +36,7 @@ public class PortfolioController {
 
         portfolio.setOptions(options);
         portfolio.setType(type);
+        portfolio.setBuildTime(new java.sql.Timestamp(new java.util.Date().getTime()));
         if(listOfStringList != null) {
             if (listOfStringList.length > 1)
                 portfolio.transformStringlistToString(listOfStringList[1]);

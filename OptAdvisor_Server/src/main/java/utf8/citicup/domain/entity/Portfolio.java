@@ -3,6 +3,7 @@ package utf8.citicup.domain.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 import static utf8.citicup.domain.common.Type.RECOMMEND_PORTFOLIO;
 
@@ -24,6 +25,7 @@ public class Portfolio {
 
     private Enum type; //type指1：资产配置组合 2：套期保值组合 3：DIY组合
     private boolean trackingStatus;
+    private Timestamp buildTime;
 
     //期权组合和DIY要有的东西
     private double M0;//警报需要
@@ -354,5 +356,13 @@ public class Portfolio {
 
     public double getiNum() {
         return iNum;
+    }
+
+    public Timestamp getBuildTime() {
+        return buildTime;
+    }
+
+    public void setBuildTime(Timestamp buildTime) {
+        this.buildTime = buildTime;
     }
 }

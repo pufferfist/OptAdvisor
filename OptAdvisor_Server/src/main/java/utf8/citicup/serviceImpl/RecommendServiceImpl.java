@@ -1473,6 +1473,9 @@ public class RecommendServiceImpl implements RecommendService {
         Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
         Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD);
 
+        Map<Double, Double> second = getSecondGraph(maxGoalD);
+        while (removePointsFromProfit2Probability(profit2Probability));
+
         System.out.println((assertPrice2Profit));
         System.out.println((profit2Probability));
         System.out.println((historyProfit2Probability));
@@ -1487,8 +1490,8 @@ public class RecommendServiceImpl implements RecommendService {
                 maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta,
                 new String[][]{Doubles2Strings(assertPrice2Profit.keySet().toArray(new Double[0])),
                         Doubles2Strings(assertPrice2Profit.values().toArray(new Double[0]))},
-                new String[][]{Doubles2Strings(profit2Probability.keySet().toArray(new Double[0])),
-                        Doubles2Strings(profit2Probability.values().toArray(new Double[0]))},
+                new String[][]{Doubles2Strings(second.keySet().toArray(new Double[0])),
+                        Doubles2Strings(second.values().toArray(new Double[0]))},
                 new String[][]{Doubles2Strings(historyProfit2Probability.keySet().toArray(new Double[0])),
                         Doubles2Strings(historyProfit2Probability.values().toArray(new Double[0]))},M, k);
     }
