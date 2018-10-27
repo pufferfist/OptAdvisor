@@ -611,20 +611,21 @@ public class RecommendServiceImpl implements RecommendService {
             returnOnAssets[i] = (maxGoalD.C_new[i] + (this.M0 - (maxGoalD.p0 + maxGoalD.pb)) * this.r) / this.M0;
         }
         Map<Double, Double> assertPrice2Profit = Double2Map(this.S, doubles2Doubles(returnOnAssets));
-        Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
+//        Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
         Map<Double, Double> historyProfit2Probability = getHistoryProfit2Probability(maxGoalD);
 
         Map<Double, Double> second = getSecondGraph(maxGoalD);
 
+        System.out.println(second);
 
-        while (removePointsFromProfit2Probability(profit2Probability));
+//        while (removePointsFromProfit2Probability(profit2Probability));
 
 //        System.out.println((assertPrice2Profit));
 //        System.out.println((profit2Probability));
 //        System.out.println((historyProfit2Probability));
         return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
-                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta,
+                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, maxGoalD.beta * ((maxGoalD.p0 + maxGoalD.pb) / this.M0),
                 new String[][]{Doubles2Strings(assertPrice2Profit.keySet().toArray(new Double[0])),
                         Doubles2Strings(assertPrice2Profit.values().toArray(new Double[0]))},
                 new String[][]{Doubles2Strings(second.keySet().toArray(new Double[0])),
@@ -668,16 +669,13 @@ public class RecommendServiceImpl implements RecommendService {
             }
         }
         d.C_new = C_new;
-        
-        double preRange = (((int)((d.C_new[0] / d.p0) * 100))/1) * 1 / 100.0;
+
+        double preRange = Math.floor((d.C_new[0] / d.p0) * 100) / 100.0;
         int preI = 0;
         Map<Double, Double> rtn = new TreeMap<>();
         for(int i = 1;i < d.C_new.length; i++){
-//            System.out.print(d.C_new[i]);
-//            System.out.print(' ');
-//            System.out.print(d.p0 );
-//            System.out.print(' ');
-            double range = (((int)((d.C_new[i] / d.p0) * 100))/1) * 1 / 100.0;
+            double range = Math.floor((d.C_new[i] / d.p0) * 100) / 100.0;
+
 //            System.out.println(range);
             if(preRange != range){
                 double sBegin = S1[preI];
@@ -689,10 +687,10 @@ public class RecommendServiceImpl implements RecommendService {
                 double result = Math.abs(this.normcdf(x1 / ((this.sigma1 + this.sigma2) / 2))
                         - this.normcdf(x2 / ((this.sigma1 + this.sigma2) / 2)));
 
-                if (rtn.containsKey(range))
-                    rtn.put(range, result + rtn.get(range));
+                if (rtn.containsKey(preRange))
+                    rtn.put(preRange, result + rtn.get(preRange));
                 else
-                    rtn.put(range, result);
+                    rtn.put(preRange, result);
                 preRange = range;
                 preI = i;
             }
@@ -1475,10 +1473,13 @@ public class RecommendServiceImpl implements RecommendService {
             addAttributesToDOption(maxGoalD.optionCombination[i]);
         }
 
+        if(type != 2){
+            M0 = maxGoalD.p0 + maxGoalD.pb;
+        }
         /*根据收益计算资产收益率*/
         double[] returnOnAssets = new double[maxGoalD.C_new.length];
         for(int i = 0;i < returnOnAssets.length;i++){
-            returnOnAssets[i] = (maxGoalD.C_new[i] + (this.M0 - (maxGoalD.p0 + maxGoalD.pb)) * this.r) / this.M0;
+            returnOnAssets[i] = (maxGoalD.C_new[i] + (M0 - (maxGoalD.p0 + maxGoalD.pb)) * this.r) / M0;
         }
         Map<Double, Double> assertPrice2Profit = Double2Map(this.S, doubles2Doubles(returnOnAssets));
         Map<Double, Double> profit2Probability = Double2Map(doubles2Doubles(maxGoalD.C_new), maxGoalD.probability);
@@ -1498,7 +1499,7 @@ public class RecommendServiceImpl implements RecommendService {
         }
         return new RecommendOption1(maxGoalD.optionCombination, maxGoalD.buyAndSell, maxGoalD.num, maxGoalD.p0,
                 maxGoalD.pb, maxGoalD.z_delta, maxGoalD.z_gamma, maxGoalD.z_vega, maxGoalD.z_theta, maxGoalD.z_rho,
-                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta,
+                maxGoalD.E / M, maxGoalD.returnOnAssets, maxGoalD.beta, maxGoalD.beta * ((maxGoalD.p0 + maxGoalD.pb) / M0),
                 new String[][]{Doubles2Strings(assertPrice2Profit.keySet().toArray(new Double[0])),
                         Doubles2Strings(assertPrice2Profit.values().toArray(new Double[0]))},
                 new String[][]{Doubles2Strings(second.keySet().toArray(new Double[0])),
