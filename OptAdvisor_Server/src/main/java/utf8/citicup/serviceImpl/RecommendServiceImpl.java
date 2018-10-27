@@ -695,6 +695,12 @@ public class RecommendServiceImpl implements RecommendService {
                 preI = i;
             }
         }
+
+        for(double key: rtn.keySet()){
+            if(rtn.get(key) < Math.pow(10,-4)){
+                rtn.remove(key);
+            }
+        }
         return  rtn;
     }
 
