@@ -220,6 +220,11 @@
           let myChart = this.$echarts.init(document.getElementById(graphname))
           // 绘制图表
           myChart.setOption({
+            title : {
+              text: title,
+              x: 'center',
+              align: 'right'
+            },
             tooltip: {
               trigger: 'axis',
               axisPointer: {
@@ -249,9 +254,7 @@
               type: 'bar',
               itemStyle:{
                 normal:{
-                  color: 'rgb(25, 191, 107)',
                   lineStyle: {
-                    color: 'rgb(25, 191, 107)',
                     width:2
                   },
                 }

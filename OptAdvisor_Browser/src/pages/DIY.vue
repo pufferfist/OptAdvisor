@@ -156,30 +156,33 @@
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
           <h3>组合表现展示&nbsp&nbsp<span style="font-size: 13px;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
           <div class="demo-spin-container2">
-            <table class="table3" style="margin: auto">
-              <tr>
-                <th>数量</th>
-                <td>{{this.resultTable.num}}</td>
-                <th>成本</th>
-                <td>{{this.resultTable.cost}}</td>
-                <th>保证金</th>
-                <td>{{this.resultTable.bond}}</td>
-                <th>beta</th>
-                <td>{{this.resultTable.beta}}</td>
-                <th>delta</th>
-                <td>{{this.resultTable.z_delta}}</td>
-              </tr>
-              <tr>
-                <th>gamma</th>
-                <td>{{this.resultTable.z_gamma}}</td>
-                <th>vega</th>
-                <td>{{this.resultTable.z_vega}}</td>
-                <th>theta</th>
-                <td>{{this.resultTable.z_theta}}</td>
-                <th>rho</th>
-                <td>{{this.resultTable.z_rho}}</td>
-              </tr>
-            </table>
+            <div style="background-color: #f8f8f9;margin-left: 10%;margin-right: 10%">
+              <table class="table3" style="margin: auto">
+                <tr>
+                  <th>数量</th>
+                  <td>{{this.resultTable.num}}</td>
+                  <th>成本</th>
+                  <td>{{this.resultTable.cost}}</td>
+                  <th>保证金</th>
+                  <td>{{this.resultTable.bond}}</td>
+                  <th>beta</th>
+                  <td>{{this.resultTable.beta}}</td>
+                  <th>delta</th>
+                  <td>{{this.resultTable.z_delta}}</td>
+                </tr>
+                <tr>
+                  <th>gamma</th>
+                  <td>{{this.resultTable.z_gamma}}</td>
+                  <th>vega</th>
+                  <td>{{this.resultTable.z_vega}}</td>
+                  <th>theta</th>
+                  <td>{{this.resultTable.z_theta}}</td>
+                  <th>rho</th>
+                  <td>{{this.resultTable.z_rho}}</td>
+                </tr>
+              </table>
+            </div>
+
             <div id="myChart" style="width: 100%;height: 300px"></div>
             <Page :total="20" :current=currentPreview prev-text="Previous" next-text="Next" @on-change="ChangePage" />
             <Spin v-if="showPreview" fix>
@@ -270,13 +273,13 @@
               this.line1=this.graph1[0]
               this.line2=this.graph1[1]
               this.graphTitle="不同标的价格下组合收益"
-              this.drawLine()
+              this.drawLine('标的价格/元','收益率(%)','','%')
             }
             else if(page=='2'){
               this.line1=this.graph2[0]
               this.line2=this.graph2[1]
               this.graphTitle="组合收益在历史市场内的概率分布"
-              this.drawLine()
+              this.drawLine('历史收益率(%)','概率','%','')
             }
             else {
               alert("错了")
@@ -518,27 +521,55 @@
           }
 
         },
-        drawLine(){
+        async drawLine(xName,yName,xFormat,yFormat,graph){
           // 基于准备好的dom，初始化echarts实例
           let myChart = this.$echarts.init(document.getElementById('myChart'))
           // 绘制图表
           myChart.setOption({
             tooltip: {
-              trigger: 'axis'
+              trigger: 'axis',
+              axisPointer: {
+                type: 'cross',
+                label: {
+                  backgroundColor: '#6a7985'
+                }
+              },
+              formatter: xName+":{b}<br/>"+yName+":{c}",
             },
             legend: {
               data:this.lineName
             },
             xAxis: {
+              name:xName,
+              nameTextStyle:{
+                fontSize:9,
+                padding:0
+              },
+              nameGap:2,
               type: 'category',
-              data: this.line1
+              data: this.line1.map(function (item) {
+                if(yFormat=='%'){
+                  return (parseFloat(item)*100).toFixed(2);
+                }
+                else{
+                  return (parseFloat(item).toFixed(4))
+                }
+              }),
             },
             yAxis: {
+              name:yName,
               type: 'value'
             },
             series: [{
               name:this.lineName[0],
-              data: this.line2,
+              data: this.line2.map(function (item) {
+                if(yFormat=='%'){
+                  return (parseFloat(item)*100).toFixed(2);
+                }
+                else{
+                  return (parseFloat(item).toFixed(4))
+                }
+              }),
               type: 'line'
             }]
           });
@@ -667,11 +698,11 @@
                 this.resultTable.p2=re.data.data.p2.toFixed(4)
                 this.graph1=re.data.data.assertPrice2Profit
                 this.graph2=re.data.data.historyProfit2Probability
-                console.log(re.data.data)
+                console.log(re.data.data.assertPrice2Profit)
                 this.line1=this.graph1[0]
                 this.line2=this.graph1[1]
                 this.graphTitle='不同标的价格下组合收益'
-                this.drawLine()
+                this.drawLine('标的价格/元','收益率(%)','','%',re.data.data.assertPrice2Profit)
               }
               else{
                 this.$Message.error("未能")

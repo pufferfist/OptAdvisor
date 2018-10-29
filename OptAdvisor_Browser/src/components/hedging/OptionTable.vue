@@ -50,14 +50,12 @@ td{
   height: 40px;
   font-size: 15px;
   -webkit-text-fill-color: #2baee9;
-  background-color: #f8f8f9;
 }
   th{
     padding-left: 5px;
     padding-right: 5px;
     height: 40px;
     font-size: 15px;
-    background-color: #f8f8f9;
     -webkit-text-fill-color: #515a6e;
   }
 </style>

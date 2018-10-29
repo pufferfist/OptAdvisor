@@ -99,12 +99,6 @@
                   else if(data.option.type=='0'){
                     forms.type='卖出'
                   }
-                  // if(data.option.cp=='1'){
-                  //   forms.cp='看涨'
-                  // }
-                  // else if(data.option.cp=='-1'){
-                  //   forms.cp='看跌'
-                  // }
                   forms.iNum=data.iNum
                   this.$refs.result.$refs.option_group.TData=forms
 
@@ -113,7 +107,7 @@
 
                   //3.填充折线图
                   this.$refs.result.graph=data.graph
-                  this.$refs.result.drawLine()
+                  this.$refs.result.drawLine(this.$refs.result.lineName,data.graph,'标的价格/元','收益率(%)','','%')
 
                   this.ispage1="none"
                   this.ispage2=""

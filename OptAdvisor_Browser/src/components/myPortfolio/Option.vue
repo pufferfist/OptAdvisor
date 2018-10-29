@@ -11,27 +11,24 @@
 
       <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;margin-left: 3%;margin-right: 3%">组合信息</h3>
       <br>
-      <div v-bind:style="{display:showAllocation}" style="margin-bottom: 20px;width: 94%;margin-left:3%;border: 2px solid #f8f8f9;height: 180px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
+      <div v-bind:style="{display:showAllocation}" style="margin-bottom: 20px;width: 94%;margin-left:3%;border: 2px solid #f8f8f9;height: 85px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
         <div style="width: 47%;float: left">
-          <p style="padding: 10px">波动率：</p>
-          <p style="padding: 10px">价格：</p>
-          <p style="padding: 10px">本金：</p>
-          <p style="padding: 10px">允许最大损失：</p>
+          <p style="padding: 10px">本金：{{allocationPrinciple}}</p>
+          <p style="padding: 10px">允许最大损失：{{allocationLargestLossAllowed}}</p>
         </div>
         <div style="width: 47%;float: left">
-          <p style="padding: 10px">价格有效时间：</p>
-          <p style="padding: 10px">预测价格范围：</p>
-          <p style="padding: 10px">预测波动率范围：</p>
+          <p style="padding: 10px">预测价格范围：{{allocationPredictFeeInterval}}</p>
+          <p style="padding: 10px">预测波动率范围：{{allocationPredictFluctuationInterval}}</p>
         </div>
       </div>
-      <div v-bind:style="{display:showHedging}" style="margin-bottom: 20px;width: 94%;margin-left:3%;border: 2px solid #f8f8f9;height: 80px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
+      <div v-bind:style="{display:showHedging}" style="margin-bottom: 20px;width: 94%;margin-left:3%;border: 2px solid #f8f8f9;height: 85px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
         <div style="width: 47%;float: left">
-          <p style="padding: 10px">持仓量：</p>
-          <p style="padding: 10px">套保期限：</p>
+          <p style="padding: 10px">持仓量：{{hedgingOpenInterest}}</p>
+          <p style="padding: 10px">套保期限：{{hedgingDeadline}}</p>
         </div>
         <div style="width: 47%;float: left">
-          <p style="padding: 10px">套保比例：</p>
-          <p style="padding: 10px">预测最低值：</p>
+          <p style="padding: 10px">套保比例：{{hedgingRate}}</p>
+          <p style="padding: 10px">预测最低值：{{hedgingPredictLowestPrice}}</p>
         </div>
       </div>
 
@@ -56,10 +53,11 @@
         </div>
 
         <div v-bind:style="{display:showAllocation}" style="height: 35px">
-          <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
-          <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
-          <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">组合杠杆：{{this.tableData.beta}}</div>
-          <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">资产收益率：{{this.tableData.returnOnAssets}}</div>
+          <div style="float: left;width: 20%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
+          <div style="float: left;width: 20%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
+          <div style="float: left;width: 20%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">组合杠杆：{{this.tableData.beta}}</div>
+          <div style="float: left;width: 20%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">资产杠杆：{{this.tableData.assertLeverage}}</div>
+          <div style="float: left;width: 20%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">资产收益率：{{this.tableData.returnOnAssets}}</div>
         </div>
         <div v-bind:style="{display:showDIY}" style="height: 35px">
           <div style="float: left;width: 33%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
@@ -93,7 +91,8 @@
             cost:'',
             bond:'',
             beta:'',
-            returnOnAssets:''
+            returnOnAssets:'',
+            assertLeverage:''
           },
           options:'',
           show1:'',
@@ -101,13 +100,16 @@
           showAllocation:'none',
           showHedging:'none',
           showDIY:'none',
-          fluctuation:'',
+          allocationFluctuation:'',
           allocationFee:'',
           allocationPrinciple:'',
-          largestLossAllowed:'',
-          validTimeInterval:'',
-          predictFeeInterval:'',
-          predictFluctuationInterval:''
+          allocationLargestLossAllowed:'',
+          allocationPredictFeeInterval:'',
+          allocationPredictFluctuationInterval:'',
+          hedgingOpenInterest:'',
+          hedgingRate:'',
+          hedgingDeadline:'',
+          hedgingPredictLowestPrice:''
         }
       },
       methods:{
@@ -147,6 +149,7 @@
         initial(optionData){
           var originData=optionData.data
           optionData=optionData.data.portfolios[0]
+          console.log(optionData)
           this.options=optionData.options
           var date=new Date(optionData.buildTime)
           this.buildTime=optionData.buildTime.substr(0,10)
@@ -171,6 +174,22 @@
           //1.初始化数据
           this.name=optionData.name
           this.time=optionData.options[0].expireTime
+
+          //资产配置
+          this.allocationFluctuation
+          this.allocationFee
+          this.allocationPrinciple=optionData.m0
+          this.allocationLargestLossAllowed=optionData.k
+          this.allocationPredictFeeInterval=optionData.p1+" ～ "+optionData.p2
+          this.allocationPredictFluctuationInterval=optionData.sigma1+" ～ "+optionData.sigma2
+          //套期保值
+          this.hedgingOpenInterest=optionData.n0
+          this.hedgingRate=optionData.a
+          this.hedgingDeadline=this.time
+          this.hedgingPredictLowestPrice=optionData.sExp
+          //DIY
+
+
           if(optionData.type=='0'){
             // this.type='资产配置'
             this.showAllocation=''
@@ -210,9 +229,12 @@
             this.tdata.push(temp)
           }
           this.getLatestPrice()
+          console.log(optionData)
+          console.log(originData)
           this.tableData.cost=optionData.cost.toFixed(2)
           this.tableData.bond=optionData.bond.toFixed(2)
           this.tableData.beta=optionData.beta.toFixed(2)
+          this.tableData.assertLeverage=optionData.assertLeverage
           this.tableData.returnOnAssets=(optionData.returnOnAssets*100).toFixed(2)+'%'
           this.id=optionData.id
           if(optionData.trackingStatus==false){

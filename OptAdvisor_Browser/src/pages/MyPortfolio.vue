@@ -101,7 +101,6 @@
           }
           this.axios.get('/backend/portfolio/'+id)
             .then(re=>{
-              console.log(re.data)
               this.$refs.portfolio.initial(re.data)
               this.showRight=''
               setTimeout(() => {
