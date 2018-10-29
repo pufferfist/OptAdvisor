@@ -333,57 +333,17 @@
           </Row>
           <Row style="margin:30px 0;">
             <Col offset="1" span="10">
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 买5</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[4].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[4].price}}</p></Col>
-              </Row>
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 买4</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[3].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[3].price}}</p></Col>
-              </Row>
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 买3</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[2].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[2].price}}</p></Col>
-              </Row>
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 买2</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[1].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[1].price}}</p></Col>
-              </Row>
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 买1</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{buyList[0].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{buyList[0].price}}</p></Col>
+              <Row v-for="i in 5" :key="i" class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 买{{6-i}}</p></Col>
+                <Col span="8"><p style="text-align: center;font-weight: 700;"  >{{buyList[5-i].price}}</p></Col>
+                <Col span="8"><p style=" text-align: right;font-weight: 700;"  >{{buyList[5-i].volumes}}</p></Col>
               </Row>
             </Col>
             <Col offset="3" span="9">
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 卖5</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[0].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[0].price}}</p></Col>
-              </Row>
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 卖4</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[1].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[1].price}}</p></Col>
-              </Row>
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 卖3</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[2].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[2].price}}</p></Col>
-              </Row>
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 卖2</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[3].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[3].price}}</p></Col>
-              </Row>
-              <Row class="dataList" >
-                <Col span="8"><p style=" text-align: left;"> 卖1</p></Col>
-                <Col span="8"><p style=" text-align: center;font-weight: 700;"  >{{saleList[4].volumes}}</p></Col>
-                <Col span="8"><p style="text-align: right;font-weight: 700;"  >{{saleList[4].price}}</p></Col>
+              <Row v-for="i in 5" :key="i" class="dataList" >
+                <Col span="8"><p style=" text-align: left;"> 卖{{6-i}}</p></Col>
+                <Col span="8"><p style="text-align: center;font-weight: 700;"  >{{saleList[i-1].price}}</p></Col>
+                <Col span="8"><p style=" text-align: right;font-weight: 700;"  >{{saleList[i-1].volumes}}</p></Col>
               </Row>
             </Col>
           </Row>
@@ -705,6 +665,7 @@
             });
             this.axios.get('/sinaOption/list='+ tempmainUpOption.id.replace('hq_str_CON_OP','CON_ZL'))
                 .then(res => {
+                  console.log( res.data.split(','),54654654);
                   const tempOption = {};
                   [, , , ,tempOption.openInterest,tempOption.openInterestRate, tempOption.new, tempOption.increase, tempOption.buyPrice, tempOption.salePrice, tempOption.high, tempOption.low, tempOption.volume, tempOption.delta , tempOption.gamma ,tempOption.theta, tempOption.vega, tempOption.volatility, tempOption.code, tempOption.price, tempOption.value] = res.data.split(',');
                   this.mainUpOption = tempOption;
