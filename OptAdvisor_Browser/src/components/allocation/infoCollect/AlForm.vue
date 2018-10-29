@@ -218,11 +218,11 @@
           let list = res.data.split(/\r?\n|\r/);
           let index;
           let length = list.length;
-          if (list[length - 2].split(',')[1].trim() !== "") {
+          if (list[length - 2].split(',')[1].trim() !== ""&&list[length - 2].split(',')[1].trim() !=="#N/A") {
             index = length - 1;
           } else {
             for (index = 0; index < length; index++) {
-              if (list[index].split(',')[1].trim() === '') {
+              if (list[index].split(',')[1].trim() === ''||list[index].split(',')[1].trim() ==="#N/A") {
                 break;
               }
             }
