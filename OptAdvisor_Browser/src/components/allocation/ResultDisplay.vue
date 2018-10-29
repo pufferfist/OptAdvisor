@@ -14,7 +14,7 @@
             <div class="interval"></div>
             <div class="w-80 center">
               <p class="pt3 tl dib">无风险资产</p>
-              <tooltip placement="top" content="注：此处无风险利率参考1年期shibor利率"><Icon type="md-help-circle" size="22"/></tooltip>
+              <tooltip placement="top" content="注：此处无风险利率参考国债利率"><Icon type="md-help-circle" size="22"/></tooltip>
               <p class="pt3 pl3 tl dib">金额：{{(data.m0*(1-data.k)).toFixed(0)}}元</p>
             </div>
 
