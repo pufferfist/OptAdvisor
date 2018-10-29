@@ -28,7 +28,7 @@
         </div>
         <div style="width: 47%;float: left">
           <p style="padding: 10px">套保比例：{{hedgingRate}}</p>
-          <p style="padding: 10px">预测最低值：{{hedgingPredictLowestPrice}}</p>
+          <p style="padding: 10px">预测价格最低值：{{hedgingPredictLowestPrice}}</p>
         </div>
       </div>
 

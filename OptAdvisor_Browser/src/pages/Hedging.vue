@@ -103,7 +103,7 @@
                   this.$refs.result.$refs.option_group.TData=forms
 
                   //2.填充预期最大亏损值
-                  this.$refs.result.expectedLoss=data.iK.toFixed(2)
+                  this.$refs.result.expectedLoss=(data.iK*100).toFixed(2)+"%"
 
                   //3.填充折线图
                   this.$refs.result.graph=data.graph
