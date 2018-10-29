@@ -1,18 +1,17 @@
 <template>
     <div>
       <div>
-        <h1>{{name}}
-          <span style="font-size: 15px">
-          到期时间：{{time}} &nbsp&nbsp 分组类型：{{type}} &nbsp&nbsp {{earnings}} &nbsp&nbsp&nbsp
+        <p style="text-align: left;font-size: 40px;font-weight: bold">&nbsp&nbsp&nbsp{{name}}</p>
+        <span style="font-size: 15px">
+          创建时间：{{buildTime}} &nbsp&nbsp 到期时间：{{time}} &nbsp&nbsp {{earnings}} &nbsp&nbsp&nbsp
         </span>
-          <Button type="primary" v-bind:style="{display:show1}" @click="track">添加跟踪</Button>
-          <Button type="primary" disabled v-bind:style="{display:show2}">已添加跟踪</Button>
-        </h1>
+        <Button type="primary" v-bind:style="{display:show1}" @click="track">添加跟踪</Button>
+        <Button type="primary" disabled v-bind:style="{display:show2}">已添加跟踪</Button>
       </div>
 
       <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;margin-left: 3%;margin-right: 3%">组合信息</h3>
       <br>
-      <div v-bind:style="{display:showAllocation}" style="margin-bottom: 20px;width: 94%;margin-left:3%;background-color: #f8f8f9;height: 180px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
+      <div v-bind:style="{display:showAllocation}" style="margin-bottom: 20px;width: 94%;margin-left:3%;border: 2px solid #f8f8f9;height: 180px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
         <div style="width: 47%;float: left">
           <p style="padding: 10px">波动率：</p>
           <p style="padding: 10px">价格：</p>
@@ -25,7 +24,7 @@
           <p style="padding: 10px">预测波动率范围：</p>
         </div>
       </div>
-      <div v-bind:style="{display:showHedging}" style="margin-bottom: 20px;width: 94%;margin-left:3%;background-color: #f8f8f9;height: 80px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
+      <div v-bind:style="{display:showHedging}" style="margin-bottom: 20px;width: 94%;margin-left:3%;border: 2px solid #f8f8f9;height: 80px;font-size: 15px;-webkit-text-fill-color: #515a6e;font-weight: bold">
         <div style="width: 47%;float: left">
           <p style="padding: 10px">持仓量：</p>
           <p style="padding: 10px">套保期限：</p>
@@ -36,7 +35,7 @@
         </div>
       </div>
 
-      <div style="width: 94%;text-align: center;background-color: #f8f8f9;margin-left: 3%;padding-top: 15px">
+      <div style="width: 94%;text-align: center;margin-left: 3%;padding-top: 15px;border: 2px solid #f8f8f9">
         <table style="margin: auto" class="table1">
           <tr>
             <th>序号</th>
@@ -62,10 +61,6 @@
           <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">组合杠杆：{{this.tableData.beta}}</div>
           <div style="float: left;width: 25%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">资产收益率：{{this.tableData.returnOnAssets}}</div>
         </div>
-        <div v-bind:style="{display:showHedging}" style="height: 35px">
-          <div style="float: left;width: 50%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
-          <div style="float: left;width: 50%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
-        </div>
         <div v-bind:style="{display:showDIY}" style="height: 35px">
           <div style="float: left;width: 33%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">成本：{{this.tableData.cost}}</div>
           <div style="float: left;width: 33%;font-size: 15px;font-weight: bold;-webkit-text-fill-color: #515a6e">保证金：{{this.tableData.bond}}</div>
@@ -89,7 +84,7 @@
           id:'',
           name:'',
           time:'',
-          type:'',
+          buildTime:'',
           earnings:'',
           tdata:[],
           codes:[],
@@ -153,29 +148,49 @@
           var originData=optionData.data
           optionData=optionData.data.portfolios[0]
           this.options=optionData.options
+          var date=new Date(optionData.buildTime)
+          this.buildTime=optionData.buildTime.substr(0,10)
+          if(date.getHours()<10){
+            this.buildTime=this.buildTime+" 0"+date.getHours()
+          }
+          else{
+            this.buildTime=this.buildTime+" "+date.getHours()
+          }
+          if(date.getMinutes()<10){
+            this.buildTime=this.buildTime+":0"+date.getMinutes()
+          }
+          else{
+            this.buildTime=this.buildTime+":"+date.getMinutes()
+          }
+          if(date.getSeconds()<10){
+            this.buildTime=this.buildTime+":0"+date.getSeconds()
+          }
+          else{
+            this.buildTime=this.buildTime+":"+date.getSeconds()
+          }
           //1.初始化数据
           this.name=optionData.name
           this.time=optionData.options[0].expireTime
           if(optionData.type=='0'){
-            this.type='资产配置'
+            // this.type='资产配置'
             this.showAllocation=''
             this.showHedging='none'
             this.showDIY='none'
             this.earnings='期望收益：'+(optionData.em*100).toFixed(2)+'%';
           }
           else if(optionData.type=='1'){
-            this.type='套期保值'
+            // this.type='套期保值'
             this.showHedging=''
             this.showAllocation='none'
             this.showDIY='none'
             this.earnings='到达预期最大减损比率：'+(optionData.iK).toFixed(2)
           }
           else{
-            this.type='DIY'
+            // this.type='DIY'
             this.showDIY='';
             this.showAllocation='none'
             this.showHedging='none'
-            this.earnings='期望收益：'+(optionData.em*100).toFixed(2)+'%';
+            //this.earnings='期望收益：'+(optionData.em*100).toFixed(2)+'%';
           }
           this.tdata=[]
           for(var i=0;i<optionData.options.length;i++){
@@ -214,36 +229,22 @@
           this.$refs.result.text16=optionData.beta.toFixed(2)
           if(optionData.type=='0'){
             this.$refs.result.type=0
-            this.$refs.result.graph1=originData.assertPrice2Profit
-            this.$refs.result.graph2=originData.profit2Probability
-            this.$refs.result.graph3=originData.historyProfit2Probability
-            this.$refs.result.lineName=['收益']
-            this.$refs.result.line1=this.$refs.result.graph1[0]
-            this.$refs.result.line2=this.$refs.result.graph1[1]
-            this.$refs.result.totalPage=30
-            this.$refs.result.graphTitle='不同标的价格下组合收益'
+            this.$refs.result.graph1=this.fixArray(originData.assertPrice2Profit)
+            this.$refs.result.graph2=this.fixArray(originData.profit2Probability)
+            this.$refs.result.graph3=this.fixArray(originData.historyProfit2Probability)
+            this.$refs.result.drawGraph('allocation');
           }
           else if(optionData.type=='1'){
             this.$refs.result.type=1
-            this.$refs.result.graph1=originData.graph
-            this.$refs.result.lineName=['不持有的损失','持有的损失']
-            this.$refs.result.line1=this.$refs.result.graph1[0]
-            this.$refs.result.line2=this.$refs.result.graph1[1]
-            this.$refs.result.line3=this.$refs.result.graph1[2]
-            this.$refs.result.totalPage=10
-            this.$refs.result.graphTitle=''
+            this.$refs.result.graph1=this.fixArray(originData.graph)
+            this.$refs.result.drawGraph('hedging');
           }
           else if(optionData.type=='2'){
             this.$refs.result.type=2
-            this.$refs.result.graph1=originData.assertPrice2Profit
-            this.$refs.result.graph2=originData.historyProfit2Probability
-            this.$refs.result.lineName=['收益']
-            this.$refs.result.line1=this.$refs.result.graph1[0]
-            this.$refs.result.line2=this.$refs.result.graph1[1]
-            this.$refs.result.totalPage=20
-            this.$refs.result.graphTitle='不同标的价格下组合收益'
+            this.$refs.result.graph1=this.fixArray(originData.assertPrice2Profit)
+            this.$refs.result.graph2=this.fixArray(originData.historyProfit2Probability)
+            this.$refs.result.drawGraph('diy');
           }
-          this.$refs.result.drawLine()
 
           //3.调用choose方法默认选中第一项
           if(parseInt(this.options[0].cp)>0){
@@ -266,6 +267,16 @@
                 this.$Message.error("追踪失败，请稍后重试")
               }
             })
+        },
+        fixArray(array){
+          var result=new Array();
+          for(var i=0;i<array.length;i++){
+            var temp=new Array();
+            for(var j=0;j<array[i].length;j++){
+              temp.push(array[i][j].toFixed(2))
+            }
+          }
+          return result;
         }
       }
 

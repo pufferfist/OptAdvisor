@@ -4,8 +4,8 @@
       <div>
         <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">期权及相关信息</h3>
         <br>
-        <div style="width: 100%;height: 190px;background-color: #f8f8f9">
-          <div style="width: 50%;float: left;text-align: center;background-color: #f8f8f9">
+        <div style="width: 100%;height: 200px;border: 2px solid #f8f8f9;padding-top: 5px;padding-bottom: 5px">
+          <div style="width: 50%;float: left;text-align: center">
             <table class="table2" style="margin: auto">
               <tr>
                 <th>合约简称</th>
@@ -37,7 +37,7 @@
               </tr>
             </table>
           </div>
-          <div style="width: 50%;float: left;text-align: center;background-color: #f8f8f9">
+          <div style="width: 50%;float: left;text-align: center">
             <table class="table2" style="margin: auto">
               <tr>
                 <th>Delta</th>
@@ -70,15 +70,24 @@
       </div>
     </div>
     <div style="width: 100%;float: left;padding-left:3%; padding-right:3%;text-align: center">
-      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">组合表现展示&nbsp&nbsp<span style="font-size: 13px;font-weight: bold;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
+      <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">组合表现展示</h3>
       <br>
-      <div style="width: 100%;text-align: center;background-color: #f8f8f9">
-        <div id="myChart" style="width: 600px;height: 300px;margin: auto">
+      <div v-bind:style="{display:show1}" style="width: 100%;text-align: center;border: 2px solid #f8f8f9">
+        <div id="myChart1" style="width: 600px;height: 300px;margin: auto">
         </div>
       </div>
-
-      <Page :total="totalPage" prev-text="Previous" next-text="Next" @on-change="ChangePage" />
+      <br>
+      <div v-bind:style="{display:show2}" style="width: 100%;text-align: center;border: 2px solid #f8f8f9">
+        <div id="myChart2" style="width: 600px;height: 300px;margin: auto">
+        </div>
+      </div>
+      <br>
+      <div v-bind:style="{display:show3}" style="width: 100%;text-align: center;border: 2px solid #f8f8f9">
+        <div id="myChart3" style="width: 600px;height: 300px;margin: auto">
+        </div>
+      </div>
     </div>
+    <br>
   </div>
 </template>
 
@@ -103,82 +112,52 @@
             text14:'',
             text15:'',
             text16:'',
-            line1:[],
-            line2:[],
-            line3:[],
-            line4:[],
-            lineName:[],
-            totalPage:0,
             graph1:[],
             graph2:[],
             graph3:[],
-            graphTitle:'',
-            type:''
+            type:'',
+            show1:'none',
+            show2:'none',
+            show3:'none'
           }
       },
       methods: {
-        ChangePage(page){
-          //资产配置，三张图
-          if(this.type=='0'){
-            if(page=='1'){
-              this.lineName=['收益']
-              this.graphTitle='不同标的价格下组合收益'
-              this.line1=this.graph1[0]
-              this.line2=this.graph1[1]
-            }
-            else if(page=='2'){
-              this.lineName=['概率']
-              this.graphTitle='组合收益在预期市场内的概率分布'
-              this.line1=this.graph2[0]
-              this.line2=this.graph2[1]
-            }
-            else if(page=='3'){
-              this.lineName=['概率']
-              this.graphTitle='组合收益在历史市场内的概率分布'
-              this.line1=this.graph3[0]
-              this.line2=this.graph3[1]
-            }
-            else{
-              alert("错了")
-            }
+        drawGraph(type){
+          if(type=='allocation'){
+            this.drawLine('myChart1','不同标的价格下组合收益',['收益'],this.graph1)
+            this.drawLine('myChart2','组合收益在预期市场内的概率分布',['概率'],this.graph2)
+            this.drawLine('myChart3','组合收益在历史市场内的概率分布',['概率'],this.graph3)
+            this.show1=''
+            this.show2=''
+            this.show3=''
           }
-          //套期保值，一张图
-          else if(this.type=='1'){
-            if(page=='1'){
-              this.lineName=['不持有的损失','持有的损失']
-              this.graphTitle=''
-              this.line1=this.graph1[0]
-              this.line2=this.graph1[1]
-              this.line3=this.graph1[2]
-            }
+          else if(type=='hedging'){
+            this.drawLine('myChart1','',['不持有的损失','持有的损失'],this.graph1)
+            this.show1=''
+            this.show2='none'
+            this.show3='none'
           }
-
-          //DIY，两张图
-          else if(this.type=='2'){
-            if(page=='1'){
-              this.lineName=['收益']
-              this.graphTitle='不同标的价格下组合收益'
-              this.line1=this.graph1[0]
-              this.line2=this.graph1[1]
-            }
-            else if(page=='2'){
-              this.lineName=['概率']
-              this.graphTitle='组合收益在历史市场内的概率分布'
-              this.line1=this.graph2[0]
-              this.line2=this.graph2[1]
-            }
+          else{
+            this.drawLine('myChart1','不同标的价格下组合收益',['收益'],this.graph1)
+            this.drawLine('myChart2','组合收益在历史市场内的概率分布',['概率'],this.graph2)
+            this.show1=''
+            this.show2=''
+            this.show3='none'
           }
-
-          this.drawLine()
         },
-        drawLine(){
+        drawLine(graphname,title,lineName,graph){
           // 基于准备好的dom，初始化echarts实例
-          let myChart = this.$echarts.init(document.getElementById('myChart'))
+          let myChart = this.$echarts.init(document.getElementById(graphname))
           // 绘制图表
           myChart.setOption({
+            title : {
+              text: title,
+              x: 'center',
+              align: 'right'
+            },
             legend: {
-              data:this.lineName,
-              x: 'center'
+              data:lineName,
+              x: 'left'
             },
             tooltip: {
               trigger: 'axis',
@@ -189,32 +168,15 @@
             xAxis: {
               type: 'category',
               boundaryGap: false,
-              data: this.line1
+              data: graph[0]
             },
             yAxis: {
               type: 'value',
               boundaryGap: [0, '100%']
             },
-            // dataZoom: [{
-            //   type: 'inside',
-            //   start: 0,
-            //   end: 10
-            // }, {
-            //   start: 0,
-            //   end: 10,
-            //   handleIcon: 'M10.7,11.9v-1.3H9.3v1.3c-4.9,0.3-8.8,4.4-8.8,9.4c0,5,3.9,9.1,8.8,9.4v1.3h1.3v-1.3c4.9-0.3,8.8-4.4,8.8-9.4C19.5,16.3,15.6,12.2,10.7,11.9z M13.3,24.4H6.7V23h6.6V24.4z M13.3,19.6H6.7v-1.4h6.6V19.6z',
-            //   handleSize: '80%',
-            //   handleStyle: {
-            //     color: '#fff',
-            //     shadowBlur: 3,
-            //     shadowColor: 'rgba(0, 0, 0, 0.6)',
-            //     shadowOffsetX: 2,
-            //     shadowOffsetY: 2
-            //   }
-            // }],
             series: [
               {
-                name:this.lineName[0],
+                name:lineName[0],
                 type:'line',
                 smooth:true,
                 symbol: 'none',
@@ -224,10 +186,10 @@
                     color: 'rgb(25, 191, 107)'
                   }
                 },
-                data: this.line2
+                data: graph[1]
               },
               {
-                name:this.lineName[1],
+                name:lineName[1],
                 type:'line',
                 smooth:true,
                 symbol: 'none',
@@ -237,10 +199,10 @@
                     color: 'rgb(254, 64, 20)'
                   }
                 },
-                data: this.line3
+                data: graph[2]
               },
               {
-                name:this.lineName[2],
+                name:lineName[2],
                 type:'line',
                 smooth:true,
                 symbol: 'none',
@@ -250,7 +212,7 @@
                     color: 'rgb(255, 153, 0)'
                   }
                 },
-                data: this.line4
+                data: graph[3]
               },
             ]
           });
