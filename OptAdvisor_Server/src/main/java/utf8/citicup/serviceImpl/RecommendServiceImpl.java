@@ -1317,8 +1317,6 @@ public class RecommendServiceImpl implements RecommendService {
         rtn = map.get("rtn");
         maxLoss = Double.valueOf(map.get("maxLoss")[0][0]);
 
-
-
         return new RecommendOption2(optionI, maxLoss,iNum, rtn, pAsset, N0, a, sExp);
     }
 
@@ -1440,7 +1438,7 @@ public class RecommendServiceImpl implements RecommendService {
         String[] rtnMaxLoss = new String[1];
         rtnMaxLoss[0] = Double.toString(maxloss[0]);
         String[] noUse = new String[1];
-        noUse[1] = "1";
+        noUse[0] = "1";
 
         String[][] rtn = new String[][]{rtnAbscissa,rtnLoss1,rtnLoss2};
         String[][] maxLoss = new String[][]{rtnMaxLoss,noUse};
