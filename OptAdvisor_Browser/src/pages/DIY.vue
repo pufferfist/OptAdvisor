@@ -156,7 +156,7 @@
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
           <h3>组合表现展示&nbsp&nbsp<span style="font-size: 13px;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
           <div class="demo-spin-container2">
-            <div style="background-color: #f8f8f9;margin-left: 10%;margin-right: 10%">
+            <div style="background-color: #f8f8f9;margin-left: 5%;margin-right: 5%">
               <table class="table3" style="margin: auto">
                 <tr>
                   <th>数量</th>
@@ -273,13 +273,14 @@
               this.line1=this.graph1[0]
               this.line2=this.graph1[1]
               this.graphTitle="不同标的价格下组合收益"
-              this.drawLine('标的价格/元','收益率(%)','','%')
+              console.log(this.graph1)
+              this.drawLine('标的价格/元','收益率(%)','','%',this.graph1)
             }
             else if(page=='2'){
               this.line1=this.graph2[0]
               this.line2=this.graph2[1]
               this.graphTitle="组合收益在历史市场内的概率分布"
-              this.drawLine('历史收益率(%)','概率','%','')
+              this.drawLine('历史收益率(%)','概率','%','',this.graph2)
             }
             else {
               alert("错了")
@@ -548,11 +549,11 @@
               nameGap:2,
               type: 'category',
               data: this.line1.map(function (item) {
-                if(yFormat=='%'){
+                if(xFormat=='%'){
                   return (parseFloat(item)*100).toFixed(2);
                 }
                 else{
-                  return (parseFloat(item).toFixed(4))
+                  return (parseFloat(item).toFixed(2))
                 }
               }),
             },
