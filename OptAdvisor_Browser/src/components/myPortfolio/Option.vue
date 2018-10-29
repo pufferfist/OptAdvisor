@@ -229,20 +229,20 @@
           this.$refs.result.text16=optionData.beta.toFixed(2)
           if(optionData.type=='0'){
             this.$refs.result.type=0
-            this.$refs.result.graph1=this.fixArray(originData.assertPrice2Profit)
-            this.$refs.result.graph2=this.fixArray(originData.profit2Probability)
-            this.$refs.result.graph3=this.fixArray(originData.historyProfit2Probability)
+            this.$refs.result.graph1=originData.assertPrice2Profit
+            this.$refs.result.graph2=originData.profit2Probability
+            this.$refs.result.graph3=originData.historyProfit2Probability
             this.$refs.result.drawGraph('allocation');
           }
           else if(optionData.type=='1'){
             this.$refs.result.type=1
-            this.$refs.result.graph1=this.fixArray(originData.graph)
+            this.$refs.result.graph1=originData.graph
             this.$refs.result.drawGraph('hedging');
           }
           else if(optionData.type=='2'){
             this.$refs.result.type=2
-            this.$refs.result.graph1=this.fixArray(originData.assertPrice2Profit)
-            this.$refs.result.graph2=this.fixArray(originData.historyProfit2Probability)
+            this.$refs.result.graph1=originData.assertPrice2Profit
+            this.$refs.result.graph2=originData.historyProfit2Probability
             this.$refs.result.drawGraph('diy');
           }
 
@@ -269,14 +269,20 @@
             })
         },
         fixArray(array){
-          var result=new Array();
-          for(var i=0;i<array.length;i++){
-            var temp=new Array();
-            for(var j=0;j<array[i].length;j++){
-              temp.push(array[i][j].toFixed(2))
-            }
-          }
-          return result;
+          // var result=[];
+          // // for(var i=0;i<array.length;i++){
+          // //   var temp=[];
+          // //   for(var j=0;j<array[i].length;j++){
+          // //     console.log(i+"  "+j+"  "+parseFloat(array[i][j]).toFixed(2))
+          // //     temp.push(parseFloat(array[i][j]).toFixed(2))
+          // //   }
+          // // }
+          // for(var j=0;j<array[num].length;j++){
+          //   console.log(num+"  "+j+"  "+parseFloat(array[num][j]).toFixed(2))
+          //   result.push(parseFloat(array[num][j]).toFixed(2))
+          // }
+          // return result;
+          return array
         }
       }
 

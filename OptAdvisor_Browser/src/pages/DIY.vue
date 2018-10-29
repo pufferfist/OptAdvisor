@@ -667,6 +667,7 @@
                 this.resultTable.p2=re.data.data.p2.toFixed(4)
                 this.graph1=re.data.data.assertPrice2Profit
                 this.graph2=re.data.data.historyProfit2Probability
+                console.log(re.data.data)
                 this.line1=this.graph1[0]
                 this.line2=this.graph1[1]
                 this.graphTitle='不同标的价格下组合收益'

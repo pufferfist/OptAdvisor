@@ -73,17 +73,17 @@
       <h3 style="text-align: left;-webkit-text-fill-color: #2b85e4; border-bottom: 2px solid #2b85e4;">组合表现展示</h3>
       <br>
       <div v-bind:style="{display:show1}" style="width: 100%;text-align: center;border: 2px solid #f8f8f9">
-        <div id="myChart1" style="width: 600px;height: 300px;margin: auto">
+        <div id="myChart1" style="width: 680px;height: 300px;margin: auto">
         </div>
       </div>
       <br>
       <div v-bind:style="{display:show2}" style="width: 100%;text-align: center;border: 2px solid #f8f8f9">
-        <div id="myChart2" style="width: 600px;height: 300px;margin: auto">
+        <div id="myChart2" style="width: 680px;height: 300px;margin: auto">
         </div>
       </div>
       <br>
       <div v-bind:style="{display:show3}" style="width: 100%;text-align: center;border: 2px solid #f8f8f9">
-        <div id="myChart3" style="width: 600px;height: 300px;margin: auto">
+        <div id="myChart3" style="width: 680px;height: 300px;margin: auto">
         </div>
       </div>
     </div>
@@ -124,32 +124,62 @@
       methods: {
         drawGraph(type){
           if(type=='allocation'){
-            this.drawLine('myChart1','不同标的价格下组合收益',['收益'],this.graph1)
-            this.drawLine('myChart2','组合收益在预期市场内的概率分布',['概率'],this.graph2)
-            this.drawLine('myChart3','组合收益在历史市场内的概率分布',['概率'],this.graph3)
+            this.drawLine('myChart1','不同标的价格下组合收益',['收益'],this.graph1,'标的价格/元','收益率(%)','','%')
+            this.drawBar('myChart2','组合收益在预期市场内的概率分布',['概率'],this.graph2,'收益率(%)','概率','%','')
+            this.drawLine('myChart3','组合收益在历史市场内的概率分布',['概率'],this.graph3,'历史收益率(%)','概率','%','')
             this.show1=''
             this.show2=''
             this.show3=''
           }
           else if(type=='hedging'){
-            this.drawLine('myChart1','',['不持有的损失','持有的损失'],this.graph1)
+            this.drawLine('myChart1','套期保值预期效果展示',['不持有的损失','持有的损失'],this.graph1,'标的价格/元','收益率(%)','','%')
             this.show1=''
             this.show2='none'
             this.show3='none'
           }
           else{
-            this.drawLine('myChart1','不同标的价格下组合收益',['收益'],this.graph1)
-            this.drawLine('myChart2','组合收益在历史市场内的概率分布',['概率'],this.graph2)
+            this.drawLine('myChart1','不同标的价格下组合收益',['收益'],this.graph1,'标的价格/元','收益率(%)','','%')
+            this.drawLine('myChart2','组合收益在历史市场内的概率分布',['概率'],this.graph2,'历史收益率(%)','概率','%','')
             this.show1=''
             this.show2=''
             this.show3='none'
           }
         },
-        drawLine(graphname,title,lineName,graph){
+        drawLine(graphname,title,lineName,graph,xName,yName,xFormat,yFormat){
+          var series=[]
+          for(var i=0;i<lineName.length;i++){
+            var temp=   {
+              name:lineName[i],
+              type:'line',
+              smooth:true,
+              symbol: 'none',
+              sampling: 'average',
+              data: graph[i+1].map(function (item) {
+                if(yFormat=='%'){
+                  return (parseFloat(item)*100).toFixed(2);
+                }
+                else{
+                  return (parseFloat(item).toFixed(4))
+                }
+              }),
+            }
+            series.push(temp)
+          }
+
           // 基于准备好的dom，初始化echarts实例
           let myChart = this.$echarts.init(document.getElementById(graphname))
           // 绘制图表
           myChart.setOption({
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'cross',
+                label: {
+                  backgroundColor: '#6a7985'
+                }
+              },
+              formatter: xName+":{b}<br/>"+yName+":{c}",
+            },
             title : {
               text: title,
               x: 'center',
@@ -159,63 +189,76 @@
               data:lineName,
               x: 'left'
             },
-            tooltip: {
-              trigger: 'axis',
-              position: function (pt) {
-                return [pt[0], '10%'];
-              }
-            },
             xAxis: {
+              name:xName,
+              nameTextStyle:{
+                fontSize:10,
+                padding:0
+              },
+              nameGap:2,
               type: 'category',
               boundaryGap: false,
-              data: graph[0]
+              data: graph[0].map(function (item) {
+                if(xFormat=='%'){
+                  return (parseFloat(item)*100).toFixed(2);
+                }
+                else{
+                  return item
+                }
+              }),
             },
             yAxis: {
+              name:yName,
               type: 'value',
               boundaryGap: [0, '100%']
             },
-            series: [
-              {
-                name:lineName[0],
-                type:'line',
-                smooth:true,
-                symbol: 'none',
-                sampling: 'average',
-                itemStyle: {
-                  normal: {
-                    color: 'rgb(25, 191, 107)'
-                  }
-                },
-                data: graph[1]
+            series: series
+          },true);
+        },
+        drawBar(graphname,title,lineName,graph,xName,yName){
+          // 基于准备好的dom，初始化echarts实例
+          let myChart = this.$echarts.init(document.getElementById(graphname))
+          // 绘制图表
+          myChart.setOption({
+            tooltip: {
+              trigger: 'axis',
+              axisPointer: {
+                type: 'cross',
+                label: {
+                  backgroundColor: '#6a7985'
+                }
               },
-              {
-                name:lineName[1],
-                type:'line',
-                smooth:true,
-                symbol: 'none',
-                sampling: 'average',
-                itemStyle: {
-                  normal: {
-                    color: 'rgb(254, 64, 20)'
-                  }
-                },
-                data: graph[2]
+              formatter: xName+":{b}<br/>"+yName+":{c}",
+            },
+            xAxis: {
+              name:xName,
+              nameTextStyle:{
+                fontSize:10,
+                padding:0
               },
-              {
-                name:lineName[2],
-                type:'line',
-                smooth:true,
-                symbol: 'none',
-                sampling: 'average',
-                itemStyle: {
-                  normal: {
-                    color: 'rgb(255, 153, 0)'
-                  }
-                },
-                data: graph[3]
+              nameGap:2,
+              type: 'category',
+              data: graph[0]
+            },
+            yAxis: {
+              name:yName,
+              type: 'value'
+            },
+            series: [{
+              name: '概率',
+              type: 'bar',
+              itemStyle:{
+                normal:{
+                  color: 'rgb(25, 191, 107)',
+                  lineStyle: {
+                    color: 'rgb(25, 191, 107)',
+                    width:2
+                  },
+                }
               },
-            ]
-          });
+              data: graph[1],
+            }]
+          },true);
         },
         getSingleInfo(upOrDown,address){
           //address是10004125这种
