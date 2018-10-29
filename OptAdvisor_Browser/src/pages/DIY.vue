@@ -156,7 +156,7 @@
         <div style="width: 70%;float: left;padding: 30px;text-align: center">
           <h3>组合表现展示&nbsp&nbsp<span style="font-size: 13px;-webkit-text-fill-color: #2baee9">{{this.graphTitle}}</span></h3>
           <div class="demo-spin-container2">
-            <div style="background-color: #f8f8f9;margin-left: 10%;margin-right: 10%">
+            <div style="background-color: #f8f8f9;margin-left: 5%;margin-right: 5%">
               <table class="table3" style="margin: auto">
                 <tr>
                   <th>数量</th>
