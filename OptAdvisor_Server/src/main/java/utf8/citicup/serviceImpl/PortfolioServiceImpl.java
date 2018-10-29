@@ -150,13 +150,18 @@ public class PortfolioServiceImpl implements PortfolioService {
                 double iNum = portfolio.getiNum();
                 double pAsset = portfolio.getpAsset();
 
+                int n0 = portfolio.getN0();
+                double a = portfolio.getA();
+                double sExp = portfolio.getsExp();
+
+
                 int length = (int)(pAsset / 0.01);
                 String[] abscissa = new String[length];
                 for(int i=0;i<length;i++) abscissa[i] = Double.toString((double)(i)/100);
 
                 String[][] tempRtn = new String[][]{abscissa,null};
 
-                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, iNum,tempRtn, pAsset);
+                RecommendOption2 recommendOption2 = new RecommendOption2(newOption, iK, iNum,tempRtn, pAsset,n0,a,sExp);
 
 
                 Portfolio showPortfolio = new Portfolio(portfolio.getUsername(),recommendOption2,portfolio.getN(),portfolio.getpAsset(),portfolio.getsExp(), true,iNum, HEDGE);

@@ -1307,15 +1307,19 @@ public class RecommendServiceImpl implements RecommendService {
         double[] resutl2 = calcaulateMaxLoss(i2,sExp,N0,a,pAsset);
         double maxLoss2 = resutl2[0];
         double iNum2 = resutl2[1];
-        if(maxLoss1>maxLoss2){ maxLoss=maxLoss2; optionI = i2;iNum = iNum2;}
-        else { maxLoss = maxLoss1; optionI = i1;iNum = iNum1;}
+        if(maxLoss1>maxLoss2){ optionI = i2;iNum = iNum2;}
+        else {optionI = i1;iNum = iNum1;}
         optionI.setType(1);
         addAttributesToDOption(optionI);
         //第三步
-        rtn = hedgingCalculate(optionI,N0,a,pAsset);
+
+        Map<String, String[][]> map = hedgingCalculate(optionI,N0,a,pAsset);
+        rtn = map.get("rtn");
+        maxLoss = Double.valueOf(map.get("maxLoss")[0][0]);
 
 
-        return new RecommendOption2(optionI, maxLoss,iNum, rtn, pAsset);
+
+        return new RecommendOption2(optionI, maxLoss,iNum, rtn, pAsset, N0, a, sExp);
     }
 
     private RecommendOption2 calculateReconmmendOption2(Option optionI, double sExp, int N0, double a, double pAsset) throws IOException {
@@ -1327,8 +1331,10 @@ public class RecommendServiceImpl implements RecommendService {
         iNum = result[1];
         optionI.setType(1);
         addAttributesToDOption(optionI);
-        rtn = hedgingCalculate(optionI,N0,a,pAsset);
-        return new RecommendOption2(optionI, maxLoss,iNum, rtn, pAsset);
+        Map<String, String[][]> map = hedgingCalculate(optionI,N0,a,pAsset);
+        rtn = map.get("rtn");
+        maxLoss = Double.valueOf(map.get("maxLoss")[0][0]);
+        return new RecommendOption2(optionI, maxLoss,iNum, rtn, pAsset, N0, a, sExp);
     }
 
     private Option[] calculateD(Option[] list,double sExp,int N,double pAsset){
@@ -1374,44 +1380,45 @@ public class RecommendServiceImpl implements RecommendService {
                 maxLoss = temp;
                 rtn = i;
             }
-//            logger.info("temp is " + temp);
-//            logger.info("iPrice1 is " + iPrice1);
 
         }
-//        logger.info("maxLoss is " + maxLoss);
         return rtn;
     }
 
-    private String[][] hedgingCalculate(Option I, int N0, double a, double pAsset){
+    private Map<String, String[][]> hedgingCalculate(Option I, int N0, double a, double pAsset){
 //        logger.info("step into hedgingCalculate");
         int N = (int)(N0 * a);
         double iK = I.getK();
-//        logger.info("iK is " + iK);
 
         double iDelta = I.getDelta();
         int iNum = (int)Math.ceil(N / (10000 * Math.abs(iDelta)));
-//        logger.info("iNum is " + iNum);
         double iPrice1 = I.getPrice1();
 
         List<Double> loss1 = new ArrayList<>();
         List<Double> loss2 = new ArrayList<>();
         List<Double> abscissa = new ArrayList<>();
 
+        Double[] maxloss = new Double[1];
+
         int length = (int)(pAsset / 0.01);
+        double tempLoss1,tempLoss2;
         for(int i=0; i<length; i++){
             double temp = (double)(i)/100;
             abscissa.add(temp);
-//            logger.info("i is" + temp);
-            loss1.add(N0 * (pAsset - temp));
+            tempLoss1 = N0 * (pAsset - temp) / (N0 * S0);
+            loss1.add(tempLoss1);
 
             Double temp1 = N*pAsset - (iNum * 10000) * Options(-1, temp, iK) - N* temp + iNum *10000 * iPrice1 + (N0-N)*(pAsset - temp);
             Double temp2 = N*pAsset - (iNum * 10000 - N) * (iK - temp) - N* iK + iNum *10000 *iPrice1 + (N0-N)*(pAsset - iK);
             if(temp > iK){
-                loss2.add(temp1);
-//                logger.info("temp1 is " + temp1);
+                tempLoss2 = temp1/(N0 * S0);
             }else {
-                loss2.add(temp2);
-//                logger.info("temp2 is " + temp2);
+                tempLoss2 = temp2/(N0 * S0);
+            }
+            loss2.add(tempLoss2);
+
+            if(i == 0){
+                maxloss[0] = tempLoss1 - tempLoss2;
             }
         }
 
@@ -1430,13 +1437,22 @@ public class RecommendServiceImpl implements RecommendService {
             rtnLoss2[j] = Double.toString(Loss2[j]);
         }
 
+        String[] rtnMaxLoss = new String[1];
+        rtnMaxLoss[0] = Double.toString(maxloss[0]);
+        String[] noUse = new String[1];
+        noUse[1] = "1";
 
         String[][] rtn = new String[][]{rtnAbscissa,rtnLoss1,rtnLoss2};
+        String[][] maxLoss = new String[][]{rtnMaxLoss,noUse};
+
+        Map<String, String[][]> map = new HashMap<>();
+        map.put("rtn", rtn);
+        map.put("maxLoss", maxLoss);
 //        logger.info("first " + Arrays.deepToString(rtn[0]));
 //        logger.info("second " + Arrays.deepToString(rtn[1]));
 //        logger.info("third " + Arrays.deepToString(rtn[2]));
 //        logger.info("rtn is " + Arrays.deepToString(rtn));
-        return rtn;
+        return map;
 
     }
 
