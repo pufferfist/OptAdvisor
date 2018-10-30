@@ -605,6 +605,8 @@ public class RecommendServiceImpl implements RecommendService {
         }
         assertReturns(maxGoalD);
 
+//        System.out.println(Arrays.toString(S));
+//        System.out.println(Arrays.toString(maxGoalD.C_new));
         /*根据收益 计算资产收益率*/
         double[] returnOnAssets = new double[maxGoalD.C_new.length];
         for(int i = 0;i < returnOnAssets.length;i++){
@@ -670,11 +672,14 @@ public class RecommendServiceImpl implements RecommendService {
         }
         d.C_new = C_new;
 
-        double preRange = Math.floor((d.C_new[0] / d.p0) * 100) / 100.0;
+//        System.out.println(Arrays.toString(S1));
+//        System.out.println(Arrays.toString(C_new));
+
+        double preRange = Math.floor(((d.C_new[0] + (this.M0 - (d.p0 + d.pb)) * this.r) / this.M0) * 1000) / 1000.0;
         int preI = 0;
         Map<Double, Double> rtn = new TreeMap<>();
         for(int i = 1;i < d.C_new.length; i++){
-            double range = Math.floor((d.C_new[i] / d.p0) * 100) / 100.0;
+            double range = Math.floor(((d.C_new[i] + (this.M0 - (d.p0 + d.pb)) * this.r) / this.M0) * 1000) / 1000.0;
 
 //            System.out.println(range);
             if(preRange != range){
