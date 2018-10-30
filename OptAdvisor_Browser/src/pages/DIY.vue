@@ -242,7 +242,8 @@
           interval: Number,
           currentPage:1,
           graphTitle:'',
-          currentPreview:1
+          currentPreview:1,
+          Aprice:''
 
         }
       },
@@ -449,7 +450,8 @@
           this.getSingleInfo(upOrDown)
 
         },
-        getSingleInfo(upOrDown){
+        async getSingleInfo(upOrDown){
+          await this.getAprice()
           var index=this.lastSelectedLineIndex
           if(upOrDown=='up'){
             var suffix=this.currentCodeLeft[index].substr(7)
@@ -459,10 +461,10 @@
                 this.text1=parts[0]
                 this.text2=parts[12]
                 this.text3=parts[15]
-                var price_mark=(parts[14]-parts[13]).toFixed(4)
+                var price_mark=(this.Aprice-parts[13]).toFixed(4)
                 if(price_mark>0){
                   this.text4='实值'
-                  this.text5=price_mark
+                  this.text5=price_mark.toFixed(4)
                 }
                 else if(price_mark<0){
                   this.text4='虚值'
@@ -473,7 +475,7 @@
                   this.text5=0
                 }
                 if(parts[14]-this.text5<=0){
-                  this.text6=0.00
+                  this.text6=0
                 }
                 else{
                   this.text6=(parts[14]-this.text5).toFixed(4)
@@ -496,10 +498,10 @@
                 this.text1=parts[0]
                 this.text2=parts[12]
                 this.text3=parts[15]
-                var price_mark=(parts[14]-parts[13]).toFixed(4)
+                var price_mark=(this.Aprice-parts[13]).toFixed(4)
                 if(price_mark<0){
                   this.text4='实值'
-                  this.text5=0-price_mark
+                  this.text5=(0-price_mark).toFixed(4)
                 }
                 else if(price_mark>0){
                   this.text4='虚值'
@@ -521,6 +523,12 @@
               })
           }
 
+        },
+        async getAprice(){
+          this.axios.get('/sinaOption/list=s_sh510050,sh510050')
+            .then(re=>{
+              this.Aprice=parseFloat(re.data.split(',')[1]).toFixed(4)
+            })
         },
         async drawLine(xName,yName,xFormat,yFormat,graph){
           // 基于准备好的dom，初始化echarts实例
