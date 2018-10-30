@@ -65,6 +65,7 @@
     export default {
         data(){
             return {
+                interval: Number,
                 SO: {
                     code: ''
                 }
@@ -101,9 +102,9 @@
           },
         },
         methods: {
-            getOptionData(id) {
+            getOptionData() {
                 this.axios
-                .get('/sinaOption/list='+id.replace('OP','SO'))
+                .get('/sinaOption/list='+this.optionCode.replace('OP','SO'))
                 .then(res => {
                     const tempSO = {};
                     [, , , ,tempSO.count,tempSO.delta, tempSO.gamma, tempSO.theta, tempSO.vega, tempSO.volatility, tempSO.high, tempSO.low, tempSO.code, tempSO.price , tempSO.timeP ,tempSO.value] = res.data.split(',');
@@ -114,9 +115,14 @@
           watch: {
             optionCode:function(cur, old){
                 if(cur !==''){
-                    this.getOptionData(cur);
+                    clearInterval(this.interval);
+                    this.getOptionData();
+                    this.interval = setInterval(this.getOptionData, 5000);
                 }
             }
-          }
+          },
+          destroyed() {
+              clearInterval(this.interval);
+          },
         }
 </script>
