@@ -146,7 +146,6 @@
         initial(optionData){
           var originData=optionData.data
           optionData=optionData.data.portfolios[0]
-          console.log(optionData)
           this.options=optionData.options
           var date=new Date(optionData.buildTime)
           this.buildTime=optionData.buildTime.substr(0,10)

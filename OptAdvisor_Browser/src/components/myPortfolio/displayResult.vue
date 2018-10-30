@@ -118,7 +118,8 @@
             type:'',
             show1:'none',
             show2:'none',
-            show3:'none'
+            show3:'none',
+            Aprice:''
           }
       },
       methods: {
@@ -263,7 +264,8 @@
             }]
           },true);
         },
-        getSingleInfo(upOrDown,address){
+        async getSingleInfo(upOrDown,address){
+          await this.getAprice()
           //address是10004125这种
           if(upOrDown=='up'){
             this.axios.get('/sinaOption/list=CON_SO_'+address)
@@ -272,10 +274,10 @@
                 this.text1=parts[0]
                 this.text2=parts[12]
                 this.text3=parts[15]
-                var price_mark=(parts[14]-parts[13]).toFixed(4)
+                var price_mark=(this.Aprice-parts[13]).toFixed(4)
                 if(price_mark>0){
                   this.text4='实值'
-                  this.text5=price_mark
+                  this.text5=price_mark.toFixed(4)
                 }
                 else if(price_mark<0){
                   this.text4='虚值'
@@ -286,7 +288,7 @@
                   this.text5=0
                 }
                 if(parts[14]-this.text5<=0){
-                  this.text6=0.00
+                  this.text6=0
                 }
                 else{
                   this.text6=(parts[14]-this.text5).toFixed(4)
@@ -308,10 +310,10 @@
                 this.text1=parts[0]
                 this.text2=parts[12]
                 this.text3=parts[15]
-                var price_mark=(parts[14]-parts[13]).toFixed(4)
+                var price_mark=(this.Aprice-parts[13]).toFixed(4)
                 if(price_mark<0){
                   this.text4='实值'
-                  this.text5=0-price_mark
+                  this.text5=(0-price_mark).toFixed(4)
                 }
                 else if(price_mark>0){
                   this.text4='虚值'
@@ -333,6 +335,12 @@
               })
           }
 
+        },
+        async getAprice(){
+          this.axios.get('/sinaOption/list=s_sh510050,sh510050')
+            .then(re=>{
+              this.Aprice=parseFloat(re.data.split(',')[1]).toFixed(4)
+            })
         },
       }
     }
