@@ -203,6 +203,7 @@
             this.showDIY='';
             this.showAllocation='none'
             this.showHedging='none'
+            this.earnings=''
             //this.earnings='期望收益：'+(optionData.em*100).toFixed(2)+'%';
           }
           this.tdata=[]
