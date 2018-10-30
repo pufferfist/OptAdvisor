@@ -258,7 +258,8 @@ export default {
           },
           extraCssText: "width: 170px",
           formatter(params, ticket, callback) {
-            return `2018-8-13<br />${params[0].name}<br/> <span style="color:${
+            console.log(params);
+            return `${that.nowTime}<br />${params[0].name}<br/> <span style="color:${
               params[0].color
             }">● </span>${params[0].seriesName}:${params[0].value}元<br />
                                      <span style="color:${
