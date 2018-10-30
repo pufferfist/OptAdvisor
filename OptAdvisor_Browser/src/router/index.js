@@ -4,6 +4,8 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
+
+
 /**
   / 留作统一nav页面的嵌套路由的父路由
  展示页(主页) /home
@@ -22,6 +24,9 @@ Vue.use(Router)
 export default new Router({
   mode:'history',
   base:'/',
+  scrollBehavior (to, from, savedPosition) { // 路由切换时滚动到页面上方
+    return { x: 0, y: 0 }
+  },
   routes: [
     {
       path: '/login',
