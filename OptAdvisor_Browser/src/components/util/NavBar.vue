@@ -1,5 +1,5 @@
 <template xmlns:v-contextmenu="http://www.w3.org/1999/xhtml">
-  <Menu mode="horizontal" :theme="theme" active-name="1" class="nav">
+  <Menu mode="horizontal" :theme="theme" :active-name="activeName" class="nav">
     <div class="fl dib h-100 logo pa1 mr4">
       <router-link to="/home" class="h-100 dib">
         <Logo class="h-100"></Logo>
@@ -18,19 +18,19 @@
           <Icon type="md-analytics" size="16"/>
           市场行情
         </template>
-        <MenuItem name="1-1" to="/50ETF">50ETF</MenuItem>
-        <MenuItem name="1-2" to="/50ETFOption">50ETF期权</MenuItem>
+        <MenuItem name="/50etf" to="/50ETF">50ETF</MenuItem>
+        <MenuItem name="/50etfoption" to="/50ETFOption">50ETF期权</MenuItem>
       </Submenu>
       <Submenu name="2">
         <template slot="title">
           <Icon type="ios-construct" size="16"/>
           构建组合
         </template>
-        <MenuItem name="2-1" to="/allocation">资产配置</MenuItem>
-        <MenuItem name="2-2" to="/hedging">套期保值</MenuItem>
-        <MenuItem name="2-3" to="/diy">DIY</MenuItem>
+        <MenuItem name="/allocation" to="/allocation">资产配置</MenuItem>
+        <MenuItem name="/hedging" to="/hedging">套期保值</MenuItem>
+        <MenuItem name="/diy" to="/diy">DIY</MenuItem>
       </Submenu>
-      <MenuItem name="3" to="/myPortfolio">
+      <MenuItem name="/myportfolio" to="/myPortfolio">
         <Icon type="md-filing" size="16"/>
         我的组合
       </MenuItem>
@@ -72,7 +72,8 @@
         theme: 'light',
         userName: '',
         isLogin: false,
-        unreadCount: 0
+        unreadCount: 0,
+        activeName: 'String'
       }
     },
     created: function () {
@@ -102,7 +103,10 @@
       profile:function () {
         this.$router.push('/profile/'+this.userName);
       }
-    }
+    },
+    mounted() {
+      this.activeName = this.$router.history.current.fullPath.toLowerCase();
+    },
   }
 
 </script>
