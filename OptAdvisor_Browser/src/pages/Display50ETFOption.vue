@@ -206,7 +206,7 @@
                     </tr>
                     <tr>
                       <td>最高价 / 最低价</td>
-                      <td>{{mainUpOption.low}}</td>
+                      <td>{{mainUpOption.high}} / {{mainUpOption.low}}</td>
                     </tr>
                     <tr>
                       <td>成交量</td>
@@ -231,15 +231,7 @@
                     <tr>
                       <td>隐含波动率</td>
                       <td>{{mainUpOption.volatility}}</td>
-                    </tr>
-                    <tr>
-                      <td>最高价</td>
-                      <td>{{mainUpOption.high}}</td>
-                    </tr>
-                    <tr>
-                      <td>最低价</td>
-                      <td>{{mainUpOption.low}}</td>
-                    </tr>
+                    </tr> 
                   </tbody>
                 </table>
               </div>
@@ -286,7 +278,7 @@
                     </tr>
                     <tr>
                       <td>最高价 / 最低价</td>
-                      <td>{{mainDownOption.low}}</td>
+                      <td>{{mainDownOption.high}} / {{mainDownOption.low}}</td>
                     </tr>
                     <tr>
                       <td>成交量</td>
@@ -311,14 +303,6 @@
                     <tr>
                       <td>隐含波动率</td>
                       <td>{{mainDownOption.volatility}}</td>
-                    </tr>
-                    <tr>
-                      <td>最高价</td>
-                      <td>{{mainDownOption.high}}</td>
-                    </tr>
-                    <tr>
-                      <td>最低价</td>
-                      <td>{{mainDownOption.low}}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -657,20 +641,24 @@
             );
           },
           getMainOptionData() {
+            console.log('GET_ZL');
+            
             const  tempmainUpOption = this.OptionsUpList.find(item => {
                 return item.isMain!=='0';
             });
             const tempmainDownOption = this.OptionsDownList.find(item => {
                 return item.isMain!=='0';
             });
-            this.axios.get('/sinaOption/list='+ tempmainUpOption.id.replace('hq_str_CON_OP','CON_ZL'))
+            console.log(tempmainUpOption, tempmainDownOption, 'tempupanddown');
+            
+            this.axios.get('/sinaOption/list='+ tempmainUpOption.id.replace('OP','ZL'))
                 .then(res => {
                   console.log( res.data.split(','),54654654);
                   const tempOption = {};
                   [, , , ,tempOption.openInterest,tempOption.openInterestRate, tempOption.new, tempOption.increase, tempOption.buyPrice, tempOption.salePrice, tempOption.high, tempOption.low, tempOption.volume, tempOption.delta , tempOption.gamma ,tempOption.theta, tempOption.vega, tempOption.volatility, tempOption.code, tempOption.price, tempOption.value] = res.data.split(',');
                   this.mainUpOption = tempOption;
                 });
-            this.axios.get('/sinaOption/list='+ tempmainDownOption.id.replace('hq_str_CON_OP','CON_ZL'))
+            this.axios.get('/sinaOption/list='+ tempmainDownOption.id.replace('OP','ZL'))
                 .then(res => {
                   const tempOption = {};
                   

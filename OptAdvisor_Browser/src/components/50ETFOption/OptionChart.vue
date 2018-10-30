@@ -501,16 +501,16 @@
         mounted() {
             this.myChart = echarts.init(this.$refs.myechart);
             this.initLine();
-            this.interval = setInterval(this.getChartData(), 5000);
+            this.interval = setInterval(this.getChartData, 5000);
         },
         watch:{
             optionCode(cur, old){
                 if(cur !==  ''){
                     clearInterval(this.interval);
                     this.handleClick('line');
-                    this.getChartData();
+                    this.getChartData(true);
                     setTimeout(this.myChart.resize(),200);
-                    this.interval = setInterval(this.getChartData(), 5000);
+                    this.interval = setInterval(this.getChartData, 5000);
                 }
 
             }
