@@ -20,6 +20,8 @@ import java.util.regex.Pattern;
 public class GetData {
     private final String USER_AGENT = "Mozilla/5.0";
 
+    private double preSigma = 30;
+
     private Logger logger = LoggerFactory.getLogger(GetData.class);
     /*
     public static void main(String[] args) throws IOException {
@@ -50,13 +52,13 @@ public class GetData {
     }
 */
 
-    private String getDataFromURL(String url) throws IOException {
+    private String getDataFromURL(String url) throws IOException{
         URL obj = new URL(url);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
         con.setRequestMethod("GET");//设置为GET方法
         con.setRequestProperty("User-Agent", USER_AGENT);
 
-        int responseCode = con.getResponseCode();
+//        int responseCode = con.getResponseCode();
 
 //        System.out.println("Response Code : " + responseCode);
 
@@ -229,26 +231,33 @@ public class GetData {
         return rtn / 100.0;
     }
 
-    public double get_Sigma() throws IOException {
-//        String url = "http://www.optbbs.com/d/csv/d/data.csv?v=";
-//        Date d = new Date();
-//        long time = d.getTime();
-//        url = url + time;
-//        String result = getDataFromURL(url);
-//        String[] output = result.split(",");
-//        String regex = ".*?\\..*?";
-//        Pattern p=Pattern.compile(regex);
-//
-//        String s="0";
-//        for(int i=output.length-1;i>=0;i--){
-//            s = output[i];
-//            Matcher m=p.matcher(s);
-//            if(m.matches()){
-//                break;
-//            }
-//        }
-//        return Double.valueOf(s) / 100.0;
-        return 23.39 / 100.0;
+    public double get_Sigma() {
+        String url = "http://www.optbbs.com/d/csv/d/data.csv?v=";
+        Date d = new Date();
+        long time = d.getTime();
+        url = url + time;
+        String result = null;
+        try {
+            result = getDataFromURL(url);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return preSigma / 100;
+        }
+        String[] output = result.split(",");
+        String regex = ".*?\\..*?";
+        Pattern p=Pattern.compile(regex);
+
+        String s="0";
+        for(int i=output.length-1;i>=0;i--){
+            s = output[i];
+            Matcher m=p.matcher(s);
+            if(m.matches()){
+                break;
+            }
+        }
+        preSigma = Double.valueOf(s);
+        return Double.valueOf(s) / 100.0;
+//        return 23.39 / 100.0;
     }
 
     public double[] get_Attributes(String contract) throws IOException {
