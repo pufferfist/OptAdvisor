@@ -1401,7 +1401,7 @@ public class RecommendServiceImpl implements RecommendService {
         int length = (int)(pAsset / 0.01);
         double tempLoss1,tempLoss2;
         int i = (int)(sExp*0.9*100);
-        for(; i<length; i++){
+        for(; i<=length; i++){
             double temp = (double)(i)/100;
             abscissa.add(temp);
             tempLoss1 = N0 * (pAsset - temp) / (N0 * S0);
