@@ -1313,7 +1313,7 @@ public class RecommendServiceImpl implements RecommendService {
         addAttributesToDOption(optionI);
         //第三步
 
-        Map<String, String[][]> map = hedgingCalculate(optionI,N0,a,pAsset);
+        Map<String, String[][]> map = hedgingCalculate(optionI,N0,a,pAsset,sExp);
         rtn = map.get("rtn");
         maxLoss = Double.valueOf(map.get("maxLoss")[0][0]);
 
@@ -1329,7 +1329,7 @@ public class RecommendServiceImpl implements RecommendService {
         iNum = result[1];
         optionI.setType(1);
         addAttributesToDOption(optionI);
-        Map<String, String[][]> map = hedgingCalculate(optionI,N0,a,pAsset);
+        Map<String, String[][]> map = hedgingCalculate(optionI,N0,a,pAsset,sExp);
         rtn = map.get("rtn");
         maxLoss = Double.valueOf(map.get("maxLoss")[0][0]);
         return new RecommendOption2(optionI, maxLoss,iNum, rtn, pAsset, N0, a, sExp);
@@ -1383,7 +1383,7 @@ public class RecommendServiceImpl implements RecommendService {
         return rtn;
     }
 
-    private Map<String, String[][]> hedgingCalculate(Option I, int N0, double a, double pAsset){
+    private Map<String, String[][]> hedgingCalculate(Option I, int N0, double a, double pAsset, double sExp){
 //        logger.info("step into hedgingCalculate");
         int N = (int)(N0 * a);
         double iK = I.getK();
@@ -1415,7 +1415,7 @@ public class RecommendServiceImpl implements RecommendService {
             }
             loss2.add(tempLoss2);
 
-            if(i == 0){
+            if(i == sExp){
                 maxloss[0] = tempLoss1 - tempLoss2;
             }
         }
