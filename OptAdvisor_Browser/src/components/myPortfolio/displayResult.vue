@@ -167,6 +167,16 @@
             series.push(temp)
           }
 
+          var formater="";
+          console.log(graph.length)
+          if(graph.length==3){
+            formater=xName+":{b}<br/>持有"+yName+":{c0}<br>不持有"+yName+":{c1}"
+          }
+          else{
+            formater=xName+":{b}<br/>"+yName+":{c}"
+          }
+
+
           // 基于准备好的dom，初始化echarts实例
           let myChart = this.$echarts.init(document.getElementById(graphname))
           // 绘制图表
@@ -179,7 +189,7 @@
                   backgroundColor: '#6a7985'
                 }
               },
-              formatter: xName+":{b}<br/>"+yName+":{c}",
+              formatter: formater
             },
             title : {
               text: title,
