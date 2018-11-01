@@ -79,7 +79,7 @@
                   backgroundColor: '#6a7985'
                 }
               },
-              formatter: xName+":{b}<br/>"+yName+":{c}",
+              formatter: xName+":{b}<br/>持有"+yName+":{c0}<br>不持有"+yName+":{c1}",
             },
             legend: {
               data:lineName,
