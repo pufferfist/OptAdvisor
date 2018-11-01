@@ -1405,7 +1405,8 @@ public class RecommendServiceImpl implements RecommendService {
 
         int length = (int)(pAsset / 0.01);
         double tempLoss1,tempLoss2;
-        for(int i=0; i<length; i++){
+        int i = (int)(sExp*0.9*100);
+        for(; i<length; i++){
             double temp = (double)(i)/100;
             abscissa.add(temp);
             tempLoss1 = N0 * (pAsset - temp) / (N0 * S0);
@@ -1420,7 +1421,7 @@ public class RecommendServiceImpl implements RecommendService {
             }
             loss2.add(tempLoss2);
 
-            if(i == sExp){
+            if(i/100.0 == sExp){
                 maxloss[0] = tempLoss1 - tempLoss2;
             }
         }
